@@ -1,4 +1,6 @@
 .vscode/
 build/
-ncvis/ncvis.cpp
+wrapper/*.cpp
+wrapper/*.c
 *.so
+wrapper/__pycache__/
