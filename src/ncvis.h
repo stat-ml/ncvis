@@ -5,7 +5,7 @@ class NCVis{
     public:
         NCVis();
         ~NCVis();
-        int x;
+        void add_one(double* X, int N, int D);
 };
 
 #endif
