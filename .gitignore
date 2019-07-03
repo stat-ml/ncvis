@@ -3,4 +3,7 @@ build/
 wrapper/*.cpp
 wrapper/*.c
 *.so
-wrapper/__pycache__/
+__pycache__/
+.ipynb_checkpoints/
+bin/
+obj/
