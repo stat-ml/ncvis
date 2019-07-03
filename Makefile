@@ -14,19 +14,22 @@ CSources=$(addprefix $(SourceDir),$(Sources))
 CObjects=$(addprefix $(ObjectDir),$(Objects))
 CExecutable=$(addprefix $(BinDir),$(Executable))
 
-all: $(CSources) $(CExecutable)
+all: $(CSources) $(CExecutable) wrapper
 
-$(CExecutable): $(CObjects) $(BinDir)
+$(Executable): $(CExecutable)
+
+$(CExecutable): $(CObjects) .dir_init
 	$(CC) $(LDFlags) $(CObjects) -o $@
 
-$(ObjectDir)%.o: $(SourceDir)%.cpp $(ObjectDir)
+$(ObjectDir)%.o: $(SourceDir)%.cpp .dir_init
 	$(CC) $(CFlags) $< -o $@
 
-$(ObjectDir):
-	mkdir $(ObjectDir)
-
-$(BinDir):
-	mkdir $(BinDir)
+.dir_init:
+	mkdir $(ObjectDir) $(BinDir)
+	touch .dir_init
 
 clean:
-	rm -rf $(ObjectDir) $(BinDir)
+	rm -rf $(ObjectDir) $(BinDir) .dir_init
+
+wrapper: $(CSources)
+	python setup.py build_ext --inplace

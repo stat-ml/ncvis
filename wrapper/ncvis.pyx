@@ -2,6 +2,7 @@
 
 from wrapper cimport cncvis
 import numpy as np
+from cpython.mem cimport PyMem_Malloc, PyMem_Free
 
 cdef class NCVis:
     cdef cncvis.NCVis c_ncvis;
