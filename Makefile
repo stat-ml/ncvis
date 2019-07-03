@@ -8,7 +8,6 @@ SourceDir=src/
 BinDir=bin/
 
 CC=g++
-RM=rm
 
 Objects=$(Sources:.cpp=.o)
 CSources=$(addprefix $(SourceDir),$(Sources))
@@ -28,3 +27,6 @@ $(ObjectDir):
 
 $(BinDir):
 	mkdir $(BinDir)
+
+clean:
+	rm -rf $(ObjectDir) $(BinDir)
