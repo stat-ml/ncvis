@@ -1,8 +1,9 @@
 #include "ncvis.h"
 #include <stdio.h>
+#include <iostream>
 
 NCVis::NCVis(){
-    printf("NCVis::NCVis()\n");
+    std::cout << "NCVis::NCVis()\n";
 }
 
 NCVis::~NCVis(){
