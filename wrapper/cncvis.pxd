@@ -1,7 +1,5 @@
-cdef extern from "../src/ncvis.cpp":
+cdef extern from "../src/ncvis.c":
     pass
 
 cdef extern from "../src/ncvis.h":
-    cdef cppclass NCVis:
-        NCVis() except +
-        void add_one(double* X, int N, int D);
+    cdef void add_one(double* X, int N, int d);

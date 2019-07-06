@@ -1,15 +1,15 @@
-Sources=main.cpp ncvis.cpp
+Sources=main.c ncvis.c
 Executable=ncvis
 
-CFlags=-c -Wall
+CFlags=-c -Wall -std=c11
 LDFlags=-lm
 ObjectDir=obj/
 SourceDir=src/
 BinDir=bin/
 
-CC=g++
+CC=gcc
 
-Objects=$(Sources:.cpp=.o)
+Objects=$(Sources:.c=.o)
 CSources=$(addprefix $(SourceDir),$(Sources))
 CObjects=$(addprefix $(ObjectDir),$(Objects))
 CExecutable=$(addprefix $(BinDir),$(Executable))
@@ -21,7 +21,7 @@ $(Executable): $(CExecutable)
 $(CExecutable): $(CObjects) .dir_init
 	$(CC) $(LDFlags) $(CObjects) -o $@
 
-$(ObjectDir)%.o: $(SourceDir)%.cpp .dir_init
+$(ObjectDir)%.o: $(SourceDir)%.c .dir_init
 	$(CC) $(CFlags) $< -o $@
 
 .dir_init:
