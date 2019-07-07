@@ -1,35 +1,46 @@
-Sources=main.c ncvis.c
+Sources=main.cpp ncvis.cpp
 Executable=ncvis
 
-CFlags=-c -Wall -std=c11
-LDFlags=-lm
+CFlags=-c -Wall -std=c++11 -fopenmp -fpic -ftree-vectorize -O3 -ftree-vectorizer-verbose=0
+LDFlags=-lm -lgomp #-lrt
 ObjectDir=obj/
 SourceDir=src/
 BinDir=bin/
+LibDir=lib/
 
-CC=gcc
+CC=g++
 
-Objects=$(Sources:.c=.o)
+Objects=$(Sources:.cpp=.o)
 CSources=$(addprefix $(SourceDir),$(Sources))
 CObjects=$(addprefix $(ObjectDir),$(Objects))
 CExecutable=$(addprefix $(BinDir),$(Executable))
 
-all: $(CSources) $(CExecutable) wrapper
+all: $(CSources) $(CExecutable)
 
 $(Executable): $(CExecutable)
 
-$(CExecutable): $(CObjects) .dir_init
+$(CExecutable): $(CObjects) dir
 	$(CC) $(LDFlags) $(CObjects) -o $@
 
-$(ObjectDir)%.o: $(SourceDir)%.c .dir_init
+$(ObjectDir)%.o: $(SourceDir)%.cpp lib dir
 	$(CC) $(CFlags) $< -o $@
 
+dir: .dir_init
 .dir_init:
-	mkdir $(ObjectDir) $(BinDir)
+	mkdir -p $(ObjectDir) $(BinDir) $(LibDir)
 	touch .dir_init
 
 clean:
-	rm -rf $(ObjectDir) $(BinDir) .dir_init
+	rm -rf $(ObjectDir) $(BinDir) $(LibDir) .dir_init .lib_init build wrapper/*.cpp
 
-wrapper: $(CSources)
+wrapper: lib $(CSources)
 	python setup.py build_ext --inplace --force
+
+data:
+	bash download.sh
+
+lib: .lib_init
+.lib_init:
+	mkdir -p $(LibDir)
+	git clone https://github.com/nmslib/hnswlib.git $(LibDir)/nmslib
+	touch .lib_init

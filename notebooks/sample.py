@@ -9,10 +9,4 @@ import ncvis
 
 #%%
 a = np.ones((2, 2))
-vis = ncvis.add_one(a)
-
-#%%
-
-a
-
-#%%
+vis = ncvis.NCVis(2)
