@@ -7,6 +7,11 @@ d_(d), M_(M), ef_construction_(ef_construction),
 random_seed_(random_seed), n_neighbors_(n_neighbors), l2space_(nullptr), appr_alg_(nullptr)
 {
     omp_set_num_threads(n_threads);
+
+    edges_.from = nullptr;
+    edges_.to = nullptr;
+    edges_.n = 0;
+
     std::cout << "NCVis::NCVis()\n";
 }
 
@@ -29,9 +34,8 @@ void ncvis::NCVis::buildKNN(const float *const X, size_t N, size_t D){
     }
 }
 
-std::tuple<float*, size_t*> ncvis::NCVis::findKNN(const float *const X, size_t N, size_t D, size_t k){
-    float* dists  = new float[N*k];
-    size_t* inds  = new size_t[N*k];
+ncvis::KNNTable ncvis::NCVis::findKNN(const float *const X, size_t N, size_t D, size_t k){
+    KNNTable table(N, k);
 
     #pragma omp parallel for
     for (size_t i=0; i < N; i++){
@@ -42,15 +46,19 @@ std::tuple<float*, size_t*> ncvis::NCVis::findKNN(const float *const X, size_t N
         } else{
             for (size_t j=0; j<k; j++) {
                 auto& result_tuple = result.top();
-                size_t offset = (i+1)*k-j-1;
-                dists[offset] = result_tuple.first;
-                inds[offset]  = result_tuple.second;
+                table.dists[i].push_back(result_tuple.first);
+                table.inds[i].push_back(result_tuple.second);
                 result.pop();
             }
         }
     }
 
-    return std::make_tuple(dists, inds);
+    return table;
+}
+
+ncvis::Edges ncvis::NCVis::build_edges(ncvis::KNNTable& table){
+    printf("[ncvis::NCVis::build_edges] Hello!\n");
+    table.symmetrize();
 }
 
 void ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
@@ -61,17 +69,16 @@ void ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
 
     buildKNN(X, N, D);
 
-    float* dists;
-    size_t* inds;
     // Number of neighbors can't exceed the total number of other points 
     size_t k = (n_neighbors_ < N-1)? n_neighbors_:(N-1);
-    std::tie(dists, inds) = findKNN(X, N, D, k);
+    KNNTable table = findKNN(X, N, D, k);
 
+    table.symmetrize();
     // printf("============DISTANCES==========\n");
     // for (size_t i=0; i<N; i++){
     //     printf("[");
-    //     for (size_t j=0; j<k; j++){
-    //         printf("%f ", dists[k*i+j]);
+    //     for (size_t j=0; j<table.dists[i].size(); j++){
+    //         printf("%f ", table.dists[i][j]);
     //     }
     //     printf("]\n");
     // }
@@ -80,13 +87,11 @@ void ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
     // printf("============NEIGHBORS==========\n");
     // for (size_t i=0; i<N; i++){
     //     printf("[");
-    //     for (size_t j=0; j<k; j++){
-    //         printf("%ld ", inds[k*i+j]);
+    //     for (size_t j=0; j<table.inds[i].size(); j++){
+    //         printf("%ld ", table.inds[i][j]);
     //     }
     //     printf("]\n");
     // }
     // printf("===============================\n");
-
-    delete[] dists;
-    delete[] inds;
+    // edges_ = build_edges(table);
 }

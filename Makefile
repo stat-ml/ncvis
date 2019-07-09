@@ -1,4 +1,4 @@
-Sources=main.cpp ncvis.cpp
+Sources=main.cpp ncvis.cpp knntable.cpp
 Executable=ncvis
 
 CFlags=-c -Wall -std=c++11 -fopenmp -fpic -ftree-vectorize -O3 -ftree-vectorizer-verbose=0
@@ -19,13 +19,12 @@ all: $(CSources) $(CExecutable)
 
 $(Executable): $(CExecutable)
 
-$(CExecutable): $(CObjects) dir
+$(CExecutable): $(CObjects) .dir_init
 	$(CC) $(LDFlags) $(CObjects) -o $@
 
-$(ObjectDir)%.o: $(SourceDir)%.cpp lib dir
+$(ObjectDir)%.o: $(SourceDir)%.cpp .lib_init .dir_init
 	$(CC) $(CFlags) $< -o $@
 
-dir: .dir_init
 .dir_init:
 	mkdir -p $(ObjectDir) $(BinDir) $(LibDir)
 	touch .dir_init
@@ -33,13 +32,12 @@ dir: .dir_init
 clean:
 	rm -rf $(ObjectDir) $(BinDir) $(LibDir) .dir_init .lib_init build wrapper/*.cpp
 
-wrapper: lib $(CSources)
+wrapper: .lib_init $(CSources)
 	python setup.py build_ext --inplace --force
 
 data:
 	bash download.sh
 
-lib: .lib_init
 .lib_init:
 	mkdir -p $(LibDir)
 	git clone https://github.com/nmslib/hnswlib.git $(LibDir)/nmslib

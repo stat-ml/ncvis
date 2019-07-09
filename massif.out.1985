@@ -1,0 +1,1073 @@
+desc: (none)
+cmd: bin/ncvis 10000 4
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=0
+mem_heap_B=0
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=1
+#-----------
+time=50715596
+mem_heap_B=2263553
+mem_heap_extra_B=5351
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=2
+#-----------
+time=113229894
+mem_heap_B=2271473
+mem_heap_extra_B=9791
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=3
+#-----------
+time=160721567
+mem_heap_B=2278414
+mem_heap_extra_B=12954
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=4
+#-----------
+time=229061302
+mem_heap_B=2295615
+mem_heap_extra_B=17513
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=5
+#-----------
+time=276290575
+mem_heap_B=2297253
+mem_heap_extra_B=20643
+mem_stacks_B=0
+heap_tree=detailed
+n9: 2297253 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1480000 0x10BBD1: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 1480000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 1480000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 400000 0x10B9EA: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 400000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 400000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n0: 80000 0x10A6F6: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 80000 0x10BD05: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 80000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 80000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 72704 0x495DAE9: _GLOBAL__sub_I_eh_alloc.cc (eh_alloc.cc:123)
+  n1: 72704 0x4010798: call_init.part.0 (in /usr/lib/ld-2.29.so)
+   n1: 72704 0x401089F: _dl_init (in /usr/lib/ld-2.29.so)
+    n1: 72704 0x4002138: ??? (in /usr/lib/ld-2.29.so)
+     n1: 72704 0x1: ???
+      n1: 72704 0x1FFF0001B9: ???
+       n1: 72704 0x1FFF0001C3: ???
+        n0: 72704 0x1FFF0001C9: ???
+ n1: 60000 0x10E97C: hnswlib::HierarchicalNSW<float>::searchBaseLayer(unsigned int, void*, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 60000 0x110F55: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 60000 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 40000 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 40000 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 40000 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 20000 in 1 place, below massif's threshold (1.00%)
+ n0: 56517 in 27 places, all below massif's threshold (1.00%)
+ n1: 40000 0x10BA40: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 40000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 40000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n2: 28032 0x110E63: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 28008 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 23640 0x48A0EFC: gomp_thread_start (team.c:123)
+    n1: 23640 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+     n0: 23640 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+   n0: 4368 in 1 place, below massif's threshold (1.00%)
+  n0: 24 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=6
+#-----------
+time=322692906
+mem_heap_B=2305179
+mem_heap_extra_B=23709
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=7
+#-----------
+time=368993350
+mem_heap_B=2307424
+mem_heap_extra_B=26704
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=8
+#-----------
+time=399670497
+mem_heap_B=2311055
+mem_heap_extra_B=28729
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=9
+#-----------
+time=443855434
+mem_heap_B=2334610
+mem_heap_extra_B=31590
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=10
+#-----------
+time=500141759
+mem_heap_B=2337255
+mem_heap_extra_B=35209
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=11
+#-----------
+time=536010909
+mem_heap_B=2344045
+mem_heap_extra_B=37491
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=12
+#-----------
+time=592244398
+mem_heap_B=2347835
+mem_heap_extra_B=41141
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=13
+#-----------
+time=630111747
+mem_heap_B=2354712
+mem_heap_extra_B=43584
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=14
+#-----------
+time=685907694
+mem_heap_B=2357794
+mem_heap_extra_B=47110
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=15
+#-----------
+time=730445556
+mem_heap_B=2361903
+mem_heap_extra_B=49905
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=16
+#-----------
+time=781854790
+mem_heap_B=2366479
+mem_heap_extra_B=53153
+mem_stacks_B=0
+heap_tree=detailed
+n10: 2366479 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1480000 0x10BBD1: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 1480000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 1480000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 400000 0x10B9EA: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 400000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 400000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n0: 80000 0x10A6F6: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 80000 0x10BD05: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 80000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 80000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n2: 73320 0x110E63: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 73296 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 66432 0x48A0EFC: gomp_thread_start (team.c:123)
+    n1: 66432 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+     n0: 66432 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+   n0: 6864 in 1 place, below massif's threshold (1.00%)
+  n0: 24 in 1 place, below massif's threshold (1.00%)
+ n1: 72704 0x495DAE9: _GLOBAL__sub_I_eh_alloc.cc (eh_alloc.cc:123)
+  n1: 72704 0x4010798: call_init.part.0 (in /usr/lib/ld-2.29.so)
+   n1: 72704 0x401089F: _dl_init (in /usr/lib/ld-2.29.so)
+    n1: 72704 0x4002138: ??? (in /usr/lib/ld-2.29.so)
+     n1: 72704 0x1: ???
+      n1: 72704 0x1FFF0001B9: ???
+       n1: 72704 0x1FFF0001C3: ???
+        n0: 72704 0x1FFF0001C9: ???
+ n1: 60000 0x10E97C: hnswlib::HierarchicalNSW<float>::searchBaseLayer(unsigned int, void*, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 60000 0x110F55: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 60000 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 40000 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 40000 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 40000 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 20000 in 1 place, below massif's threshold (1.00%)
+ n0: 50543 in 26 places, all below massif's threshold (1.00%)
+ n1: 40000 0x10BA40: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 40000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 40000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 29912 0x10F34E: std::_Hashtable<unsigned long, std::pair<unsigned long const, unsigned int>, std::allocator<std::pair<unsigned long const, unsigned int> >, std::__detail::_Select1st, std::equal_to<unsigned long>, std::hash<unsigned long>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_rehash(unsigned long, unsigned long const&) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 29912 0x111507: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 29912 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 29912 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 29912 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 29912 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=17
+#-----------
+time=820936750
+mem_heap_B=2369576
+mem_heap_extra_B=55600
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=18
+#-----------
+time=882285007
+mem_heap_B=2378966
+mem_heap_extra_B=59490
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=19
+#-----------
+time=941423331
+mem_heap_B=2386563
+mem_heap_extra_B=63253
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=20
+#-----------
+time=981296176
+mem_heap_B=2414215
+mem_heap_extra_B=65729
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=21
+#-----------
+time=1047772995
+mem_heap_B=2419814
+mem_heap_extra_B=69906
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=22
+#-----------
+time=1081074942
+mem_heap_B=2423473
+mem_heap_extra_B=71999
+mem_stacks_B=0
+heap_tree=detailed
+n10: 2423473 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1480000 0x10BBD1: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 1480000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 1480000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 400000 0x10B9EA: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 400000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 400000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n2: 99264 0x110E63: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 99240 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 68784 0x48A0EFC: gomp_thread_start (team.c:123)
+    n1: 68784 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+     n0: 68784 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+   n1: 30456 0x4897BE4: GOMP_parallel (parallel.c:171)
+    n1: 30456 0x10BD9E: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+     n1: 30456 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+      n0: 30456 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n0: 24 in 1 place, below massif's threshold (1.00%)
+ n0: 80000 0x10A6F6: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 80000 0x10BD05: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 80000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 80000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 72704 0x495DAE9: _GLOBAL__sub_I_eh_alloc.cc (eh_alloc.cc:123)
+  n1: 72704 0x4010798: call_init.part.0 (in /usr/lib/ld-2.29.so)
+   n1: 72704 0x401089F: _dl_init (in /usr/lib/ld-2.29.so)
+    n1: 72704 0x4002138: ??? (in /usr/lib/ld-2.29.so)
+     n1: 72704 0x1: ???
+      n1: 72704 0x1FFF0001B9: ???
+       n1: 72704 0x1FFF0001C3: ???
+        n0: 72704 0x1FFF0001C9: ???
+ n1: 60136 0x10F34E: std::_Hashtable<unsigned long, std::pair<unsigned long const, unsigned int>, std::allocator<std::pair<unsigned long const, unsigned int> >, std::__detail::_Select1st, std::equal_to<unsigned long>, std::hash<unsigned long>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_rehash(unsigned long, unsigned long const&) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 60136 0x111507: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 60136 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 60136 0x4897BE4: GOMP_parallel (parallel.c:171)
+     n1: 60136 0x10BD9E: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+      n1: 60136 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+       n0: 60136 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 60000 0x10E97C: hnswlib::HierarchicalNSW<float>::searchBaseLayer(unsigned int, void*, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 60000 0x110F55: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 60000 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 40000 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 40000 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 40000 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 20000 in 1 place, below massif's threshold (1.00%)
+ n0: 51369 in 26 places, all below massif's threshold (1.00%)
+ n1: 40000 0x10BA40: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 40000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 40000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+#-----------
+snapshot=23
+#-----------
+time=1125459339
+mem_heap_B=2429655
+mem_heap_extra_B=74793
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=24
+#-----------
+time=1169774540
+mem_heap_B=2432061
+mem_heap_extra_B=77547
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=25
+#-----------
+time=1203015537
+mem_heap_B=2437236
+mem_heap_extra_B=79588
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=26
+#-----------
+time=1247439663
+mem_heap_B=2448672
+mem_heap_extra_B=82400
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=27
+#-----------
+time=1297431297
+mem_heap_B=2454884
+mem_heap_extra_B=85532
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=28
+#-----------
+time=1330705933
+mem_heap_B=2453713
+mem_heap_extra_B=87599
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=29
+#-----------
+time=1375017919
+mem_heap_B=2461856
+mem_heap_extra_B=90384
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=30
+#-----------
+time=1433839156
+mem_heap_B=2466063
+mem_heap_extra_B=94073
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=31
+#-----------
+time=1471114418
+mem_heap_B=2471301
+mem_heap_extra_B=96371
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=32
+#-----------
+time=1508362766
+mem_heap_B=2475215
+mem_heap_extra_B=98737
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=33
+#-----------
+time=1580592871
+mem_heap_B=2480579
+mem_heap_extra_B=103229
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=34
+#-----------
+time=1617941595
+mem_heap_B=2482769
+mem_heap_extra_B=105535
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=35
+#-----------
+time=1655235469
+mem_heap_B=2490445
+mem_heap_extra_B=107923
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=36
+#-----------
+time=1719812945
+mem_heap_B=2497887
+mem_heap_extra_B=111929
+mem_stacks_B=0
+heap_tree=detailed
+n11: 2497887 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1480000 0x10BBD1: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 1480000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 1480000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 400000 0x10B9EA: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 400000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 400000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n2: 155184 0x110E63: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 155160 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 96048 0x48A0EFC: gomp_thread_start (team.c:123)
+    n1: 96048 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+     n0: 96048 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+   n1: 59112 0x4897BE4: GOMP_parallel (parallel.c:171)
+    n1: 59112 0x10BD9E: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+     n1: 59112 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+      n0: 59112 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n0: 24 in 1 place, below massif's threshold (1.00%)
+ n0: 80000 0x10A6F6: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 80000 0x10BD05: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 80000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 80000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 72704 0x495DAE9: _GLOBAL__sub_I_eh_alloc.cc (eh_alloc.cc:123)
+  n1: 72704 0x4010798: call_init.part.0 (in /usr/lib/ld-2.29.so)
+   n1: 72704 0x401089F: _dl_init (in /usr/lib/ld-2.29.so)
+    n1: 72704 0x4002138: ??? (in /usr/lib/ld-2.29.so)
+     n1: 72704 0x1: ???
+      n1: 72704 0x1FFF0001B9: ???
+       n1: 72704 0x1FFF0001C3: ???
+        n0: 72704 0x1FFF0001C9: ???
+ n1: 60136 0x10F34E: std::_Hashtable<unsigned long, std::pair<unsigned long const, unsigned int>, std::allocator<std::pair<unsigned long const, unsigned int> >, std::__detail::_Select1st, std::equal_to<unsigned long>, std::hash<unsigned long>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_rehash(unsigned long, unsigned long const&) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 60136 0x111507: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 60136 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 60136 0x4897BE4: GOMP_parallel (parallel.c:171)
+     n1: 60136 0x10BD9E: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+      n1: 60136 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+       n0: 60136 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 60000 0x10E97C: hnswlib::HierarchicalNSW<float>::searchBaseLayer(unsigned int, void*, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 60000 0x110F55: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 60000 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 40000 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 40000 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 40000 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 20000 in 1 place, below massif's threshold (1.00%)
+ n1: 40000 0x10BA40: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 40000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 40000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n0: 39184 in 25 places, all below massif's threshold (1.00%)
+ n1: 30679 0x111426: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 30679 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 30679 in 2 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=37
+#-----------
+time=1775669612
+mem_heap_B=2497468
+mem_heap_extra_B=115364
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=38
+#-----------
+time=1812899401
+mem_heap_B=2498420
+mem_heap_extra_B=117708
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=39
+#-----------
+time=1868775011
+mem_heap_B=2506519
+mem_heap_extra_B=121145
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=40
+#-----------
+time=1906005716
+mem_heap_B=2511404
+mem_heap_extra_B=123484
+mem_stacks_B=0
+heap_tree=detailed
+n11: 2511404 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1480000 0x10BBD1: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 1480000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 1480000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 400000 0x10B9EA: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 400000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 400000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n2: 171192 0x110E63: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 171168 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 111168 0x48A0EFC: gomp_thread_start (team.c:123)
+    n1: 111168 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+     n0: 111168 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+   n1: 60000 0x4897BE4: GOMP_parallel (parallel.c:171)
+    n1: 60000 0x10BD9E: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+     n1: 60000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+      n0: 60000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n0: 24 in 1 place, below massif's threshold (1.00%)
+ n0: 80000 0x10A6F6: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 80000 0x10BD05: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 80000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 80000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 72704 0x495DAE9: _GLOBAL__sub_I_eh_alloc.cc (eh_alloc.cc:123)
+  n1: 72704 0x4010798: call_init.part.0 (in /usr/lib/ld-2.29.so)
+   n1: 72704 0x401089F: _dl_init (in /usr/lib/ld-2.29.so)
+    n1: 72704 0x4002138: ??? (in /usr/lib/ld-2.29.so)
+     n1: 72704 0x1: ???
+      n1: 72704 0x1FFF0001B9: ???
+       n1: 72704 0x1FFF0001C3: ???
+        n0: 72704 0x1FFF0001C9: ???
+ n1: 60136 0x10F34E: std::_Hashtable<unsigned long, std::pair<unsigned long const, unsigned int>, std::allocator<std::pair<unsigned long const, unsigned int> >, std::__detail::_Select1st, std::equal_to<unsigned long>, std::hash<unsigned long>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_rehash(unsigned long, unsigned long const&) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 60136 0x111507: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 60136 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 60136 0x4897BE4: GOMP_parallel (parallel.c:171)
+     n1: 60136 0x10BD9E: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+      n1: 60136 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+       n0: 60136 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+ n1: 60000 0x10E97C: hnswlib::HierarchicalNSW<float>::searchBaseLayer(unsigned int, void*, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 60000 0x110F55: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 60000 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 40000 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 40000 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 40000 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 20000 in 1 place, below massif's threshold (1.00%)
+ n1: 40000 0x10BA40: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 40000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 40000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 34332 0x111426: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 34332 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 34332 in 2 places, all below massif's threshold (1.00%)
+ n0: 33040 in 25 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=41
+#-----------
+time=1968293122
+mem_heap_B=2516123
+mem_heap_extra_B=127357
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=42
+#-----------
+time=2012583654
+mem_heap_B=2637033
+mem_heap_extra_B=130103
+mem_stacks_B=0
+heap_tree=detailed
+n11: 2637033 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1480000 0x10BBD1: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 1480000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 1480000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 400000 0x10B9EA: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 400000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 400000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 181520 0x10F34E: std::_Hashtable<unsigned long, std::pair<unsigned long const, unsigned int>, std::allocator<std::pair<unsigned long const, unsigned int> >, std::__detail::_Select1st, std::equal_to<unsigned long>, std::hash<unsigned long>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_rehash(unsigned long, unsigned long const&) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 181520 0x111507: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 181520 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 121384 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 121384 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 121384 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n1: 60136 0x4897BE4: GOMP_parallel (parallel.c:171)
+     n1: 60136 0x10BD9E: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+      n1: 60136 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+       n0: 60136 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+ n2: 180432 0x110E63: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 180408 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 120408 0x48A0EFC: gomp_thread_start (team.c:123)
+    n1: 120408 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+     n0: 120408 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+   n1: 60000 0x4897BE4: GOMP_parallel (parallel.c:171)
+    n1: 60000 0x10BD9E: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+     n1: 60000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+      n0: 60000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n0: 24 in 1 place, below massif's threshold (1.00%)
+ n0: 80000 0x10A6F6: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 80000 0x10BD05: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 80000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 80000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 72704 0x495DAE9: _GLOBAL__sub_I_eh_alloc.cc (eh_alloc.cc:123)
+  n1: 72704 0x4010798: call_init.part.0 (in /usr/lib/ld-2.29.so)
+   n1: 72704 0x401089F: _dl_init (in /usr/lib/ld-2.29.so)
+    n1: 72704 0x4002138: ??? (in /usr/lib/ld-2.29.so)
+     n1: 72704 0x1: ???
+      n1: 72704 0x1FFF0001B9: ???
+       n1: 72704 0x1FFF0001C3: ???
+        n0: 72704 0x1FFF0001C9: ???
+ n1: 60000 0x10E97C: hnswlib::HierarchicalNSW<float>::searchBaseLayer(unsigned int, void*, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 60000 0x110F55: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 60000 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 40000 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 40000 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 40000 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 20000 in 1 place, below massif's threshold (1.00%)
+ n1: 40000 0x10BA40: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 40000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 40000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 36057 0x111426: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 36057 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 36057 in 2 places, all below massif's threshold (1.00%)
+ n0: 26320 in 25 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=43
+#-----------
+time=2049805889
+mem_heap_B=2587498
+mem_heap_extra_B=132414
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=44
+#-----------
+time=2087017591
+mem_heap_B=2589912
+mem_heap_extra_B=134728
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=45
+#-----------
+time=2124243029
+mem_heap_B=2594179
+mem_heap_extra_B=137045
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=46
+#-----------
+time=2180130158
+mem_heap_B=2597894
+mem_heap_extra_B=140514
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=47
+#-----------
+time=2235958666
+mem_heap_B=2609637
+mem_heap_extra_B=144043
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=48
+#-----------
+time=2273203981
+mem_heap_B=2616744
+mem_heap_extra_B=146352
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=49
+#-----------
+time=2310425752
+mem_heap_B=2617948
+mem_heap_extra_B=148644
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=50
+#-----------
+time=2341116142
+mem_heap_B=2619980
+mem_heap_extra_B=150516
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=51
+#-----------
+time=2371813273
+mem_heap_B=2623082
+mem_heap_extra_B=152422
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=52
+#-----------
+time=2402513383
+mem_heap_B=2622717
+mem_heap_extra_B=154307
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=53
+#-----------
+time=2433248501
+mem_heap_B=2626112
+mem_heap_extra_B=156224
+mem_stacks_B=0
+heap_tree=detailed
+n11: 2626112 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1480000 0x10BBD1: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 1480000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 1480000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 400000 0x10B9EA: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 400000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 400000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n2: 216600 0x110E63: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 216576 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 156576 0x48A0EFC: gomp_thread_start (team.c:123)
+    n1: 156576 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+     n0: 156576 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+   n1: 60000 0x4897BE4: GOMP_parallel (parallel.c:171)
+    n1: 60000 0x10BD9E: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+     n1: 60000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+      n0: 60000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n0: 24 in 1 place, below massif's threshold (1.00%)
+ n1: 121384 0x10F34E: std::_Hashtable<unsigned long, std::pair<unsigned long const, unsigned int>, std::allocator<std::pair<unsigned long const, unsigned int> >, std::__detail::_Select1st, std::equal_to<unsigned long>, std::hash<unsigned long>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_rehash(unsigned long, unsigned long const&) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 121384 0x111507: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 121384 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 121384 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 121384 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 121384 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+ n0: 80000 0x10A6F6: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 80000 0x10BD05: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 80000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 80000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 72704 0x495DAE9: _GLOBAL__sub_I_eh_alloc.cc (eh_alloc.cc:123)
+  n1: 72704 0x4010798: call_init.part.0 (in /usr/lib/ld-2.29.so)
+   n1: 72704 0x401089F: _dl_init (in /usr/lib/ld-2.29.so)
+    n1: 72704 0x4002138: ??? (in /usr/lib/ld-2.29.so)
+     n1: 72704 0x1: ???
+      n1: 72704 0x1FFF0001B9: ???
+       n1: 72704 0x1FFF0001C3: ???
+        n0: 72704 0x1FFF0001C9: ???
+ n1: 60000 0x10E97C: hnswlib::HierarchicalNSW<float>::searchBaseLayer(unsigned int, void*, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 60000 0x110F55: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 60000 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 40000 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 40000 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 40000 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 20000 in 1 place, below massif's threshold (1.00%)
+ n1: 43984 0x111426: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 43984 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 31644 0x48A0EFC: gomp_thread_start (team.c:123)
+    n1: 31644 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+     n0: 31644 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+   n0: 12340 in 1 place, below massif's threshold (1.00%)
+ n1: 40000 0x10BA40: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 40000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 40000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n0: 31440 in 25 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=54
+#-----------
+time=2463967417
+mem_heap_B=2629441
+mem_heap_extra_B=158151
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=55
+#-----------
+time=2479898001
+mem_heap_B=2635688
+mem_heap_extra_B=159144
+mem_stacks_B=0
+heap_tree=detailed
+n11: 2635688 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1480000 0x10BBD1: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 1480000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 1480000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 400000 0x10B9EA: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 400000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 400000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n2: 220608 0x110E63: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 220584 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 160584 0x48A0EFC: gomp_thread_start (team.c:123)
+    n1: 160584 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+     n0: 160584 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+   n1: 60000 0x4897BE4: GOMP_parallel (parallel.c:171)
+    n1: 60000 0x10BD9E: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+     n1: 60000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+      n0: 60000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n0: 24 in 1 place, below massif's threshold (1.00%)
+ n1: 121384 0x10F34E: std::_Hashtable<unsigned long, std::pair<unsigned long const, unsigned int>, std::allocator<std::pair<unsigned long const, unsigned int> >, std::__detail::_Select1st, std::equal_to<unsigned long>, std::hash<unsigned long>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_rehash(unsigned long, unsigned long const&) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 121384 0x111507: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 121384 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 121384 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 121384 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 121384 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+ n0: 80000 0x10A6F6: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 80000 0x10BD05: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 80000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 80000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 72704 0x495DAE9: _GLOBAL__sub_I_eh_alloc.cc (eh_alloc.cc:123)
+  n1: 72704 0x4010798: call_init.part.0 (in /usr/lib/ld-2.29.so)
+   n1: 72704 0x401089F: _dl_init (in /usr/lib/ld-2.29.so)
+    n1: 72704 0x4002138: ??? (in /usr/lib/ld-2.29.so)
+     n1: 72704 0x1: ???
+      n1: 72704 0x1FFF0001B9: ???
+       n1: 72704 0x1FFF0001C3: ???
+        n0: 72704 0x1FFF0001C9: ???
+ n1: 60000 0x10E97C: hnswlib::HierarchicalNSW<float>::searchBaseLayer(unsigned int, void*, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 60000 0x110F55: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 60000 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 40000 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 40000 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 40000 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 20000 in 1 place, below massif's threshold (1.00%)
+ n1: 44880 0x111426: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 44880 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 32540 0x48A0EFC: gomp_thread_start (team.c:123)
+    n1: 32540 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+     n0: 32540 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+   n0: 12340 in 1 place, below massif's threshold (1.00%)
+ n1: 40000 0x10BA40: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 40000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 40000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n0: 36112 in 25 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=56
+#-----------
+time=2510579699
+mem_heap_B=2630233
+mem_heap_extra_B=161023
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=57
+#-----------
+time=2541286492
+mem_heap_B=2633944
+mem_heap_extra_B=162888
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=58
+#-----------
+time=2571973337
+mem_heap_B=2641853
+mem_heap_extra_B=164827
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=59
+#-----------
+time=2602650870
+mem_heap_B=2641985
+mem_heap_extra_B=166727
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=60
+#-----------
+time=2633363581
+mem_heap_B=2643295
+mem_heap_extra_B=168609
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=61
+#-----------
+time=2664051979
+mem_heap_B=2649872
+mem_heap_extra_B=170512
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=62
+#-----------
+time=2672458929
+mem_heap_B=2651769
+mem_heap_extra_B=171015
+mem_stacks_B=0
+heap_tree=detailed
+n11: 2651769 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 1480000 0x10BBD1: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 1480000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 1480000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 400000 0x10B9EA: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 400000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 400000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n2: 237624 0x110E63: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 237600 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 177600 0x48A0EFC: gomp_thread_start (team.c:123)
+    n1: 177600 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+     n0: 177600 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+   n1: 60000 0x4897BE4: GOMP_parallel (parallel.c:171)
+    n1: 60000 0x10BD9E: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+     n1: 60000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+      n0: 60000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n0: 24 in 1 place, below massif's threshold (1.00%)
+ n1: 121384 0x10F34E: std::_Hashtable<unsigned long, std::pair<unsigned long const, unsigned int>, std::allocator<std::pair<unsigned long const, unsigned int> >, std::__detail::_Select1st, std::equal_to<unsigned long>, std::hash<unsigned long>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_rehash(unsigned long, unsigned long const&) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 121384 0x111507: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 121384 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 121384 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 121384 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 121384 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+ n0: 80000 0x10A6F6: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 80000 0x10BD05: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 80000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 80000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 72704 0x495DAE9: _GLOBAL__sub_I_eh_alloc.cc (eh_alloc.cc:123)
+  n1: 72704 0x4010798: call_init.part.0 (in /usr/lib/ld-2.29.so)
+   n1: 72704 0x401089F: _dl_init (in /usr/lib/ld-2.29.so)
+    n1: 72704 0x4002138: ??? (in /usr/lib/ld-2.29.so)
+     n1: 72704 0x1: ???
+      n1: 72704 0x1FFF0001B9: ???
+       n1: 72704 0x1FFF0001C3: ???
+        n0: 72704 0x1FFF0001C9: ???
+ n1: 60000 0x10E97C: hnswlib::HierarchicalNSW<float>::searchBaseLayer(unsigned int, void*, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 60000 0x110F55: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 60000 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 40000 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 40000 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 40000 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 20000 in 1 place, below massif's threshold (1.00%)
+ n1: 47017 0x111426: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 47017 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 34677 0x48A0EFC: gomp_thread_start (team.c:123)
+    n1: 34677 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+     n0: 34677 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+   n0: 12340 in 1 place, below massif's threshold (1.00%)
+ n1: 40000 0x10BA40: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 40000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 40000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n0: 33040 in 25 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=63
+#-----------
+time=2700985962
+mem_heap_B=6727938
+mem_heap_extra_B=412710
+mem_stacks_B=0
+heap_tree=peak
+n12: 6727938 (heap allocation functions) malloc/new/new[], --alloc-fns, etc.
+ n1: 2400000 0x1122A2: ncvis::KNNTable::KNNTable(unsigned long, unsigned long, float) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 2400000 0x10AE69: ncvis::NCVis::findKNN(float const*, unsigned long, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 2400000 0x10C014: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n0: 2400000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 1480000 0x10BBD1: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 1480000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 1480000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 1200000 0x11231D: ncvis::KNNTable::KNNTable(unsigned long, unsigned long, float) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 1200000 0x10AE69: ncvis::NCVis::findKNN(float const*, unsigned long, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 1200000 0x10C014: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n0: 1200000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 400000 0x10B9EA: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 400000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 400000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n2: 240000 0x110E63: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 239976 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 179976 0x48A0EFC: gomp_thread_start (team.c:123)
+    n1: 179976 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+     n0: 179976 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+   n0: 60000 in 1 place, below massif's threshold (1.00%)
+  n0: 24 in 1 place, below massif's threshold (1.00%)
+ n1: 240000 0x11207A: ncvis::KNNTable::KNNTable(unsigned long, unsigned long, float) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 240000 0x10AE69: ncvis::NCVis::findKNN(float const*, unsigned long, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 240000 0x10C014: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n0: 240000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 240000 0x11212C: ncvis::KNNTable::KNNTable(unsigned long, unsigned long, float) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 240000 0x10AE69: ncvis::NCVis::findKNN(float const*, unsigned long, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n1: 240000 0x10C014: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n0: 240000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n0: 173850 in 31 places, all below massif's threshold (1.00%)
+ n1: 121384 0x10F34E: std::_Hashtable<unsigned long, std::pair<unsigned long const, unsigned int>, std::allocator<std::pair<unsigned long const, unsigned int> >, std::__detail::_Select1st, std::equal_to<unsigned long>, std::hash<unsigned long>, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<false, false, true> >::_M_rehash(unsigned long, unsigned long const&) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n2: 121384 0x111507: hnswlib::HierarchicalNSW<float>::addPoint(void*, unsigned long, int) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n2: 121384 0x10B642: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) [clone ._omp_fn.0] (in /home/alartum/prog/pyNCVis/bin/ncvis)
+    n1: 121384 0x48A0EFC: gomp_thread_start (team.c:123)
+     n1: 121384 0x4DDA57D: start_thread (in /usr/lib/libpthread-2.29.so)
+      n0: 121384 0x4D02F11: clone (in /usr/lib/libc-2.29.so)
+    n0: 0 in 1 place, below massif's threshold (1.00%)
+   n0: 0 in 1 place, below massif's threshold (1.00%)
+ n0: 80000 0x10A6F6: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 80000 0x10BD05: ncvis::NCVis::buildKNN(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+  n1: 80000 0x10BFF0: ncvis::NCVis::fit(float const*, unsigned long, unsigned long) (in /home/alartum/prog/pyNCVis/bin/ncvis)
+   n0: 80000 0x10A761: main (in /home/alartum/prog/pyNCVis/bin/ncvis)
+ n1: 72704 0x495DAE9: _GLOBAL__sub_I_eh_alloc.cc (eh_alloc.cc:123)
+  n1: 72704 0x4010798: call_init.part.0 (in /usr/lib/ld-2.29.so)
+   n1: 72704 0x401089F: _dl_init (in /usr/lib/ld-2.29.so)
+    n1: 72704 0x4002138: ??? (in /usr/lib/ld-2.29.so)
+     n1: 72704 0x1: ???
+      n1: 72704 0x1FFF0001B9: ???
+       n1: 72704 0x1FFF0001C3: ???
+        n0: 72704 0x1FFF0001C9: ???
+#-----------
+snapshot=64
+#-----------
+time=2731663661
+mem_heap_B=6728930
+mem_heap_extra_B=412710
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=65
+#-----------
+time=2762341067
+mem_heap_B=6728418
+mem_heap_extra_B=412686
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=66
+#-----------
+time=2793018261
+mem_heap_B=6728418
+mem_heap_extra_B=412686
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=67
+#-----------
+time=2823696265
+mem_heap_B=6727906
+mem_heap_extra_B=412670
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=68
+#-----------
+time=2854373657
+mem_heap_B=6727914
+mem_heap_extra_B=412686
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=69
+#-----------
+time=2885051502
+mem_heap_B=6728418
+mem_heap_extra_B=412694
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=70
+#-----------
+time=2915728969
+mem_heap_B=1063058
+mem_heap_extra_B=166310
+mem_stacks_B=0
+heap_tree=empty
