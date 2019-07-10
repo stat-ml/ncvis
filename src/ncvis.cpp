@@ -1,23 +1,21 @@
 #include <omp.h>
-#include "ncvis.h"
+#include <random>
+#include <cmath>
+#include "ncvis.hpp"
+#include "../lib/pcg-cpp/include/pcg_random.hpp"
 
 ncvis::NCVis::NCVis(size_t d, size_t n_threads, size_t n_neighbors, size_t M, 
-                    size_t ef_construction, size_t random_seed):
+                    size_t ef_construction, size_t random_seed, int max_epochs):
 d_(d), M_(M), ef_construction_(ef_construction), 
-random_seed_(random_seed), n_neighbors_(n_neighbors), l2space_(nullptr), appr_alg_(nullptr)
+random_seed_(random_seed), n_neighbors_(n_neighbors), max_epochs_(max_epochs),l2space_(nullptr), appr_alg_(nullptr), Y_(nullptr)
 {
     omp_set_num_threads(n_threads);
-
-    edges_.from = nullptr;
-    edges_.to = nullptr;
-    edges_.n = 0;
-
-    std::cout << "NCVis::NCVis()\n";
 }
 
 ncvis::NCVis::~NCVis(){
     delete l2space_;
     delete appr_alg_;
+    delete[] Y_;
 }
 
 void ncvis::NCVis::buildKNN(const float *const X, size_t N, size_t D){
@@ -56,9 +54,27 @@ ncvis::KNNTable ncvis::NCVis::findKNN(const float *const X, size_t N, size_t D, 
     return table;
 }
 
-ncvis::Edges ncvis::NCVis::build_edges(ncvis::KNNTable& table){
-    printf("[ncvis::NCVis::build_edges] Hello!\n");
-    table.symmetrize();
+void ncvis::NCVis::build_edges(ncvis::KNNTable& table){
+    size_t n_edges = 0;
+    for (const auto& i : table.inds){
+        n_edges += i.size();
+    }
+    edges_.reserve(n_edges);
+
+    for (size_t i = 0; i < table.inds.size(); i++){
+        for (const auto& j : table.inds[i]){
+            edges_.emplace_back(i, j);
+        }
+    }
+}
+
+float ncvis::NCVis::d_sqr(const float *const x, const float *const y){
+    float dist_sqr = 0;
+    for (size_t i = 0; i < d_; i++){
+        dist_sqr += (x[i]-y[i])*(x[i]-y[i]);
+    }
+
+    return dist_sqr;
 }
 
 void ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
@@ -74,6 +90,94 @@ void ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
     KNNTable table = findKNN(X, N, D, k);
 
     table.symmetrize();
+    build_edges(table);
+
+    Y_ = new float[N*d_];
+    printf("%p\n", Y_);
+    size_t n_noise = 5;
+    // Likelihood parameters
+    float a=1.;
+    float b=1.;
+    // Normalization
+    float Q=0.;
+    float alpha = 1.;
+    #pragma omp parallel
+    {
+        pcg64 pcg(random_seed_+omp_get_thread_num());
+        std::uniform_real_distribution<float> gen_Y(0, 1);
+        #pragma omp for
+        for (size_t i = 0; i < N*d_; i++){
+            Y_[i] = gen_Y(pcg);
+        }
+
+        std::uniform_int_distribution<size_t> gen_ind(0, edges_.size()-1);
+        for (int epoch = 0; epoch < max_epochs_; epoch++){
+            // Hogwild: lock-free parameters reading and writing
+            #pragma omp for
+            for (size_t i = 0; i < edges_.size(); i++){
+                size_t id = edges_[i].first;
+                std::vector<size_t> other;
+                other.reserve(n_noise+1);
+                other.push_back(edges_[i].second);
+                // Generate noise samples
+                for (size_t j = 0; j < n_noise; j++){
+                    size_t id_other = gen_ind(pcg);
+                    if (id_other == id){
+                        j--;
+                        continue;
+                    }
+                    other.push_back(id_other);
+                    printf("%ld\n", id_other);
+                }
+
+                std::vector<float> d2, Ph, w;
+                d2.reserve(n_noise+1);
+                Ph.reserve(n_noise+1);
+                w.reserve(n_noise+1);
+                for (const auto& j : other){
+                    float d2_tmp = d_sqr(Y_+id*d_, Y_+j*d_);
+                    d2.push_back(d2_tmp);
+                    float Ph_tmp = 1/(1+a*std::pow(d2_tmp, b)); 
+                    Ph.push_back(Ph_tmp);
+                    w.push_back(Ph_tmp/(n_noise*std::exp(Q)));
+                }
+                w[0] = 1/(1+w[0]);
+                float dQ = w[0];
+                for (size_t j = 1; j < n_noise+1; j++){
+                    w[j] = -1/(1+1/w[j]);
+                    dQ += w[j];
+                }
+                // Non-blocking write
+                Q -= dQ/(n_noise+1);
+
+                std::vector<float> dx(d_);
+                for (size_t j = 0; j < n_noise; j++){
+                    w[j] = 2*w[j]*Ph[j]*a*b*std::pow(d2[j], b-1);
+
+                    // Also non-blocking write
+                    for (size_t k = 0; k < d_; k++){
+                        float dx_k = Y_[other[j]*d_+k] - Y_[i*d_+k];
+                        dx_k = dx_k * w[j] * alpha;
+                        if (dx_k > 4.){
+                            dx_k = 4.;
+                        } else if (dx_k < -4.){
+                            dx_k = -4.;
+                        }
+                        Y_[i*d_+k] += dx_k;
+                        Y_[other[j]*d_+k] -= dx_k;
+                    }
+                }
+            }
+        }
+        
+    }
+    // printf("Edges size: %ld\n", edges_.size());
+    // printf("==============EDGES============\n");
+    // for (const auto& i : edges_){
+    //     printf("(%ld, %ld)\n", i.first, i.second); 
+    // }
+    // printf("===============================\n");
+
     // printf("============DISTANCES==========\n");
     // for (size_t i=0; i<N; i++){
     //     printf("[");
@@ -93,5 +197,4 @@ void ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
     //     printf("]\n");
     // }
     // printf("===============================\n");
-    // edges_ = build_edges(table);
 }

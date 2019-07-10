@@ -40,5 +40,8 @@ data:
 
 .lib_init:
 	mkdir -p $(LibDir)
-	git clone https://github.com/nmslib/hnswlib.git $(LibDir)/nmslib
+	
+	git clone https://github.com/nmslib/hnswlib.git $(LibDir)/hnswlib
+	git clone https://github.com/imneme/pcg-cpp $(LibDir)/pcg-cpp
+
 	touch .lib_init

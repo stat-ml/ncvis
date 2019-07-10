@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <time.h>
 #include <stdio.h>
-#include "ncvis.h"
+#include "ncvis.hpp"
 
 double doubleRand() {
   return ((double)rand()) / ((double)RAND_MAX + 1.0);

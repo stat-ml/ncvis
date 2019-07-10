@@ -1,8 +1,10 @@
-#include "knntable.h"
+#include "knntable.hpp"
 #include <stdio.h>
 #include <iostream>
 #include <algorithm>
 // #include <iterator>
+#include <mutex>
+#include <omp.h>
 
 ncvis::KNNTable::KNNTable(size_t N, size_t k, float reserve_ratio):
 inds(N),
@@ -21,8 +23,6 @@ ncvis::KNNTable::~KNNTable(){
 }
 
 void ncvis::KNNTable::symmetrize(){
-    std::cout << "[ncvis::KNNTable::symmetrize]" << std::endl;
-
     std::vector<std::mutex> ms(N_); 
     std::vector< std::vector<size_t> > inds_add(N_);
     std::vector< std::vector<float> > dists_add(N_);
@@ -33,7 +33,10 @@ void ncvis::KNNTable::symmetrize(){
         dists_add[i].reserve(size);
     }
     
+    #pragma omp parallel
+    {
     // Collect incoming edges
+    #pragma omp for
     for (size_t i = 0; i < N_; i++){
         for (size_t j = 0; j < k_; j++){
             size_t edge_to = inds[i][j];
@@ -45,6 +48,7 @@ void ncvis::KNNTable::symmetrize(){
     }
     
     // Merge, remove duplicates and sort by distance
+    #pragma omp for
     for (size_t i = 0; i < N_; i++){
         // std::cout << "i = " << i << std::endl;
         // std::copy(
@@ -84,6 +88,13 @@ void ncvis::KNNTable::symmetrize(){
             }
         }
     }
+    }
+}
 
-    std::cout << "[ncvis::KNNTable::symmetrize] Exit" << std::endl;
+size_t ncvis::KNNTable::size(){
+    if (dists.size() != inds.size()){
+        std::cerr << "[ncvis::KNNTable::size] Indices and distances sizes differ.";
+        return std::min(dists.size(), inds.size());
+    }
+    return dists.size();
 }
