@@ -1,7 +1,7 @@
 Sources=main.cpp ncvis.cpp knntable.cpp
 Executable=ncvis
 
-CFlags=-c -Wall -std=c++11 -fopenmp -fpic -ftree-vectorize -O3 -ftree-vectorizer-verbose=0
+CFlags=-c -Wall -std=c++11 -fopenmp -fpic -O3
 LDFlags=-lm -lgomp #-lrt
 ObjectDir=obj/
 SourceDir=src/
@@ -41,7 +41,7 @@ data:
 .lib_init:
 	mkdir -p $(LibDir)
 	
-	git clone https://github.com/nmslib/hnswlib.git $(LibDir)/hnswlib
-	git clone https://github.com/imneme/pcg-cpp $(LibDir)/pcg-cpp
+	git clone https://github.com/nmslib/hnswlib.git $(LibDir)hnswlib
+	git clone https://github.com/imneme/pcg-cpp $(LibDir)pcg-cpp
 
 	touch .lib_init

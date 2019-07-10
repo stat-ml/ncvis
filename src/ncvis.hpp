@@ -25,18 +25,22 @@ namespace ncvis {
         @param random_seed Each thread's random generator is initialised with (random_seed + thread_id)
         @param max_epoch Maximum number of optimization epochs.
         */
-        NCVis(size_t d, size_t n_threads=1, size_t n_neighbors=30, size_t M = 16, size_t ef_construction = 200, size_t random_seed = 42, int max_epochs=50);
+        NCVis(size_t d=2, size_t n_threads=1, size_t n_neighbors=30, size_t M = 16, size_t ef_construction = 200, size_t random_seed = 42, int max_epochs=50);
         ~NCVis();
         /*!
         @brief Build embedding for points.
 
         Builds low-dimensional embedding for the points array of shape [N, D], where N is the number of samples and D is their dimensionality.
 
-        @param X Pointer to the data array. The j-th coordinate of i-th sample is assumed to be found at (X+D*i+j).
+        @param X Pointer to the data array [N, D]. The j-th coordinate of i-th sample is assumed to be found at (X+D*i+j).
         @param N Number of samples.
         @param D Dimensionality of samples.
+        @param a,b Likelihood kernel parameters from: P(x, y) = 1/(1+a*|x-y|^(2*b))
+        @param alpha,alpha_Q Learning rates for the embedding and normalization constant correspondingly.
+
+        @return Pointer to the embedding [N, d]. The j-th coordinate of i-th sample is assumed to be found at (X+d*i+j).
          */
-        void fit(const float *const X, size_t N, size_t D);
+        float* fit(const float *const X, size_t N, size_t D, float a=1., float b=1., float alpha=1., float alpha_Q=1.);
     private:
         size_t d_;
         size_t M_;
@@ -47,7 +51,6 @@ namespace ncvis {
         hnswlib::L2Space* l2space_;
         hnswlib::HierarchicalNSW<float>* appr_alg_;
         std::vector<Edge> edges_;
-        float* Y_;
 
         float d_sqr(const float *const x, const float *const y);
         void buildKNN(const float *const X, size_t N, size_t D);

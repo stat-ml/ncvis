@@ -11,7 +11,7 @@ inds(N),
 dists(N),
 N_(N), k_(k), reserve_ratio_(reserve_ratio)
 {
-    for (size_t i = 0; i < N_; i++){
+    for (size_t i = 0; i < N_; ++i){
         size_t size = (size_t)(k_*(1+reserve_ratio_));
         inds[i].reserve(size);
         dists[i].reserve(size);
@@ -27,7 +27,7 @@ void ncvis::KNNTable::symmetrize(){
     std::vector< std::vector<size_t> > inds_add(N_);
     std::vector< std::vector<float> > dists_add(N_);
 
-    for (size_t i = 0; i < N_; i++){
+    for (size_t i = 0; i < N_; ++i){
         size_t size = (size_t)(k_*reserve_ratio_);
         inds_add[i].reserve(size);
         dists_add[i].reserve(size);
@@ -37,8 +37,8 @@ void ncvis::KNNTable::symmetrize(){
     {
     // Collect incoming edges
     #pragma omp for
-    for (size_t i = 0; i < N_; i++){
-        for (size_t j = 0; j < k_; j++){
+    for (size_t i = 0; i < N_; ++i){
+        for (size_t j = 0; j < k_; ++j){
             size_t edge_to = inds[i][j];
             std::unique_lock<std::mutex> lock(ms[edge_to]);
             inds_add[edge_to].push_back(i);
@@ -49,7 +49,7 @@ void ncvis::KNNTable::symmetrize(){
     
     // Merge, remove duplicates and sort by distance
     #pragma omp for
-    for (size_t i = 0; i < N_; i++){
+    for (size_t i = 0; i < N_; ++i){
         // std::cout << "i = " << i << std::endl;
         // std::copy(
         // inds_add[i].begin(),
@@ -62,7 +62,7 @@ void ncvis::KNNTable::symmetrize(){
         dists[i].insert(dists[i].end(), dists_add[i].begin(), dists_add[i].end());
         
         std::vector<size_t> idx(inds[i].size());
-        for (size_t j = 0; j < idx.size(); j++){
+        for (size_t j = 0; j < idx.size(); ++j){
             idx[j] = j;
         } 
 
@@ -74,17 +74,17 @@ void ncvis::KNNTable::symmetrize(){
                   [&key](size_t i1, size_t i2){return key[i1] < key[i2];});
 
         size_t n = idx.size();
-        for (size_t j = 0; j < n; j++){
+        for (size_t j = 0; j < n; ++j){
             inds[i][j] = inds_tmp[idx[j]];
             dists[i][j] = dists_tmp[idx[j]];
         }
 
-        for (size_t j = 1, k=1; j < n; j++){
+        for (size_t j = 1, k=1; j < n; ++j){
             if (inds[i][k] == inds[i][k-1]){
                 inds[i].erase(inds[i].begin()+k);
                 dists[i].erase(dists[i].begin()+k);
             }else{
-                k++;
+                ++k;
             }
         }
     }

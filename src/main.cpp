@@ -1,41 +1,40 @@
 #include <cstdlib>
-#include <time.h>
 #include <stdio.h>
 #include "ncvis.hpp"
-
-double doubleRand() {
-  return ((double)rand()) / ((double)RAND_MAX + 1.0);
-}
+#include "../lib/pcg-cpp/include/pcg_random.hpp"
 
 int main(int argc, char** argv){
-  // srand(time(NULL));
   if (argc < 3){
     std::cout << "Usage: ncvis [number of points] [number of threads]";
     return 1;
   }
-  srand(42);
-  size_t N=atoi(argv[1]), d=2;
+  size_t N=atoi(argv[1]), D=100, d=2;
   size_t n_threads = atoi(argv[2]);
-  float* X = (float*)malloc(N*d*sizeof(*X));
+  float* X = new float[N*D];
 
-  for (size_t i=0; i<N*d; i++){
-    X[i] = doubleRand();
+  // pcg_extras::seed_seq_from<std::random_device> seed_source;
+  pcg64 pcg(42);
+  std::uniform_real_distribution<float> gen_X(0, 1);
+  for (size_t i=0; i<N*D; ++i){
+    X[i] = gen_X(pcg);
   }
 
-  ncvis::NCVis vis(d, n_threads, 15);
+  ncvis::NCVis vis(d, n_threads, 5, 16, 200, 42, 50);
 
-  vis.fit(X, N, d);
+  float* Y = vis.fit(X, N, D);
+  if (Y == nullptr) return 1;
 
   // printf("-----------------\n");
-  // for (size_t i=0; i<N; i++){
+  // for (size_t i=0; i<N; ++i){
   //   printf("[");
-  //   for (size_t j=0; j<d; j++){
-  //     printf("%lf ", X[d*i+j]);
+  //   for (size_t j=0; j<d; ++j){
+  //     printf("%6.2lf ", Y[d*i+j]);
   //   }
   //   printf("]\n");
   // }
   // printf("-----------------\n");
   
-  free(X);
+  delete[] X;
+  delete[] Y;
   return 0;
 }
