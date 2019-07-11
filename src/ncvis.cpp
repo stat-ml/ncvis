@@ -184,15 +184,15 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
     // }
     // printf("===============================\n");
 
-    // printf("============NEIGHBORS==========\n");
-    // for (size_t i=0; i<N; ++i){
-    //     printf("[");
-    //     for (size_t j=0; j<table.inds[i].size(); ++j){
-    //         printf("%ld ", table.inds[i][j]);
-    //     }
-    //     printf("]\n");
-    // }
-    // printf("===============================\n");
+    printf("============NEIGHBORS==========\n");
+    for (size_t i=0; i<N; ++i){
+        printf("[");
+        for (size_t j=0; j<table.inds[i].size(); ++j){
+            printf("%ld ", table.inds[i][j]);
+        }
+        printf("]\n");
+    }
+    printf("===============================\n");
 
     return Y;
 }

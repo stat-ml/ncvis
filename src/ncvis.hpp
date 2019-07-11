@@ -59,4 +59,4 @@ namespace ncvis {
     };
 }
 
-#endif
+#endif //ncvis.hpp

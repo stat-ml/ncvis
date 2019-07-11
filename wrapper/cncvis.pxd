@@ -1,3 +1,9 @@
+cdef extern from "../src/knntable.cpp":
+    pass
+
+cdef extern from "../src/knntable.hpp":
+    pass
+
 cdef extern from "../src/ncvis.cpp":
     pass
 

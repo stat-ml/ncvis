@@ -1,5 +1,8 @@
 #include <vector>
 
+#ifndef KNNTABLE_H
+#define KNNTABLE_H
+
 namespace ncvis{
     class KNNTable{
     public:
@@ -16,3 +19,5 @@ namespace ncvis{
         float reserve_ratio_;
     };
 }
+
+#endif // knntable.hpp

@@ -24,15 +24,15 @@ int main(int argc, char** argv){
   float* Y = vis.fit(X, N, D);
   if (Y == nullptr) return 1;
 
-  // printf("-----------------\n");
-  // for (size_t i=0; i<N; ++i){
-  //   printf("[");
-  //   for (size_t j=0; j<d; ++j){
-  //     printf("%6.2lf ", Y[d*i+j]);
-  //   }
-  //   printf("]\n");
-  // }
-  // printf("-----------------\n");
+  printf("-----------------\n");
+  for (size_t i=0; i<N; ++i){
+    printf("[");
+    for (size_t j=0; j<d; ++j){
+      printf("%6.2lf ", Y[d*i+j]);
+    }
+    printf("]\n");
+  }
+  printf("-----------------\n");
   
   delete[] X;
   delete[] Y;

@@ -8,5 +8,8 @@ import ncvis
 %load_ext wurlitzer
 
 #%%
-a = np.ones((2, 2))
+a = np.random.uniform(0, 1, (10, 5)).astype(np.float32)
 vis = ncvis.NCVis(2)
+vis.fit(a)
+
+#%%

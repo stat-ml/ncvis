@@ -38,6 +38,8 @@ wrapper: .lib_init $(CSources)
 data:
 	bash download.sh
 
+lib: .lib_init
+
 .lib_init:
 	mkdir -p $(LibDir)
 	
