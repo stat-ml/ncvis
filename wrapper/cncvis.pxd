@@ -1,12 +1,3 @@
-cdef extern from "../src/knntable.cpp":
-    pass
-
-cdef extern from "../src/knntable.hpp":
-    pass
-
-cdef extern from "../src/ncvis.cpp":
-    pass
-
 cdef extern from "../src/ncvis.hpp" namespace "ncvis":
     cdef cppclass NCVis:
         NCVis(size_t d, size_t n_threads, size_t n_neighbors, size_t M, size_t ef_construction, size_t random_seed, int max_epochs) except +

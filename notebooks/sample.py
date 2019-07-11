@@ -13,3 +13,12 @@ vis = ncvis.NCVis(2)
 vis.fit(a)
 
 #%%
+import glob
+
+#%%
+src = glob.glob("src/*.cpp")
+print(src)
+src.remove('src/main.cpp')
+src
+
+#%%
