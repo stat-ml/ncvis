@@ -25,7 +25,7 @@ namespace ncvis {
         @param random_seed Each thread's random generator is initialised with (random_seed + thread_id)
         @param max_epoch Maximum number of optimization epochs.
         */
-        NCVis(size_t d=2, size_t n_threads=1, size_t n_neighbors=30, size_t M = 16, size_t ef_construction = 200, size_t random_seed = 42, int max_epochs=50);
+        NCVis(size_t d=2, size_t n_threads=1, size_t n_neighbors=30, size_t M = 16, size_t ef_construction = 200, size_t random_seed = 42, int max_epochs=50, int n_init_epochs=20);
         ~NCVis();
         /*!
         @brief Build embedding for points.
@@ -48,6 +48,7 @@ namespace ncvis {
         size_t random_seed_;
         size_t n_neighbors_;
         int max_epochs_;
+        int n_init_epochs_;
         hnswlib::L2Space* l2space_;
         hnswlib::HierarchicalNSW<float>* appr_alg_;
         std::vector<Edge> edges_;

@@ -19,7 +19,7 @@ int main(int argc, char** argv){
     X[i] = gen_X(pcg);
   }
 
-  ncvis::NCVis vis(d, n_threads, 5, 16, 200, 42, 50);
+  ncvis::NCVis vis(d, n_threads, 5, 16, 200, 42, 0, 20);
 
   float* Y = vis.fit(X, N, D);
   if (Y == nullptr) return 1;

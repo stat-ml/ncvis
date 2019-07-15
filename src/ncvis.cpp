@@ -3,11 +3,13 @@
 #include <cmath>
 #include "ncvis.hpp"
 #include "../lib/pcg-cpp/include/pcg_random.hpp"
+#include <mutex>
 
 ncvis::NCVis::NCVis(size_t d, size_t n_threads, size_t n_neighbors, size_t M, 
-                    size_t ef_construction, size_t random_seed, int max_epochs):
+                    size_t ef_construction, size_t random_seed, int max_epochs, 
+                    int n_init_epochs):
 d_(d), M_(M), ef_construction_(ef_construction), 
-random_seed_(random_seed), n_neighbors_(n_neighbors), max_epochs_(max_epochs),l2space_(nullptr), appr_alg_(nullptr)
+random_seed_(random_seed), n_neighbors_(n_neighbors), max_epochs_(max_epochs), n_init_epochs_(n_init_epochs), l2space_(nullptr), appr_alg_(nullptr)
 {
     omp_set_num_threads(n_threads);
 }
@@ -86,6 +88,7 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
 
     // Number of neighbors can't exceed the total number of other points 
     size_t k = (n_neighbors_ < N-1)? n_neighbors_:(N-1);
+    k = (k > 0)? k:1;
     KNNTable table = findKNN(X, N, D, k);
 
     table.symmetrize();
@@ -97,11 +100,19 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
     // }
     // printf("===============================\n");
 
-    float* Y = new float[N*d_];
-    size_t n_noise = 3;
+    size_t n_noise = 4;
     // Likelihood parameters
+    float* Y = new float[N*d_];
+    // For temporary values 
+    float* Y_swap = new float[N*d_];
     // Normalization
     float Q=0.;
+
+    std::vector<float> min(d_, 1);
+    std::vector<float> max(d_, 0);
+    std::vector<std::mutex> min_mutex(d_);
+    std::vector<std::mutex> max_mutex(d_);
+    float init_alpha = 1./k;
     #pragma omp parallel
     {
         pcg64 pcg(random_seed_+omp_get_thread_num());
@@ -111,67 +122,110 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
             Y[i] = gen_Y(pcg);
         }
 
+        // Initialize layout
+        for (int init_epoch = 0; init_epoch < n_init_epochs_; ++init_epoch){
+            if (omp_get_thread_num() == 0){
+                for (size_t k = 0; k < d_; ++k){
+                    min[k] = 1;
+                    max[k] = 0;
+                }
+            }
+            float* tmp = Y_swap;
+            Y_swap = Y;
+            Y = tmp;
+            #pragma omp for
+            for (size_t i = 0; i < N*d_; ++i){
+                Y[i] = 0;
+            }
+            #pragma omp for
+            for (size_t i = 0; i < edges_.size(); ++i){
+                size_t id = edges_[i].first;
+                size_t other_id = edges_[i].second;
+                
+                // Also non-blocking write
+                for (size_t k = 0; k < d_; ++k){
+                    // float dx_k = Y[other_id*d_+k] - Y[id*d_+k];
+                    // dx_k = dx_k * init_alpha;
+                    // printf("dx[%ld] = %f\n", k, dx_k);
+                    // Y[id*d_+k] += dx_k;
+                    // Y[other_id*d_+k] -= dx_k;
+                    Y[id*d_+k] += init_alpha * Y_swap[other_id*d_+k];
+                }
+            }
+            #pragma omp for
+            for (size_t i = 0; i < N; ++i){
+                for (size_t k = 0; k < d_; ++k){
+                    // printf("min[%ld] old = %f\n", k, min[k]);
+                    std::unique_lock<std::mutex> min_lock(min_mutex[k]);
+                    if (Y[i*d_+k] < min[k]){
+                        min[k] = Y[i*d_+k];
+                        // printf("min[%ld] changed: %f\n", k, min[k]);
+                    }
+                    min_lock.unlock();
+                    std::unique_lock<std::mutex> max_lock(max_mutex[k]);
+                    if (Y[i*d_+k] > max[k]){
+                        max[k] = Y[i*d_+k];
+                    }
+                    max_lock.unlock();
+                }
+            }
+            #pragma omp for
+            for (size_t i = 0; i < N; ++i){
+                for (size_t k = 0; k < d_; ++k){
+                    Y[i*d_+k] = (Y[i*d_+k] - min[k])/(max[k]-min[k]);
+                }
+            }
+        }
+
+        // Build layout
         std::uniform_int_distribution<size_t> gen_ind(0, N-1);
         for (int epoch = 0; epoch < max_epochs_; ++epoch){
             // Hogwild: lock-free parameters reading and writing
+            float step = alpha*(1-(((float)epoch)/max_epochs_)*(((float)epoch)/max_epochs_));
             #pragma omp for
             for (size_t i = 0; i < edges_.size(); ++i){
                 // printf("[%d] (%ld, %ld)\n", epoch, edges_[i].first, edges_[i].second);
                 size_t id = edges_[i].first;
-                std::vector<size_t> other;
-                other.reserve(n_noise+1);
-                other.push_back(edges_[i].second);
-                // Generate noise samples
-                for (size_t j = 1; j < n_noise+1; ++j){
-                    size_t id_other = gen_ind(pcg);
-                    if (id_other == id){
-                        --j;
-                        continue;
+                for (size_t j = 0; j < n_noise+1; j++){
+                    size_t other_id;
+                    if (j == 0){
+                        other_id = edges_[i].second; 
+                    } else{
+                        do{
+                            other_id = gen_ind(pcg);
+                        } while (other_id == id);
                     }
-                    other.push_back(id_other);
-                    // printf("%ld\n", id_other);
-                }
 
-                std::vector<float> d2, Ph, w;
-                d2.reserve(n_noise+1);
-                Ph.reserve(n_noise+1);
-                w.reserve(n_noise+1);
-                for (const auto& j : other){
-                    float d2_tmp = d_sqr(Y+id*d_, Y+j*d_);
-                    d2.push_back(d2_tmp);
-                    float Ph_tmp = 1/(1+a*std::pow(d2_tmp, b)); 
-                    Ph.push_back(Ph_tmp);
-                    w.push_back(Ph_tmp/(n_noise*std::exp(Q)));
-                }
-                w[0] = 1/(1+w[0]);
-                float dQ = w[0];
-                for (size_t j = 1; j < n_noise+1; ++j){
-                    w[j] = -1/(1+1/w[j]);
-                    dQ += w[j];
-                }
-                // Non-blocking write
-                Q -= dQ*alpha_Q;
-                // printf("[%d]{%d} Q = %f\n", epoch, omp_get_thread_num(), Q);
-                std::vector<float> dx(d_);
-                for (size_t j = 0; j < n_noise; ++j){
-                    w[j] = 2*w[j]*Ph[j]*a*b*std::pow(d2[j], b-1);
+                    float d2 = d_sqr(Y+id*d_, Y+other_id*d_);
+                    float Ph = 1/(1+a*std::pow(d2, b));
+                    float w = 1.;
+                    if (n_noise != 0){
+                        w = Ph/(n_noise*std::exp(Q));
+                        if (j == 0){
+                            w = 1/(1+w);    
+                        } else {
+                            w = -1/(1+1/w);
+                        }
+                        // Non-blocking write
+                        Q -= w*alpha_Q;
+                        w = 2*w*Ph*a*b*std::pow(d2, b-1);
+                    }
 
                     // Also non-blocking write
                     for (size_t k = 0; k < d_; ++k){
-                        float dx_k = Y[other[j]*d_+k] - Y[id*d_+k];
-                        dx_k = dx_k * w[j] * alpha;
+                        float dx_k = Y[other_id*d_+k] - Y[id*d_+k];
+                        dx_k = dx_k * w * step;
                         if (dx_k > 4.){
                             dx_k = 4.;
                         } else if (dx_k < -4.){
                             dx_k = -4.;
                         }
                         Y[id*d_+k] += dx_k;
-                        Y[other[j]*d_+k] -= dx_k;
+                        Y[other_id*d_+k] -= dx_k;
                     }
-                }
+                }  
             }
-        }
-        
+        } 
     }
 
     // printf("============DISTANCES==========\n");
@@ -184,15 +238,16 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
     // }
     // printf("===============================\n");
 
-    printf("============NEIGHBORS==========\n");
-    for (size_t i=0; i<N; ++i){
-        printf("[");
-        for (size_t j=0; j<table.inds[i].size(); ++j){
-            printf("%ld ", table.inds[i][j]);
-        }
-        printf("]\n");
-    }
-    printf("===============================\n");
+    // printf("============NEIGHBORS==========\n");
+    // for (size_t i=0; i<N; ++i){
+    //     printf("[");
+    //     for (size_t j=0; j<table.inds[i].size(); ++j){
+    //         printf("%ld ", table.inds[i][j]);
+    //     }
+    //     printf("]\n");
+    // }
+    // printf("===============================\n");
 
+    delete[] Y_swap;
     return Y;
 }
