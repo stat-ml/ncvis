@@ -2,6 +2,7 @@ Sources=main.cpp ncvis.cpp knntable.cpp
 Executable=ncvis
 
 CFlags=-c -Wall -std=c++11 -fopenmp -fpic -O3
+DebugCFlags=-c -Wall -std=c++11 -fopenmp -fpic -O0 -g3 -DDEBUG
 LDFlags=-lm -lgomp #-lrt
 ObjectDir=obj/
 SourceDir=src/
@@ -14,8 +15,18 @@ Objects=$(Sources:.cpp=.o)
 CSources=$(addprefix $(SourceDir),$(Sources))
 CObjects=$(addprefix $(ObjectDir),$(Objects))
 CExecutable=$(addprefix $(BinDir),$(Executable))
-
 all: $(CSources) $(CExecutable)
+
+DebugObjects=$(Sources:.cpp=_debug.o)
+DebugCObjects=$(addprefix $(ObjectDir),$(DebugObjects))
+DebugCExecutable=$(addprefix $(BinDir),$(Executable)_debug)
+debug: $(CSources) $(DebugCExecutable)
+
+$(DebugCExecutable): $(DebugCObjects) .dir_init
+	$(CC) $(LDFlags) $(DebugCObjects) -o $@
+
+$(ObjectDir)%_debug.o: $(SourceDir)%.cpp .lib_init .dir_init
+	$(CC) $(DebugCFlags) $< -o $@
 
 $(Executable): $(CExecutable)
 
@@ -30,7 +41,7 @@ $(ObjectDir)%.o: $(SourceDir)%.cpp .lib_init .dir_init
 	touch .dir_init
 
 clean:
-	rm -rf $(ObjectDir) $(BinDir) $(LibDir) .dir_init .lib_init build wrapper/*.cpp
+	rm -rf $(ObjectDir) $(BinDir) .dir_init build wrapper/*.cpp
 
 wrapper: .lib_init $(CSources)
 	python setup.py build_ext --inplace --force

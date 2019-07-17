@@ -29,7 +29,7 @@ def load_mnist(path, kind='train'):
     return images, labels
 
 #%%
-def plot_silhouette(xs, y, ax):
+def plot_silhouette(xs, y, ax, marker='o'):
     from sklearn.metrics import silhouette_samples
     scores = silhouette_samples(xs, y)
     labels = np.unique(y)
@@ -55,7 +55,7 @@ def plot_silhouette(xs, y, ax):
         elif n_dims == 1:
             x1 = xs[class_mask, 0]
             x2 = np.random.uniform(0, 1, npoints)
-        ax.scatter(x1, x2, label="{}".format(k))
+        ax.scatter(x1, x2, marker=marker, label="{}".format(k))
         
     ax.legend(loc='upper right')
     ax.text(0.01, 0.01, info.format(score, std_score), fontsize=14, bbox=props, 
@@ -83,14 +83,15 @@ data = {'iris': (X_iris, y_iris),
         'mnist60k': (X_mnist, y_mnist),}
 
 #%%
+%%time
 # X, y = data['iris']
 X, y = data['mnist6k']
-vis = ncvis.NCVis(d=2, n_threads=8, max_epochs=20, n_init_epochs=20) 
+vis = ncvis.NCVis(d=2, n_threads=4, max_epochs=50, n_init_epochs=10) 
 Y = vis.fit(X.astype(np.float32), alpha=1., a=0.58303, b=1.33416)
 
 #%%
 fig, ax = plt.subplots(1, 1)
-plot_silhouette(Y, y, ax)
+plot_silhouette(Y, y, ax, marker='.')
 plt.show()
 
 

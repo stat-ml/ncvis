@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build (Makefile)",
+            "label": "Build Release",
             "type": "shell",
             "command": "make",
             "group": {
@@ -11,7 +11,27 @@
             },
             "presentation": {
                 "echo": true,
-                "reveal": "always",
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Build Debug",
+            "type": "shell",
+            "command": "make debug",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
                 "focus": false,
                 "panel": "shared",
                 "showReuseMessage": true,
@@ -28,12 +48,43 @@
             "group": "build",
             "presentation": {
                 "echo": true,
-                "reveal": "always",
+                "reveal": "silent",
                 "focus": false,
                 "panel": "shared",
                 "showReuseMessage": true,
                 "clear": true
-            }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download libraries",
+            "type": "shell",
+            "command": "make lib",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Download data",
+            "type": "shell",
+            "command": "make data",
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "problemMatcher": []
         },
         {
             "label": "Build Wrapper",
@@ -42,24 +93,40 @@
             "group": "build",
             "presentation": {
                 "echo": true,
-                "reveal": "always",
+                "reveal": "silent",
                 "focus": false,
                 "panel": "shared",
                 "showReuseMessage": true,
                 "clear": true
             },
-            "problemMatcher":
-                {
-                "fileLocation": ["relative", "${workspaceFolder}"],
+            "problemMatcher": {
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}"
+                ],
                 "pattern": {
-                        "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error|note)?:\\s+(.*)$",
-                        "file": 1,
-                        "line": 2,
-                        "column": 3,
-                        "severity": 4,
-                        "message": 5
-                    }
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error|note)?:\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
                 }
+            }
+        },
+        {
+            "label": "Valgrind",
+            "type": "shell",
+            "command": "valgrind --leak-check=full --track-origins=yes bin/ncvis_debug 10 5 4 2 10",
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            }
         }
     ]
 }

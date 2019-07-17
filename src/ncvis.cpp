@@ -3,7 +3,8 @@
 #include <cmath>
 #include "ncvis.hpp"
 #include "../lib/pcg-cpp/include/pcg_random.hpp"
-#include <mutex>
+
+#include <chrono>
 
 ncvis::NCVis::NCVis(size_t d, size_t n_threads, size_t n_neighbors, size_t M, 
                     size_t ef_construction, size_t random_seed, int max_epochs, 
@@ -57,7 +58,10 @@ ncvis::KNNTable ncvis::NCVis::findKNN(const float *const X, size_t N, size_t D, 
 
 void ncvis::NCVis::build_edges(ncvis::KNNTable& table){
     size_t n_edges = 0;
+
+    #pragma omp parallel for
     for (const auto& i : table.inds){
+        #pragma omp atomic
         n_edges += i.size();
     }
     edges_.reserve(n_edges);
@@ -83,16 +87,35 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
         throw std::runtime_error("[ncvis::NCVis::fit] Dataset should have at least one element.");
         return nullptr;
     }
-
+    auto t1 = std::chrono::high_resolution_clock::now();
     buildKNN(X, N, D);
-
+    auto t2 = std::chrono::high_resolution_clock::now();
+    std::cout << "buildKNN: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
+              << " ms\n";
     // Number of neighbors can't exceed the total number of other points 
     size_t k = (n_neighbors_ < N-1)? n_neighbors_:(N-1);
     k = (k > 0)? k:1;
+    t1 = std::chrono::high_resolution_clock::now();
     KNNTable table = findKNN(X, N, D, k);
+    t2 = std::chrono::high_resolution_clock::now();
+    std::cout << "findKNN: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
+              << " ms\n";
 
+    t1 = std::chrono::high_resolution_clock::now();
     table.symmetrize();
+    t2 = std::chrono::high_resolution_clock::now();
+    std::cout << "symmetrize: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
+              << " ms\n";
+
+    t1 = std::chrono::high_resolution_clock::now();
     build_edges(table);
+    t2 = std::chrono::high_resolution_clock::now();
+    std::cout << "build_edges: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
+              << " ms\n";
     // printf("Edges size: %ld\n", edges_.size());
     // printf("==============EDGES============\n");
     // for (const auto& i : edges_){
@@ -108,11 +131,10 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
     // Normalization
     float Q=0.;
 
-    std::vector<float> min(d_, 1);
-    std::vector<float> max(d_, 0);
-    std::vector<std::mutex> min_mutex(d_);
-    std::vector<std::mutex> max_mutex(d_);
+    float* mean = new float[d_];
+    float* sigma = new float[d_];
     float init_alpha = 1./k;
+    t1 = std::chrono::high_resolution_clock::now();
     #pragma omp parallel
     {
         pcg64 pcg(random_seed_+omp_get_thread_num());
@@ -124,15 +146,12 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
 
         // Initialize layout
         for (int init_epoch = 0; init_epoch < n_init_epochs_; ++init_epoch){
-            if (omp_get_thread_num() == 0){
-                for (size_t k = 0; k < d_; ++k){
-                    min[k] = 1;
-                    max[k] = 0;
-                }
-            }
+            #pragma omp single
+            {
             float* tmp = Y_swap;
             Y_swap = Y;
             Y = tmp;
+            }
             #pragma omp for
             for (size_t i = 0; i < N*d_; ++i){
                 Y[i] = 0;
@@ -142,7 +161,6 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
                 size_t id = edges_[i].first;
                 size_t other_id = edges_[i].second;
                 
-                // Also non-blocking write
                 for (size_t k = 0; k < d_; ++k){
                     // float dx_k = Y[other_id*d_+k] - Y[id*d_+k];
                     // dx_k = dx_k * init_alpha;
@@ -152,27 +170,44 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
                     Y[id*d_+k] += init_alpha * Y_swap[other_id*d_+k];
                 }
             }
+
+            #pragma omp single
+            for (size_t k = 0; k < d_; ++k){
+                mean[k] = 0;
+                sigma[k] = 0;
+            }
+
             #pragma omp for
             for (size_t i = 0; i < N; ++i){
                 for (size_t k = 0; k < d_; ++k){
-                    // printf("min[%ld] old = %f\n", k, min[k]);
-                    std::unique_lock<std::mutex> min_lock(min_mutex[k]);
-                    if (Y[i*d_+k] < min[k]){
-                        min[k] = Y[i*d_+k];
-                        // printf("min[%ld] changed: %f\n", k, min[k]);
-                    }
-                    min_lock.unlock();
-                    std::unique_lock<std::mutex> max_lock(max_mutex[k]);
-                    if (Y[i*d_+k] > max[k]){
-                        max[k] = Y[i*d_+k];
-                    }
-                    max_lock.unlock();
+                    #pragma omp atomic
+                    mean[k] += Y[i*d_+k];
                 }
             }
+
+            #pragma omp single
+            for (size_t k = 0; k < d_; ++k){
+                mean[k] /= N;
+            }
+
             #pragma omp for
             for (size_t i = 0; i < N; ++i){
                 for (size_t k = 0; k < d_; ++k){
-                    Y[i*d_+k] = (Y[i*d_+k] - min[k])/(max[k]-min[k]);
+                    #pragma omp atomic
+                    sigma[k] += (Y[i*d_+k] - mean[k])*(Y[i*d_+k] - mean[k]);
+                }
+            }
+
+            #pragma omp single
+            for (size_t k = 0; k < d_; ++k){
+                sigma[k] /= N;
+                sigma[k] = sqrtf(sigma[k]);
+            }
+
+            #pragma omp for
+            for (size_t i = 0; i < N; ++i){
+                for (size_t k = 0; k < d_; ++k){
+                    Y[i*d_+k] = (Y[i*d_+k] - mean[k])/sigma[k];
                 }
             }
         }
@@ -186,7 +221,7 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
             for (size_t i = 0; i < edges_.size(); ++i){
                 // printf("[%d] (%ld, %ld)\n", epoch, edges_[i].first, edges_[i].second);
                 size_t id = edges_[i].first;
-                for (size_t j = 0; j < n_noise+1; j++){
+                for (size_t j = 0; j < n_noise+1; ++j){
                     size_t other_id;
                     if (j == 0){
                         other_id = edges_[i].second; 
@@ -197,20 +232,27 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
                     }
 
                     float d2 = d_sqr(Y+id*d_, Y+other_id*d_);
-                    float Ph = 1/(1+a*std::pow(d2, b));
+                    float Ph = 1/(1+a*powf(d2, b));
                     float w = 1.;
                     if (n_noise != 0){
-                        w = Ph/(n_noise*std::exp(Q));
+                        w = Ph/(n_noise*expf(Q));
                         if (j == 0){
                             w = 1/(1+w);    
                         } else {
                             w = -1/(1+1/w);
                         }
                         // Non-blocking write
+                        // #pragma omp critical
+                        // {
+                        // printf("[%d:%d] Ph = %f\n", epoch, omp_get_thread_num(), Ph);
+                        // }
                         Q -= w*alpha_Q;
-                        w = 2*w*Ph*a*b*std::pow(d2, b-1);
+                        w = 2*w*Ph*a*b*powf(d2, b-1);
                     }
-
+                    // #pragma omp critical
+                    // {
+                    // printf("[%d:%d] Q = %f\n", epoch, omp_get_thread_num(), Q);
+                    // }
                     // Also non-blocking write
                     for (size_t k = 0; k < d_; ++k){
                         float dx_k = Y[other_id*d_+k] - Y[id*d_+k];
@@ -228,6 +270,10 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
         } 
     }
 
+    t2 = std::chrono::high_resolution_clock::now();
+    std::cout << "main cycle:: "
+              << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
+              << " ms\n";
     // printf("============DISTANCES==========\n");
     // for (size_t i=0; i<N; ++i){
     //     printf("[");
@@ -249,5 +295,8 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
     // printf("===============================\n");
 
     delete[] Y_swap;
+    delete[] mean;
+    delete[] sigma;
+
     return Y;
 }

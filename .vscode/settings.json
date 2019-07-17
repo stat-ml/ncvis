@@ -85,5 +85,6 @@
         "typescript",
         "typescriptreact",
         "yml"
-    ]
+    ],
+    "python.pythonPath": "/sbin/python"
 }
