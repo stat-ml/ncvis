@@ -2,8 +2,9 @@ Sources=main.cpp ncvis.cpp knntable.cpp
 Executable=ncvis
 
 CFlags=-c -Wall -std=c++11 -fopenmp -fpic -O3
-DebugCFlags=-c -Wall -std=c++11 -fopenmp -fpic -O0 -g3 -DDEBUG
-LDFlags=-lm -lgomp #-lrt
+DebugCFlags=-c -Wall -std=c++11 -fopenmp -fpic -O3 -g3 -DDEBUG
+LDFlags=-lm -lgomp
+DebugLDFlags=-lm -lgomp -lprofiler
 ObjectDir=obj/
 SourceDir=src/
 BinDir=bin/
@@ -23,7 +24,7 @@ DebugCExecutable=$(addprefix $(BinDir),$(Executable)_debug)
 debug: $(CSources) $(DebugCExecutable)
 
 $(DebugCExecutable): $(DebugCObjects) .dir_init
-	$(CC) $(LDFlags) $(DebugCObjects) -o $@
+	$(CC) $(DebugLDFlags) $(DebugCObjects) -o $@
 
 $(ObjectDir)%_debug.o: $(SourceDir)%.cpp .lib_init .dir_init
 	$(CC) $(DebugCFlags) $< -o $@
