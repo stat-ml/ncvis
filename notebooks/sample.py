@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import ncvis
+import umap
 %load_ext wurlitzer
 
 #%%
@@ -62,11 +63,6 @@ def plot_silhouette(xs, y, ax, marker='o'):
             transform=ax.transAxes)
 
 #%%
-a = np.random.uniform(0, 1, (10, 5)).astype(np.float32)
-vis = ncvis.NCVis(2)
-Y = vis.fit(a)
-
-#%%
 from sklearn.model_selection import train_test_split
 
 X_mnist, y_mnist = load_mnist('data/mnist/', kind='train')
@@ -86,7 +82,7 @@ data = {'iris': (X_iris, y_iris),
 %%time
 # X, y = data['iris']
 X, y = data['mnist6k']
-vis = ncvis.NCVis(d=2, n_threads=4, max_epochs=50, n_init_epochs=10) 
+vis = ncvis.NCVis(d=2, n_threads=7,  max_epochs=30, n_init_epochs=10, M=16, ef_construction=200, n_neighbors=15) 
 Y = vis.fit(X.astype(np.float32), alpha=1., a=0.58303, b=1.33416)
 
 #%%
@@ -96,6 +92,21 @@ plt.show()
 
 
 #%%
-print(Y)
+%%time
+X, y = data['mnist6k']
+embedding = umap.UMAP(n_neighbors=15,
+                      min_dist=0.5,
+                      init='spectral',
+#                       metric='correlation',
+                      metric='euclidean',
+                      negative_sample_rate=5,
+                      n_epochs=30).fit_transform(X)
+#%%
+fig, ax = plt.subplots(1, 1)
+plot_silhouette(embedding, y, ax, marker='.')
+plt.show()
+
+#%%
+print(embedding.shape)
 
 #%%
