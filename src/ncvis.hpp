@@ -25,7 +25,7 @@ namespace ncvis {
         @param random_seed Each thread's random generator is initialised with (random_seed + thread_id)
         @param max_epoch Maximum number of optimization epochs.
         */
-        NCVis(size_t d=2, size_t n_threads=1, size_t n_neighbors=30, size_t M = 16, size_t ef_construction = 200, size_t random_seed = 42, int max_epochs=50, int n_init_epochs=20);
+        NCVis(size_t d=2, size_t n_threads=1, size_t n_neighbors=30, size_t M = 16, size_t ef_construction = 200, size_t random_seed = 42, int max_epochs=50, int n_init_epochs=20, float a=1., float b=1., float alpha=1., float alpha_Q=1.);
         ~NCVis();
         /*!
         @brief Build embedding for points.
@@ -40,7 +40,7 @@ namespace ncvis {
 
         @return Pointer to the embedding [N, d]. The j-th coordinate of i-th sample is assumed to be found at (X+d*i+j).
          */
-        float* fit(const float *const X, size_t N, size_t D, float a=1., float b=1., float alpha=1., float alpha_Q=1.);
+        float* fit(const float *const X, size_t N, size_t D);
     private:
         size_t d_;
         size_t M_;
@@ -49,6 +49,12 @@ namespace ncvis {
         size_t n_neighbors_;
         int max_epochs_;
         int n_init_epochs_;
+        float a_;
+        float b_;
+        float alpha_;
+        float alpha_Q_;
+        float init_alpha_;
+
         hnswlib::L2Space* l2space_;
         hnswlib::HierarchicalNSW<float>* appr_alg_;
         std::vector<Edge> edges_;
@@ -58,7 +64,7 @@ namespace ncvis {
         KNNTable findKNN(const float *const X, size_t N, size_t D, size_t k);
         void build_edges(KNNTable& table);
         void init_embedding(size_t N, float*& Y, float alpha);
-        void optimize(size_t N, float* Y, float& Q, size_t n_noise, float alpha, float alpha_Q, float a, float b);
+        void optimize(size_t N, float* Y, float& Q, size_t n_noise);
     };
 }
 

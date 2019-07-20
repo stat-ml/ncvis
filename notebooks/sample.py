@@ -82,8 +82,8 @@ data = {'iris': (X_iris, y_iris),
 %%time
 # X, y = data['iris']
 X, y = data['mnist6k']
-vis = ncvis.NCVis(d=2, n_threads=7,  max_epochs=30, n_init_epochs=10, M=16, ef_construction=200, n_neighbors=15) 
-Y = vis.fit(X.astype(np.float32), alpha=1., a=0.58303, b=1.33416)
+vis = ncvis.NCVis(d=2, n_threads=7,  max_epochs=30, n_init_epochs=10, M=16, ef_construction=200, n_neighbors=15, a=0.58303, b=1.33416) 
+Y = vis.fit(X.astype(np.float32))
 
 #%%
 fig, ax = plt.subplots(1, 1)
