@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import ncvis
 import umap
+# To redirect stdout (C++ outputs) to notebook cells
 %load_ext wurlitzer
 
 #%%
@@ -82,7 +83,21 @@ data = {'iris': (X_iris, y_iris),
 %%time
 # X, y = data['iris']
 X, y = data['mnist6k']
-vis = ncvis.NCVis(d=2, n_threads=7,  max_epochs=30, n_init_epochs=10, M=16, ef_construction=200, n_neighbors=15, a=0.58303, b=1.33416) 
+n_epochs = 30
+n_negative = 5
+
+negative_plan = np.linspace(0, 1, n_epochs)
+negative_plan = negative_plan**3
+
+negative_plan /= negative_plan.sum()
+negative_plan *= n_epochs*n_negative
+negative_plan = negative_plan.round().astype(np.int)
+negative_plan[negative_plan < 1] = 1
+
+# negative_plan = np.full_like(negative_plan, n_negative)
+print('Approximation:', negative_plan.sum() - n_epochs*n_negative)
+
+vis = ncvis.NCVis(d=2, n_threads=7,  n_noise=negative_plan, n_init_epochs=10, M=16, ef_construction=200, n_neighbors=15, min_dist=0.5) 
 Y = vis.fit(X.astype(np.float32))
 
 #%%
