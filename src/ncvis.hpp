@@ -23,9 +23,13 @@ namespace ncvis {
         @param M <a href="https://github.com/nmslib/hnswlib/blob/master/ALGO_PARAMS.md">(hnswlib)</a> The number of bi-directional links created for every new element during construction.
         @param ef_construction <a href="https://github.com/nmslib/hnswlib/blob/master/ALGO_PARAMS.md">(hnswlib)</a> The size of the dynamic list for the nearest neighbors
         @param random_seed Each thread's random generator is initialised with (random_seed + thread_id)
-        @param max_epoch Maximum number of optimization epochs.
+        @param max_epoch Number of optimization epochs.
+        @param n_init_epochs Number of initialization epochs. 
+        @param a,b Likelihood kernel parameters from: P(x, y) = 1/(1+a*|x-y|^(2*b))
+        @param alpha,alpha_Q Learning rates for the embedding and normalization constant correspondingly.
+        @param n_noise Number of noise samples per data sample for each iteration. An array of size [n_epochs]; will be initialized to 3 noise samples per data sample for each epoch if not provided.
         */
-        NCVis(size_t d=2, size_t n_threads=1, size_t n_neighbors=30, size_t M = 16, size_t ef_construction = 200, size_t random_seed = 42, int max_epochs=50, int n_init_epochs=20, float a=1., float b=1., float alpha=1., float alpha_Q=1.);
+        NCVis(size_t d=2, size_t n_threads=1, size_t n_neighbors=30, size_t M = 16, size_t ef_construction = 200, size_t random_seed = 42, int n_epochs=50, int n_init_epochs=20, float a=1., float b=1., float alpha=1., float alpha_Q=1., size_t* n_noise=nullptr);
         ~NCVis();
         /*!
         @brief Build embedding for points.
@@ -35,8 +39,6 @@ namespace ncvis {
         @param X Pointer to the data array [N, D]. The j-th coordinate of i-th sample is assumed to be found at (X+D*i+j).
         @param N Number of samples.
         @param D Dimensionality of samples.
-        @param a,b Likelihood kernel parameters from: P(x, y) = 1/(1+a*|x-y|^(2*b))
-        @param alpha,alpha_Q Learning rates for the embedding and normalization constant correspondingly.
 
         @return Pointer to the embedding [N, d]. The j-th coordinate of i-th sample is assumed to be found at (X+d*i+j).
          */
@@ -47,13 +49,13 @@ namespace ncvis {
         size_t ef_construction_; 
         size_t random_seed_;
         size_t n_neighbors_;
-        int max_epochs_;
+        int n_epochs_;
         int n_init_epochs_;
         float a_;
         float b_;
         float alpha_;
         float alpha_Q_;
-        float init_alpha_;
+        size_t* n_noise_;
 
         hnswlib::L2Space* l2space_;
         hnswlib::HierarchicalNSW<float>* appr_alg_;
@@ -64,7 +66,7 @@ namespace ncvis {
         KNNTable findKNN(const float *const X, size_t N, size_t D, size_t k);
         void build_edges(KNNTable& table);
         void init_embedding(size_t N, float*& Y, float alpha);
-        void optimize(size_t N, float* Y, float& Q, size_t n_noise);
+        void optimize(size_t N, float* Y, float& Q);
     };
 }
 

@@ -6,17 +6,23 @@
 #include <chrono>
 
 ncvis::NCVis::NCVis(size_t d, size_t n_threads, size_t n_neighbors, size_t M, 
-                    size_t ef_construction, size_t random_seed, int max_epochs, 
-                    int n_init_epochs, float a, float b, float alpha, float alpha_Q):
+                    size_t ef_construction, size_t random_seed, int n_epochs, 
+                    int n_init_epochs, float a, float b, float alpha, float alpha_Q, size_t* n_noise):
 d_(d), M_(M), ef_construction_(ef_construction), 
-random_seed_(random_seed), n_neighbors_(n_neighbors), max_epochs_(max_epochs), n_init_epochs_(n_init_epochs), a_(a), b_(b), alpha_(alpha), alpha_Q_(alpha_Q), l2space_(nullptr), appr_alg_(nullptr)
+random_seed_(random_seed), n_neighbors_(n_neighbors), n_epochs_(n_epochs), n_init_epochs_(n_init_epochs), a_(a), b_(b), alpha_(alpha), alpha_Q_(alpha_Q), l2space_(nullptr), appr_alg_(nullptr)
 {
     omp_set_num_threads(n_threads);
+    n_noise_ = new size_t[n_epochs];
+    size_t default_noise = 3;
+    for (int i=0; i<n_epochs; ++i){
+        n_noise_[i] = (n_noise == nullptr)? default_noise:n_noise[i];
+    }
 }
 
 ncvis::NCVis::~NCVis(){
     delete l2space_;
     delete appr_alg_;
+    delete[] n_noise_;
 }
 
 void ncvis::NCVis::buildKNN(const float *const X, size_t N, size_t D){
@@ -171,7 +177,7 @@ void ncvis::NCVis::init_embedding(size_t N, float*& Y, float alpha){
     delete[] sigma;
 }
 
-void ncvis::NCVis::optimize(size_t N, float* Y, float& Q, size_t n_noise){
+void ncvis::NCVis::optimize(size_t N, float* Y, float& Q){
     float Q_cum=0.;
     #pragma omp parallel
     {
@@ -179,16 +185,17 @@ void ncvis::NCVis::optimize(size_t N, float* Y, float& Q, size_t n_noise){
     // Build layout
     std::uniform_int_distribution<size_t> gen_ind(0, N-1);
 
-    for (int epoch = 0; epoch < max_epochs_; ++epoch){
+    for (int epoch = 0; epoch < n_epochs_; ++epoch){
         // Hogwild: lock-free parameters reading and writing
-        float step = alpha_*(1-(((float)epoch)/max_epochs_)*(((float)epoch)/max_epochs_));
+        float step = alpha_*(1-(((float)epoch)/n_epochs_)*(((float)epoch)/n_epochs_));
         float Q_copy = Q;
+        size_t cur_noise = n_noise_[epoch];
         Q_cum = 0;
         #pragma omp for
         for (size_t i = 0; i < edges_.size(); ++i){
             // printf("[%d] (%ld, %ld)\n", epoch, edges_[i].first, edges_[i].second);
             size_t id = edges_[i].first;
-            for (size_t j = 0; j < n_noise+1; ++j){
+            for (size_t j = 0; j < cur_noise+1; ++j){
                 size_t other_id;
                 if (j == 0){
                     other_id = edges_[i].second; 
@@ -201,9 +208,9 @@ void ncvis::NCVis::optimize(size_t N, float* Y, float& Q, size_t n_noise){
                 float d2 = d_sqr(Y+id*d_, Y+other_id*d_);
                 float Ph = 1/(1+a_*powf(d2, b_));
                 float w = 1.;
-                if (n_noise != 0){
-                    w = Ph/(n_noise*expf(Q_copy));
-                    // w = Ph/(n_noise*expf(Q));
+                if (cur_noise != 0){
+                    w = Ph/(cur_noise*expf(Q_copy));
+                    // w = Ph/(cur_noise*expf(Q));
                     if (j == 0){
                         w = 1/(1+w);    
                     } else {
@@ -293,8 +300,6 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
     //     printf("(%ld, %ld)\n", i.first, i.second); 
     // }
     // printf("===============================\n");
-
-    size_t n_noise = 4;
     // Likelihood parameters
     float* Y = new float[N*d_];
     // Normalization
@@ -306,7 +311,7 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
     #endif
 
     init_embedding(N, Y, init_alpha);
-    optimize(N, Y, Q, n_noise);
+    optimize(N, Y, Q);
     
     #if defined(DEBUG)
         t2 = std::chrono::high_resolution_clock::now();
