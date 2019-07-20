@@ -3,7 +3,6 @@
 #include <cmath>
 #include "ncvis.hpp"
 #include "../lib/pcg-cpp/include/pcg_random.hpp"
-
 #include <chrono>
 
 ncvis::NCVis::NCVis(size_t d, size_t n_threads, size_t n_neighbors, size_t M, 
@@ -82,40 +81,212 @@ float ncvis::NCVis::d_sqr(const float *const x, const float *const y){
     return dist_sqr;
 }
 
+void ncvis::NCVis::init_embedding(size_t N, float*& Y, float alpha){
+    // For temporary values 
+    float* Y_swap = new float[N*d_];
+    float* mean = new float[d_];
+    float* sigma = new float[d_];
+
+    #pragma omp parallel
+    {
+    pcg64 pcg(random_seed_+omp_get_thread_num());
+    std::uniform_real_distribution<float> gen_Y(0, 1);
+
+    #pragma omp for
+    for (size_t i = 0; i < N*d_; ++i){
+        Y[i] = gen_Y(pcg);
+    }
+
+    // Initialize layout
+    for (int init_epoch = 0; init_epoch < n_init_epochs_; ++init_epoch){
+        #pragma omp single
+        {
+        float* tmp = Y_swap;
+        Y_swap = Y;
+        Y = tmp;
+        }
+        #pragma omp for
+        for (size_t i = 0; i < N*d_; ++i){
+            Y[i] = 0;
+        }
+        #pragma omp for
+        for (size_t i = 0; i < edges_.size(); ++i){
+            size_t id = edges_[i].first;
+            size_t other_id = edges_[i].second;
+            
+            for (size_t k = 0; k < d_; ++k){
+                // float dx_k = Y[other_id*d_+k] - Y[id*d_+k];
+                // dx_k = dx_k * init_alpha;
+                // printf("dx[%ld] = %f\n", k, dx_k);
+                // Y[id*d_+k] += dx_k;
+                // Y[other_id*d_+k] -= dx_k;
+                Y[id*d_+k] += alpha * Y_swap[other_id*d_+k];
+            }
+        }
+
+        #pragma omp single
+        for (size_t k = 0; k < d_; ++k){
+            mean[k] = 0;
+            sigma[k] = 0;
+        }
+
+        #pragma omp for
+        for (size_t i = 0; i < N; ++i){
+            for (size_t k = 0; k < d_; ++k){
+                #pragma omp atomic
+                mean[k] += Y[i*d_+k];
+            }
+        }
+
+        #pragma omp single
+        for (size_t k = 0; k < d_; ++k){
+            mean[k] /= N;
+        }
+
+        #pragma omp for
+        for (size_t i = 0; i < N; ++i){
+            for (size_t k = 0; k < d_; ++k){
+                #pragma omp atomic
+                sigma[k] += (Y[i*d_+k] - mean[k])*(Y[i*d_+k] - mean[k]);
+            }
+        }
+
+        #pragma omp single
+        for (size_t k = 0; k < d_; ++k){
+            sigma[k] /= N;
+            sigma[k] = sqrtf(sigma[k]);
+        }
+
+        #pragma omp for
+        for (size_t i = 0; i < N; ++i){
+            for (size_t k = 0; k < d_; ++k){
+                Y[i*d_+k] = (Y[i*d_+k] - mean[k])/sigma[k];
+            }
+        }
+    }
+    }
+    
+    delete[] Y_swap;
+    delete[] mean;
+    delete[] sigma;
+}
+
+void ncvis::NCVis::optimize(size_t N, float* Y, float& Q, size_t n_noise, float alpha, float alpha_Q, float a, float b){
+    float Q_cum=0.;
+    #pragma omp parallel
+    {
+    pcg64 pcg(random_seed_+omp_get_thread_num());
+    // Build layout
+    std::uniform_int_distribution<size_t> gen_ind(0, N-1);
+
+    for (int epoch = 0; epoch < max_epochs_; ++epoch){
+        // Hogwild: lock-free parameters reading and writing
+        float step = alpha*(1-(((float)epoch)/max_epochs_)*(((float)epoch)/max_epochs_));
+        float Q_copy = Q;
+        Q_cum = 0;
+        #pragma omp for
+        for (size_t i = 0; i < edges_.size(); ++i){
+            // printf("[%d] (%ld, %ld)\n", epoch, edges_[i].first, edges_[i].second);
+            size_t id = edges_[i].first;
+            for (size_t j = 0; j < n_noise+1; ++j){
+                size_t other_id;
+                if (j == 0){
+                    other_id = edges_[i].second; 
+                } else{
+                    do{
+                        other_id = gen_ind(pcg);
+                    } while (other_id == id);
+                }
+
+                float d2 = d_sqr(Y+id*d_, Y+other_id*d_);
+                float Ph = 1/(1+a*powf(d2, b));
+                float w = 1.;
+                if (n_noise != 0){
+                    w = Ph/(n_noise*expf(Q_copy));
+                    // w = Ph/(n_noise*expf(Q));
+                    if (j == 0){
+                        w = 1/(1+w);    
+                    } else {
+                        w = -1/(1+1/w);
+                    }
+                    // Non-blocking write
+                    // #pragma omp critical
+                    // {
+                    // printf("[%d:%d] Ph = %f\n", epoch, omp_get_thread_num(), Ph);
+                    // }
+                    Q_copy -= w*alpha_Q;
+                    // Q -= w*alpha_Q;
+                    w = 2*w*Ph*a*b*powf(d2, b-1);
+                }
+                // #pragma omp critical
+                // {
+                // printf("[%d:%d] Q = %f\n", epoch, omp_get_thread_num(), Q);
+                // }
+                // Also non-blocking write
+                for (size_t k = 0; k < d_; ++k){
+                    float dx_k = Y[other_id*d_+k] - Y[id*d_+k];
+                    dx_k = dx_k * w * step;
+                    if (dx_k > 4.){
+                        dx_k = 4.;
+                    } else if (dx_k < -4.){
+                        dx_k = -4.;
+                    }
+                    Y[id*d_+k] += dx_k;
+                    Y[other_id*d_+k] -= dx_k;
+                }
+            }  
+        }
+        #pragma omp critical
+        Q_cum += Q_copy;
+        #pragma omp single
+        Q = Q_cum/omp_get_num_threads();
+    }
+    }
+}
+
 float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, float b, float alpha, float alpha_Q){
     if (N == 0 || D == 0){ 
         throw std::runtime_error("[ncvis::NCVis::fit] Dataset should have at least one element.");
         return nullptr;
     }
-    auto t1 = std::chrono::high_resolution_clock::now();
-    buildKNN(X, N, D);
-    auto t2 = std::chrono::high_resolution_clock::now();
-    std::cout << "buildKNN: "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
-              << " ms\n";
+    #if defined(DEBUG)
+        auto t1 = std::chrono::high_resolution_clock::now();
+        buildKNN(X, N, D);
+        auto t2 = std::chrono::high_resolution_clock::now();
+        std::cout << "buildKNN: "
+                  << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
+                  << " ms\n";
+    #else 
+        buildKNN(X, N, D);
+    #endif
     // Number of neighbors can't exceed the total number of other points 
     size_t k = (n_neighbors_ < N-1)? n_neighbors_:(N-1);
     k = (k > 0)? k:1;
-    t1 = std::chrono::high_resolution_clock::now();
-    KNNTable table = findKNN(X, N, D, k);
-    t2 = std::chrono::high_resolution_clock::now();
-    std::cout << "findKNN: "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
-              << " ms\n";
-
-    t1 = std::chrono::high_resolution_clock::now();
-    table.symmetrize();
-    t2 = std::chrono::high_resolution_clock::now();
-    std::cout << "symmetrize: "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
-              << " ms\n";
-
-    t1 = std::chrono::high_resolution_clock::now();
-    build_edges(table);
-    t2 = std::chrono::high_resolution_clock::now();
-    std::cout << "build_edges: "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
-              << " ms\n";
+    #if defined(DEBUG)
+        t1 = std::chrono::high_resolution_clock::now();
+        KNNTable table = findKNN(X, N, D, k);
+        t2 = std::chrono::high_resolution_clock::now();
+        std::cout << "findKNN: "
+                << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
+                << " ms\n";
+        t1 = std::chrono::high_resolution_clock::now();
+        table.symmetrize();
+        t2 = std::chrono::high_resolution_clock::now();
+        std::cout << "symmetrize: "
+                << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
+                << " ms\n";
+        t1 = std::chrono::high_resolution_clock::now();
+        build_edges(table);
+        t2 = std::chrono::high_resolution_clock::now();
+        std::cout << "build_edges: "
+                << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
+                << " ms\n";
+    #else
+        KNNTable table = findKNN(X, N, D, k);
+        table.symmetrize();
+        build_edges(table);
+    #endif
+  
     // printf("Edges size: %ld\n", edges_.size());
     // printf("==============EDGES============\n");
     // for (const auto& i : edges_){
@@ -126,154 +297,24 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
     size_t n_noise = 4;
     // Likelihood parameters
     float* Y = new float[N*d_];
-    // For temporary values 
-    float* Y_swap = new float[N*d_];
     // Normalization
     float Q=0.;
-
-    float* mean = new float[d_];
-    float* sigma = new float[d_];
+    // float Q=0.;
     float init_alpha = 1./k;
-    t1 = std::chrono::high_resolution_clock::now();
-    #pragma omp parallel
-    {
-        pcg64 pcg(random_seed_+omp_get_thread_num());
-        std::uniform_real_distribution<float> gen_Y(0, 1);
-        #pragma omp for
-        for (size_t i = 0; i < N*d_; ++i){
-            Y[i] = gen_Y(pcg);
-        }
+    
+    #if defined(DEBUG)
+        t1 = std::chrono::high_resolution_clock::now();
+    #endif
 
-        // Initialize layout
-        for (int init_epoch = 0; init_epoch < n_init_epochs_; ++init_epoch){
-            #pragma omp single
-            {
-            float* tmp = Y_swap;
-            Y_swap = Y;
-            Y = tmp;
-            }
-            #pragma omp for
-            for (size_t i = 0; i < N*d_; ++i){
-                Y[i] = 0;
-            }
-            #pragma omp for
-            for (size_t i = 0; i < edges_.size(); ++i){
-                size_t id = edges_[i].first;
-                size_t other_id = edges_[i].second;
-                
-                for (size_t k = 0; k < d_; ++k){
-                    // float dx_k = Y[other_id*d_+k] - Y[id*d_+k];
-                    // dx_k = dx_k * init_alpha;
-                    // printf("dx[%ld] = %f\n", k, dx_k);
-                    // Y[id*d_+k] += dx_k;
-                    // Y[other_id*d_+k] -= dx_k;
-                    Y[id*d_+k] += init_alpha * Y_swap[other_id*d_+k];
-                }
-            }
-
-            #pragma omp single
-            for (size_t k = 0; k < d_; ++k){
-                mean[k] = 0;
-                sigma[k] = 0;
-            }
-
-            #pragma omp for
-            for (size_t i = 0; i < N; ++i){
-                for (size_t k = 0; k < d_; ++k){
-                    #pragma omp atomic
-                    mean[k] += Y[i*d_+k];
-                }
-            }
-
-            #pragma omp single
-            for (size_t k = 0; k < d_; ++k){
-                mean[k] /= N;
-            }
-
-            #pragma omp for
-            for (size_t i = 0; i < N; ++i){
-                for (size_t k = 0; k < d_; ++k){
-                    #pragma omp atomic
-                    sigma[k] += (Y[i*d_+k] - mean[k])*(Y[i*d_+k] - mean[k]);
-                }
-            }
-
-            #pragma omp single
-            for (size_t k = 0; k < d_; ++k){
-                sigma[k] /= N;
-                sigma[k] = sqrtf(sigma[k]);
-            }
-
-            #pragma omp for
-            for (size_t i = 0; i < N; ++i){
-                for (size_t k = 0; k < d_; ++k){
-                    Y[i*d_+k] = (Y[i*d_+k] - mean[k])/sigma[k];
-                }
-            }
-        }
-
-        // Build layout
-        std::uniform_int_distribution<size_t> gen_ind(0, N-1);
-        for (int epoch = 0; epoch < max_epochs_; ++epoch){
-            // Hogwild: lock-free parameters reading and writing
-            float step = alpha*(1-(((float)epoch)/max_epochs_)*(((float)epoch)/max_epochs_));
-            #pragma omp for
-            for (size_t i = 0; i < edges_.size(); ++i){
-                // printf("[%d] (%ld, %ld)\n", epoch, edges_[i].first, edges_[i].second);
-                size_t id = edges_[i].first;
-                for (size_t j = 0; j < n_noise+1; ++j){
-                    size_t other_id;
-                    if (j == 0){
-                        other_id = edges_[i].second; 
-                    } else{
-                        do{
-                            other_id = gen_ind(pcg);
-                        } while (other_id == id);
-                    }
-
-                    float d2 = d_sqr(Y+id*d_, Y+other_id*d_);
-                    float Ph = 1/(1+a*powf(d2, b));
-                    float w = 1.;
-                    if (n_noise != 0){
-                        w = Ph/(n_noise*expf(Q));
-                        if (j == 0){
-                            w = 1/(1+w);    
-                        } else {
-                            w = -1/(1+1/w);
-                        }
-                        // Non-blocking write
-                        // #pragma omp critical
-                        // {
-                        // printf("[%d:%d] Ph = %f\n", epoch, omp_get_thread_num(), Ph);
-                        // }
-                        Q -= w*alpha_Q;
-                        w = 2*w*Ph*a*b*powf(d2, b-1);
-                    }
-                    // #pragma omp critical
-                    // {
-                    // printf("[%d:%d] Q = %f\n", epoch, omp_get_thread_num(), Q);
-                    // }
-                    // Also non-blocking write
-                    for (size_t k = 0; k < d_; ++k){
-                        float dx_k = Y[other_id*d_+k] - Y[id*d_+k];
-                        dx_k = dx_k * w * step;
-                        if (dx_k > 4.){
-                            dx_k = 4.;
-                        } else if (dx_k < -4.){
-                            dx_k = -4.;
-                        }
-                        Y[id*d_+k] += dx_k;
-                        Y[other_id*d_+k] -= dx_k;
-                    }
-                }  
-            }
-        } 
-    }
-
-    t2 = std::chrono::high_resolution_clock::now();
-    std::cout << "main cycle:: "
-              << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
-              << " ms\n";
+    init_embedding(N, Y, init_alpha);
+    optimize(N, Y, Q, n_noise, alpha, alpha_Q, a, b);
+    
+    #if defined(DEBUG)
+        t2 = std::chrono::high_resolution_clock::now();
+        std::cout << "main cycle: "
+                << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
+                << " ms\n";
+    #endif
     // printf("============DISTANCES==========\n");
     // for (size_t i=0; i<N; ++i){
     //     printf("[");
@@ -293,10 +334,6 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D, float a, floa
     //     printf("]\n");
     // }
     // printf("===============================\n");
-
-    delete[] Y_swap;
-    delete[] mean;
-    delete[] sigma;
 
     return Y;
 }

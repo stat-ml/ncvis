@@ -57,6 +57,8 @@ namespace ncvis {
         void buildKNN(const float *const X, size_t N, size_t D);
         KNNTable findKNN(const float *const X, size_t N, size_t D, size_t k);
         void build_edges(KNNTable& table);
+        void init_embedding(size_t N, float*& Y, float alpha);
+        void optimize(size_t N, float* Y, float& Q, size_t n_noise, float alpha, float alpha_Q, float a, float b);
     };
 }
 
