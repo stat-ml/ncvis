@@ -9,7 +9,7 @@ Install **numpy** and **cython** packages:
 pip install numpy cython
 ```
 
-Intall **ncvis** package:
+Install **ncvis** package:
 ```bash
 pip install ncvis
 ```

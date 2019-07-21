@@ -4,6 +4,8 @@ wrapper/*.c
 *.so
 __pycache__/
 .ipynb_checkpoints/
+*.egg-info
+dist/
 bin/
 obj/
 .dir_init
