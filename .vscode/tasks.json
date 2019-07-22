@@ -89,7 +89,7 @@
         {
             "label": "Build Wrapper",
             "type": "shell",
-            "command": "python setup.py build_ext --inplace --force",
+            "command": "make wrapper",
             "group": "build",
             "presentation": {
                 "echo": true,

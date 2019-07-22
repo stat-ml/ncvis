@@ -21,13 +21,18 @@ random_seed_(random_seed), n_neighbors_(n_neighbors), n_epochs_(n_epochs), n_ini
 
 ncvis::NCVis::~NCVis(){
     delete l2space_;
+    l2space_ = nullptr;
     delete appr_alg_;
+    appr_alg_ = nullptr;
     delete[] n_noise_;
+    n_noise_ =  nullptr;
 }
 
 void ncvis::NCVis::buildKNN(const float *const X, size_t N, size_t D){
     delete l2space_;
-    delete appr_alg_;  
+    l2space_ = nullptr;
+    delete appr_alg_;
+    appr_alg_ = nullptr;  
     l2space_ = new hnswlib::L2Space(D);
     appr_alg_ = new hnswlib::HierarchicalNSW<float>(l2space_, N, M_, ef_construction_, random_seed_);
 
@@ -275,8 +280,10 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
         
         // The graph itself is no longer needed
         delete appr_alg_;
+        appr_alg_ = nullptr;
         delete l2space_;
-        
+        l2space_ = nullptr;
+
         t2 = std::chrono::high_resolution_clock::now();
         std::cout << "findKNN: "
                 << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
@@ -298,7 +305,9 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
 
         // The graph itself is no longer needed
         delete appr_alg_;
+        appr_alg_ = nullptr;
         delete l2space_;
+        l2space_  = nullptr;
 
         table.symmetrize();
         build_edges(table);

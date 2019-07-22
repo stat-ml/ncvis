@@ -1,7 +1,7 @@
 #%%
 import sys
 import os
-sys.path.append("../")
+# sys.path.append("../")
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -66,12 +66,12 @@ def plot_silhouette(xs, y, ax, marker='o'):
 #%%
 from sklearn.model_selection import train_test_split
 
-X_mnist, y_mnist = load_mnist('data/mnist/', kind='train')
+X_mnist, y_mnist = load_mnist('examples/data/mnist/', kind='train')
 X_mnist = X_mnist/255
 
 X_small, _, y_small, _ = train_test_split(X_mnist, y_mnist, test_size=None, train_size=1e-1, stratify=y_mnist, random_state=42)
 
-iris = pd.read_csv("data/iris/iris.data", header=None, names=["sepal length", "sepal width", "petal length", "petal width", "class"])
+iris = pd.read_csv("examples/data/iris/iris.data", header=None, names=["sepal length", "sepal width", "petal length", "petal width", "class"])
 X_iris = iris.iloc[:, :4].values
 y_iris = iris["class"].astype("category").cat.codes.values
 

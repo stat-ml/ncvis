@@ -11,4 +11,5 @@ obj/
 .dir_init
 .lib_init
 lib/
-examples/data
+examples/data/*
+!examples/data/download.sh

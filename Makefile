@@ -45,7 +45,7 @@ clean:
 	rm -rf $(ObjectDir) $(BinDir) .dir_init build wrapper/*.cpp
 
 wrapper: .lib_init $(CSources)
-	python setup.py build_ext --inplace --force
+	pip install -v -e . --user
 
 lib: .lib_init
 
