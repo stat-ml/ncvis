@@ -1,3 +1,5 @@
+[![PyPI](https://img.shields.io/pypi/v/ncvis.svg)](https://pypi.python.org/pypi/ncvis/)
+![GitHub](https://img.shields.io/github/license/alartum/ncvis.svg)
 # ncvis
 
 ncvis is a Python module for data visualization written in C++ with parallelism support.
