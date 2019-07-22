@@ -21,6 +21,9 @@ MAINTAINER = 'Aleksandr Artemenkov'
 MAINTAINER_EMAIL = 'alartum@gmail.com'
 URL = 'https://github.com/alartum/ncvis'
 LICENSE = 'MIT'
+PROJECT_URLS = {
+    'Source Code': 'https://github.com/alartum/ncvis'
+}
 
 #Add all sources except main
 src = glob.glob('src/*.cpp')
@@ -39,6 +42,7 @@ metadata = dict(  name=DISTNAME,
                   description=DESCRIPTION,
                   license=LICENSE,
                   url=URL,
+                  project_urls=PROJECT_URLS,
                   version=VERSION,
                   long_description=LONG_DESCRIPTION,
                   long_description_content_type="text/markdown",

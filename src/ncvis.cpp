@@ -272,6 +272,11 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
     #if defined(DEBUG)
         t1 = std::chrono::high_resolution_clock::now();
         KNNTable table = findKNN(X, N, D, k);
+        
+        // The graph itself is no longer needed
+        delete appr_alg_;
+        delete l2space_;
+        
         t2 = std::chrono::high_resolution_clock::now();
         std::cout << "findKNN: "
                 << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
@@ -290,6 +295,11 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
                 << " ms\n";
     #else
         KNNTable table = findKNN(X, N, D, k);
+
+        // The graph itself is no longer needed
+        delete appr_alg_;
+        delete l2space_;
+
         table.symmetrize();
         build_edges(table);
     #endif

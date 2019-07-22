@@ -10,5 +10,5 @@ bin/
 obj/
 .dir_init
 .lib_init
-data/
 lib/
+examples/data

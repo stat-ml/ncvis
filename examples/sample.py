@@ -109,5 +109,3 @@ plt.show()
 
 #%%
 print(embedding.shape)
-
-#%%

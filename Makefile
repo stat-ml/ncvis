@@ -47,9 +47,6 @@ clean:
 wrapper: .lib_init $(CSources)
 	python setup.py build_ext --inplace --force
 
-data:
-	bash download.sh
-
 lib: .lib_init
 
 .lib_init:
