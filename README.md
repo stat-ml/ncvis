@@ -54,8 +54,9 @@ bash examples/data/download.sh
 |[GoogleNews](https://code.google.com/archive/p/word2vec/)|news|*not yet*|
 
 Each dataset can be used in the following way:
+
 |Sample Code | Action |
-|-----|--------:|
+|-----|--------|
 |```d = data.MNIST()```| Load the dataset.|
 |```ds.X```| Get the samples as numpy array of shape *(n_samples, n_dimensions)*. If samples have more than one dimension they are all flattened.|
 |```ds.y```| Get the labels of the samples.|
