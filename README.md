@@ -61,5 +61,4 @@ Each dataset can be used in the following way:
 |```ds.y```| Get the labels of the samples.|
 |```len(ds)```| Get total number of samples.|
 |```ds[0]```| Get 0-th pair *(sample, label)* from the dataset.|
-|```ds.shape```| Get the original shape of the samples. For example, it equals to *(28, 28)* for MNIST. 
-
+|```ds.shape```| Get the original shape of the samples. For example, it equals to *(28, 28)* for MNIST. |
