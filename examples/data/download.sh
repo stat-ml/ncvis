@@ -1,5 +1,8 @@
 #!/bin/bash
 
+path=$(git rev-parse --show-toplevel)
+cd $path/examples/data
+
 # https://gist.github.com/iamtekeste/3cdfd0366ebfd2c0d805#gistcomment-2359248
 gdrive_download() {
     # $1 = GDrive id of the file
