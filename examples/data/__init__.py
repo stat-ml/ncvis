@@ -360,3 +360,34 @@ class ScRNA(Dataset):
         self.X = df.iloc[:, 1:].values.T
 
         self.shape = (nlines,)
+
+class Shuttle(Dataset):
+    def __init__(self):
+        super().__init__()
+
+        base = "data/shuttle/shuttle."
+        exts = ["trn", "tst"]
+
+        vals = {'X': None, 
+                'y': None}
+        for ext in exts:
+            df = pd.read_csv(base+ext, sep=' ').values
+            new = {'X': df[:, 1:-1],
+                'y': df[:,  -1]}
+            for k in new:
+                if vals[k] is None:
+                    vals[k] = new[k]
+                else:
+                    vals[k] = np.concatenate((vals[k], new[k]))
+
+        self.X, self.y = vals['X'], vals['y']
+        self.names = {
+                    1: 'Rad Flow', 
+                    2: 'Fpv Close', 
+                    3: 'Fpv Open', 
+                    4: 'High', 
+                    5: 'Bypass', 
+                    6: 'Bpv Close', 
+                    7: 'Bpv Open'
+                }
+        self.shape = (self.X.shape[1],)

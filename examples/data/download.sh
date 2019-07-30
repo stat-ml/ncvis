@@ -28,6 +28,7 @@ extract() {
         case $f in 
             *.zip) yes N | unzip -d $1 -qq $f ;;
             *.gz)  yes n | gzip -dk $f ;;
+            *.Z)   yes n | uncompress $f ;;
             *) echo "$f is not compressed"
         esac
     done

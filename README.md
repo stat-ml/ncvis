@@ -49,7 +49,7 @@ bash examples/data/download.sh
 |[COIL-20](http://www.cs.columbia.edu/CAVE/software/softlib/coil-20.php)|coil20|COIL20|
 |[COIL-100](http://www1.cs.columbia.edu/CAVE/software/softlib/coil-100.php)|coil100|COIL100|
 |[Mouse scRNA-seq](https://hemberg-lab.github.io/scRNA.seq.datasets/mouse/brain/)|scrna|ScRNA|
-|[Statlog (Shuttle)](https://archive.ics.uci.edu/ml/datasets/Statlog+(Shuttle))|shuttle|*not yet*|
+|[Statlog (Shuttle)](https://archive.ics.uci.edu/ml/datasets/Statlog+(Shuttle))|shuttle|Shuttle|
 |[Flow Cytometry](https://flowrepository.org/id/FR-FCM-ZZ36)|flow|*not yet*|
 |[GoogleNews](https://code.google.com/archive/p/word2vec/)|news|*not yet*|
 
