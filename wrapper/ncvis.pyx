@@ -1,4 +1,4 @@
-# distutils: language=c++
+# distutils: language = c++
 
 from wrapper cimport cncvis
 import numpy as np

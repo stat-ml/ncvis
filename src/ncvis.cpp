@@ -70,15 +70,15 @@ void ncvis::NCVis::build_edges(ncvis::KNNTable& table){
     size_t n_edges = 0;
 
     #pragma omp parallel for
-    for (const auto& i : table.inds){
+    for (size_t i = 0; i < table.inds.size(); ++i){
         #pragma omp atomic
-        n_edges += i.size();
+        n_edges += table.inds[i].size();
     }
     edges_.reserve(n_edges);
 
     for (size_t i = 0; i < table.inds.size(); ++i){
-        for (const auto& j : table.inds[i]){
-            edges_.emplace_back(i, j);
+        for (size_t j =0; j < table.inds[i].size(); ++j){
+            edges_.emplace_back(i, table.inds[i][j]);
         }
     }
 }
@@ -312,13 +312,7 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
         table.symmetrize();
         build_edges(table);
     #endif
-  
-    // printf("Edges size: %ld\n", edges_.size());
-    // printf("==============EDGES============\n");
-    // for (const auto& i : edges_){
-    //     printf("(%ld, %ld)\n", i.first, i.second); 
-    // }
-    // printf("===============================\n");
+    
     // Likelihood parameters
     float* Y = new float[N*d_];
     // Normalization
