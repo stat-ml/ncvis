@@ -3,6 +3,7 @@
 #include <utility>
 #include "../lib/hnswlib/hnswlib/hnswlib.h"
 #include "knntable.hpp"
+#include <cstddef>
 
 #ifndef NCVIS_H
 #define NCVIS_H

@@ -312,7 +312,7 @@ float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
         table.symmetrize();
         build_edges(table);
     #endif
-    
+
     // Likelihood parameters
     float* Y = new float[N*d_];
     // Normalization

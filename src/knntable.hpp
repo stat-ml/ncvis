@@ -1,4 +1,5 @@
 #include <vector>
+#include <cstddef>
 
 #ifndef KNNTABLE_H
 #define KNNTABLE_H

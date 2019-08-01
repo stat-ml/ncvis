@@ -33,7 +33,8 @@ extensions = [Extension("ncvis",
                         *src],
                         extra_compile_args=["-O3", "-std=c++11", "-fopenmp", "-fpic", "-ffast-math"],
                         libraries=['m', "gomp"],
-                        include_dirs=[numpy.get_include()])]
+                        include_dirs=[numpy.get_include()],
+                        language="c++")]
 extensions = cythonize(extensions, language_level=3)
 
 metadata = dict(name=DISTNAME,

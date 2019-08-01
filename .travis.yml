@@ -1,5 +1,8 @@
 language: python
 
+env:
+  - OMP_NUM_THREADS=4
+
 matrix:
   include:
     - name: "Linux"
