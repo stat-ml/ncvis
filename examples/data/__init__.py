@@ -337,6 +337,11 @@ class CsvReader:
         return (self.nlines+self.chunksize-1)//self.chunksize
 
 class ScRNA(Dataset):
+    """
+    Mouse scRNA-seq Dataset
+    Alias: scrna
+    https://hemberg-lab.github.io/scRNA.seq.datasets/mouse/brain/
+    """
     def __init__(self):
         super().__init__()
 
@@ -362,7 +367,12 @@ class ScRNA(Dataset):
         self.shape = (nlines,)
 
 class Shuttle(Dataset):
-    def __init__(self):
+    """
+    Statlog (Shuttle) Dataset
+    Alias: shuttle
+    https://archive.ics.uci.edu/ml/datasets/Statlog+(Shuttle)
+    """
+    def __init__(self, drop_time=True):
         super().__init__()
 
         base = "data/shuttle/shuttle."
@@ -372,8 +382,8 @@ class Shuttle(Dataset):
                 'y': None}
         for ext in exts:
             df = pd.read_csv(base+ext, sep=' ').values
-            new = {'X': df[:, 1:-1],
-                'y': df[:,  -1]}
+            new = {'X': df[:, 1:-1] if drop_time else df[:, :-1],
+                   'y': df[:,  -1]}
             for k in new:
                 if vals[k] is None:
                     vals[k] = new[k]
@@ -391,3 +401,4 @@ class Shuttle(Dataset):
                     7: 'Bpv Open'
                 }
         self.shape = (self.X.shape[1],)
+
