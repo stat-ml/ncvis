@@ -9,4 +9,4 @@ matrix:
         - pip3 install numpy cython
         - make lib
       script:
-        - pip3 install -v -e .
+        - make wrapper
