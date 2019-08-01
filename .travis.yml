@@ -1,5 +1,3 @@
-language: python
-
 env:
   - OMP_NUM_THREADS=4
 
@@ -7,9 +5,14 @@ matrix:
   include:
     - name: "Linux"
       dist: xenial
-      install:
-        - pip3 install --upgrade pip
-        - pip3 install numpy cython
-        - make lib
-      script:
-        - make wrapper
+      language: python
+    - name: "macOS"
+      os: osx
+      language: shell
+
+install:
+  - pip3 install --upgrade pip
+  - pip3 install numpy cython
+  - make lib
+script:
+  - make wrapper
