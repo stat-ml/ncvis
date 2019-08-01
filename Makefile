@@ -47,7 +47,7 @@ clean:
 	rm -rf $(ObjectDir) $(BinDir) .dir_init build wrapper/*.cpp ncvis.egg-info build
 
 wrapper: .lib_init $(CSources)
-	pip install -e . --user
+	pip install -e . --user || pip install -e .
 
 lib: .lib_init
 
