@@ -7,7 +7,7 @@ try:
     import numpy
 except ImportError:
     print("numpy and/or cython are not installed:")
-    print("pip install numpy cython")
+    print(">> pip install numpy cython")
     exit(1)
 
 __version__ = "0.0.0"
@@ -36,25 +36,25 @@ extensions = [Extension("ncvis",
                         include_dirs=[numpy.get_include()])]
 extensions = cythonize(extensions, language_level=3)
 
-metadata = dict(  name=DISTNAME,
-                  maintainer=MAINTAINER,
-                  maintainer_email=MAINTAINER_EMAIL,
-                  description=DESCRIPTION,
-                  license=LICENSE,
-                  url=URL,
-                  project_urls=PROJECT_URLS,
-                  version=VERSION,
-                  long_description=LONG_DESCRIPTION,
-                  long_description_content_type="text/markdown",
-                  classifiers=['Intended Audience :: Science/Research',
-                              'Intended Audience :: Developers',
-                              'License :: OSI Approved :: MIT License',
-                              'Programming Language :: C++',
-                              'Programming Language :: Python :: 3',
-                              'Operating System :: OS Independent',
-                              ],
-                  install_requires=['scipy'],
-                  python_requires=">=3")
+metadata = dict(name=DISTNAME,
+                maintainer=MAINTAINER,
+                maintainer_email=MAINTAINER_EMAIL,
+                description=DESCRIPTION,
+                license=LICENSE,
+                url=URL,
+                project_urls=PROJECT_URLS,
+                version=VERSION,
+                long_description=LONG_DESCRIPTION,
+                long_description_content_type="text/markdown",
+                classifiers=['Intended Audience :: Science/Research',
+                            'Intended Audience :: Developers',
+                            'License :: OSI Approved :: MIT License',
+                            'Programming Language :: C++',
+                            'Programming Language :: Python :: 3',
+                            'Operating System :: OS Independent',
+                            ],
+                install_requires=['scipy'],
+                python_requires=">=3")
 
 setup(ext_modules=extensions,
       **metadata)

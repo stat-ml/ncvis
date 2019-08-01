@@ -7,9 +7,11 @@ import ctypes
 from multiprocessing import cpu_count
 
 from scipy.optimize import curve_fit
-# https://github.com/lmcinnes/umap/blob/master/umap/umap_.py
 def find_ab_params(spread=1., min_dist=0.1):
-    """Fit a, b params for the differentiable curve used in lower
+    """
+    https://github.com/lmcinnes/umap/blob/834184f9c0455f26db13ab148c0abd2d3767d968/umap/umap_.py#L1049
+
+    Fit a, b params for the differentiable curve used in lower
     dimensional fuzzy simplicial complex construction. We want the
     smooth curve (from a pre-defined family with simple gradient) that
     best matches an offset exponential decay.
@@ -48,7 +50,49 @@ cdef class NCVisWrapper:
         return np.asarray(<float[:X.shape[0], :self.d]>self.c_ncvis.fit(&X[0, 0], X.shape[0], X.shape[1]))
 
 class NCVis:
-    def __init__(self, d=2, n_threads=-1, n_neighbors=15, M=16, ef_construction = 200, random_seed=42, n_epochs=30, n_init_epochs=10, spread=1., min_dist=0.5, alpha=1., alpha_Q=1., n_noise=None):
+    def __init__(self, d=2, n_threads=-1, n_neighbors=15, M=16, ef_construction=200, random_seed=42, n_epochs=30, n_init_epochs=10, spread=1., min_dist=0.5, alpha=1., alpha_Q=1., n_noise=None):
+    """
+    Creates new NCVis instance.
+
+    Parameters
+    ----------
+    d : int
+        Desired dimensionality of the embedding.
+    n_threads : int
+        The maximum number of threads to use. In case n_threads < 1, it defaults to the number of available CPUs.
+    n_neighbors : int
+        Number of nearest neighbours in the high dimensional space to consider.
+    M : int
+        The number of bi-directional links created for every new element during construction of HNSW.
+        See https://github.com/nmslib/hnswlib/blob/master/ALGO_PARAMS.md
+    ef_construction : int
+        The size of the dynamic list for the nearest neighbors (used during the search) in HNSW.
+        See https://github.com/nmslib/hnswlib/blob/master/ALGO_PARAMS.md
+    random_seed : int
+        Random seed to initialize the generators. Notice, however, that the result may still depend on the number of threads.
+    n_epochs : int
+        The total number of epochs to run. During one epoch the positions of each nearest neighbors pair are updated.
+    n_init_epochs : int
+        The number of epochs used for initialization. During one epoch the positions of each nearest neighbors pair are updated.
+    spread : float
+        The effective scale of embedded points. In combination with ``min_dist``
+        this determines how clustered/clumped the embedded points are.
+        See https://github.com/lmcinnes/umap/blob/834184f9c0455f26db13ab148c0abd2d3767d968/umap/umap_.py#L1143
+    min_dist : float
+        The effective minimum distance between embedded points. Smaller values
+        will result in a more clustered/clumped embedding where nearby points
+        on the manifold are drawn closer together, while larger values will
+        result on a more even dispersal of points. The value should be set
+        relative to the ``spread`` value, which determines the scale at which
+        embedded points will be spread out.
+        See https://github.com/lmcinnes/umap/blob/834184f9c0455f26db13ab148c0abd2d3767d968/umap/umap_.py#L1135
+    alpha : float
+        Learning rate for the embedding positions.
+    alpha_Q : float
+        Learning rate for the normalization constant.
+    n_noise : int or ndarray of ints
+        Number of noise samples to use per data sample. If ndarray is provided, n_epochs is set to its length. If n_noise is None, it is set to dynamic sampling with noise level gradually increasing from 0 to fixed value. 
+    """
         if n_noise is None:
             n_negative = 5
 
@@ -60,10 +104,23 @@ class NCVis:
             negative_plan = negative_plan.round().astype(np.int)
             negative_plan[negative_plan < 1] = 1
 
-        if n_threads == -1:
+        if n_threads < 1:
             n_threads = cpu_count()
 
         self.model = NCVisWrapper(d, n_threads, n_neighbors, M, ef_construction, random_seed, n_epochs, n_init_epochs, spread, min_dist, alpha, alpha_Q, negative_plan)
 
     def fit(self, X):
+        """
+        Builds an embedding for given points.
+
+        Parameters
+        ----------
+        X : ndarray of size [n_samples, n_high_dimensions]
+            The data samples. Will be converted to float by default.
+
+        Returns:
+        --------
+        out : ndarray of floats of size [n_samples, m_low_dimensions]
+            The embedding of the data samples.
+        """
         return self.model.fit(X.astype(np.float32))

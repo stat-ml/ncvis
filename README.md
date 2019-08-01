@@ -2,9 +2,11 @@
 ![GitHub](https://img.shields.io/github/license/alartum/ncvis.svg)
 # ncvis
 
+**NCVis** is an efficient solution for data visualization. It uses [HNSW](https://github.com/nmslib/hnswlib) for fast nearest neighbors graph construction and a parallel approach for building the graph embedding.
+
 # Installation
 
-Install **numpy** and **cython** packages:
+Install **numpy** and **cython** packages (compile-time dependencies):
 ```bash
 pip install numpy cython
 ```
@@ -14,15 +16,16 @@ Install **ncvis** package:
 pip install ncvis
 ```
 
-# Usage
+# Using
 
-Import the module and use it as you would use any of **sklearn** models:
 ```python
 import ncvis
 
 vis = ncvis.NCVis()
 Y = vis.fit(X)
 ```
+
+A more detailed example can be found [here](https://nbviewer.jupyter.org/github/alartum/ncvis/blob/master/examples/benchmark.ipynb).
 
 # Experiments
 
