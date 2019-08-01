@@ -1,11 +1,10 @@
-language: minimal
+language: python
 
 matrix:
   include:
     - name: "Linux"
       dist: xenial
       install:
-        - sudo apt-get install pip3
         - pip3 install --upgrade pip
         - pip3 install numpy cython
         - make lib
