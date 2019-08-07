@@ -37,15 +37,17 @@ $(CExecutable): $(CObjects) .dir_init
 $(ObjectDir)%.o: $(SourceDir)%.cpp .lib_init .dir_init
 	$(CC) $(CFlags) $< -o $@
 
+.PHONY: wrapper clean lib
+
 .dir_init:
 	mkdir -p $(ObjectDir) $(BinDir) $(LibDir)
 	touch .dir_init
 
 clean:
-	rm -rf $(ObjectDir) $(BinDir) .dir_init build wrapper/*.cpp
+	rm -rf $(ObjectDir) $(BinDir) .dir_init build wrapper/*.cpp ncvis.egg-info build
 
 wrapper: .lib_init $(CSources)
-	pip install -v -e . --user
+	pip install -e . --user || pip install -e .
 
 lib: .lib_init
 
