@@ -88,7 +88,7 @@ src = glob('src/*.cpp')
 
 import sys
 if sys.platform.startswith('darwin'):
-    omp_lib = []
+    omp_lib = ["omp"]
     omp_flag = ["-fopenmp=libomp"]
 elif sys.platform.startswith('linux'):
     omp_lib = ["gomp"]
