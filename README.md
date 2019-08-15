@@ -8,12 +8,12 @@
 
 Install **numpy** and **cython** packages (compile-time dependencies):
 ```bash
-pip install numpy cython
+$ pip install numpy cython
 ```
 
 Install **ncvis** package:
 ```bash
-pip install ncvis
+$ pip install ncvis
 ```
 
 # Using
@@ -31,16 +31,20 @@ A more detailed example can be found [here](https://nbviewer.jupyter.org/github/
 
 Datasets can be dowloaded by using the *download.sh* script:
 ```bash
-bash examples/data/download.sh <dataset>
+$ bash examples/data/download.sh <dataset>
 ```
 Replace *\<dataset\>* with corresponding entry from the table. You can also download all of them at once:
 ```bash
-bash examples/data/download.sh
+$ bash examples/data/download.sh
 ```
 
  The datasets can be then accessed by using interfaces from the *data* Python module. Make sure that these packages are installed:
  ```bash
- pip install pandas imageio progressbar2
+ $ pip install -r examples/requirements-pip.txt
+ ```
+ or 
+  ```bash
+ $ conda install --file examples/requirements-conda.txt
  ```
 
 |Dataset| \<dataset\> | Dataset Class|
