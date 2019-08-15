@@ -96,8 +96,8 @@ elif sys.platform.startswith('linux'):
 extensions = [Extension("ncvis",
                         ["wrapper/*.pyx",
                         *src],
-                        extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math"] + omp_flag,
-                        libraries=['m'] + omp_lib,
+                        extra_compile_args=(["-O3", "-std=c++11", "-fpic", "-ffast-math"] + omp_flag),
+                        libraries=(['m'] + omp_lib),
                         include_dirs=[numpy.get_include()],
                         language="c++")]
 
