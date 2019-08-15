@@ -86,11 +86,16 @@ PROJECT_URLS = {
 #Add all sources except main
 src = glob('src/*.cpp')
 
+import sys
+if sys.platform.startswith('darwin'):
+    omp_lib = []
+elif sys.platform.startswith('linux'):
+    omp_lib = ["gomp"]
 extensions = [Extension("ncvis",
                         ["wrapper/*.pyx",
                         *src],
                         extra_compile_args=["-O3", "-std=c++11", "-fopenmp", "-fpic", "-ffast-math"],
-                        libraries=['m', "gomp"],
+                        libraries=['m'] + omp_lib,
                         include_dirs=[numpy.get_include()],
                         language="c++")]
 
