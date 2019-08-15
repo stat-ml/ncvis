@@ -85,19 +85,20 @@ PROJECT_URLS = {
 
 #Add all sources except main
 src = glob('src/*.cpp')
-
+extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math"]
+libraries=["m"]
 import sys
 if sys.platform.startswith('darwin'):
-    omp_lib = ["omp"]
-    omp_flag = ["-fopenmp=libomp"]
+    libraries.append("omp")
+    extra_compile_args.append("-fopenmp=libomp")
 elif sys.platform.startswith('linux'):
-    omp_lib = ["gomp"]
-    omp_flag = ["-fopenmp"]
+    libraries.append("gomp")
+    extra_compile_args.append("-fopenmp")
 extensions = [Extension("ncvis",
                         ["wrapper/*.pyx",
                         *src],
-                        extra_compile_args=(["-O3", "-std=c++11", "-fpic", "-ffast-math"] + omp_flag),
-                        libraries=(['m'] + omp_lib),
+                        extra_compile_args=extra_compile_args,
+                        libraries=libraries,
                         include_dirs=[numpy.get_include()],
                         language="c++")]
 
