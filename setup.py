@@ -42,13 +42,12 @@ class CleanCommand(Command):
 runtime_deps = ['scipy']
 deps = []
 class InstallCommand(install):
-    description = "Allows install to skip dependencies."
+    description = "Adds custom flags to normal install."
     user_options = install.user_options + [
         ('no-deps', None, 'Do not install runtime dependencies.'),
     ]
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # print(user_options)
     def initialize_options(self):
         super().initialize_options()
         self.no_deps = False
