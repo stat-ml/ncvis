@@ -89,12 +89,14 @@ src = glob('src/*.cpp')
 import sys
 if sys.platform.startswith('darwin'):
     omp_lib = []
+    omp_flag = ["-fopenmp=libomp"]
 elif sys.platform.startswith('linux'):
     omp_lib = ["gomp"]
+    omp_flag = ["-fopenmp"]
 extensions = [Extension("ncvis",
                         ["wrapper/*.pyx",
                         *src],
-                        extra_compile_args=["-O3", "-std=c++11", "-fopenmp", "-fpic", "-ffast-math"],
+                        extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math"] + omp_flag,
                         libraries=['m'] + omp_lib,
                         include_dirs=[numpy.get_include()],
                         language="c++")]
