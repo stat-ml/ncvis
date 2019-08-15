@@ -1,3 +1,4 @@
+language: python
 env:
   - OMP_NUM_THREADS=4
 
@@ -8,6 +9,7 @@ matrix:
       dist: xenial
     - name: "macOS"
       os: osx
+      osx_image: xcode10.2
       language: shell
     
 install:
