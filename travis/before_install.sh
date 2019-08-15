@@ -10,5 +10,6 @@ export PATH="$HOME/miniconda/bin:$PATH"
 
 conda update --yes conda
 conda create --yes -n test python=$TRAVIS_PYTHON_VERSION
-conda activate test
+#Using source as shell has not been properly configured to use 'conda activate'.
+source activate test
 conda install --yes conda-build conda-verify

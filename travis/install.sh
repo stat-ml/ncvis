@@ -1,5 +1,6 @@
 export PATH="$HOME/miniconda/bin:$PATH"
-conda activate test
+#Using source as shell has not been properly configured to use 'conda activate'.
+source activate test
 
 conda info
 conda build . 
