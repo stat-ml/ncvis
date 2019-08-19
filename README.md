@@ -1,6 +1,6 @@
 [![Conda](https://anaconda.org/alartum/ncvis/badges/version.svg)](https://anaconda.org/alartum/ncvis)
 [![PyPI](https://img.shields.io/pypi/v/ncvis.svg)](https://pypi.python.org/pypi/ncvis/)
-[![GitHub](https://img.shields.io/github/license/alartum/ncvis.svg)](https://github.com/alartum/ncvis/blob/travis-setup/LICENSE)
+[![GitHub](https://img.shields.io/github/license/alartum/ncvis.svg)](https://github.com/alartum/ncvis/blob/master/LICENSE)
 [![Build Status](https://travis-ci.com/alartum/ncvis.svg?branch=master)](https://travis-ci.com/alartum/ncvis)
 # ncvis
 
