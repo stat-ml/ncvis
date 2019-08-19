@@ -106,6 +106,3 @@ embedding = umap.UMAP(n_neighbors=15,
 fig, ax = plt.subplots(1, 1)
 plot_silhouette(embedding, y, ax, marker='.')
 plt.show()
-
-#%%
-print(embedding.shape)

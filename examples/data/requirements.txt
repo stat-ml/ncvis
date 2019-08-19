@@ -1,4 +1,0 @@
-numpy
-pandas
-imageio
-progressbar2

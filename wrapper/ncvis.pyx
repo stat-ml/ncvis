@@ -101,6 +101,17 @@ class NCVis:
             negative_plan *= n_epochs*n_negative
             negative_plan = negative_plan.round().astype(np.int)
             negative_plan[negative_plan < 1] = 1
+        elif type(n_noise) is np.ndarray:
+            if len(n_noise.shape) != 1:
+                raise ValueError("n_noise should have exactly one dimension, but shape {} was passed".format(n_noise.shape))
+            negative_plan = n_noise.astype(np.int)
+            n_epochs = negative_plan.size
+        elif type(n_noise) is int:
+            if n_noise < 1:
+                raise ValueError("n_noise should be at least 1, but {} was passed".format(n_noise))
+            negative_plan = np.full(n_epochs, n_noise).astype(np.int)
+        else:
+            raise ValueError("n_noise has unsupported type")
 
         if n_threads < 1:
             n_threads = cpu_count()

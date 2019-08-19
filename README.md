@@ -1,19 +1,32 @@
+[![Conda](https://anaconda.org/alartum/ncvis/badges/version.svg)](https://anaconda.org/alartum/ncvis)
 [![PyPI](https://img.shields.io/pypi/v/ncvis.svg)](https://pypi.python.org/pypi/ncvis/)
-![GitHub](https://img.shields.io/github/license/alartum/ncvis.svg)
+[![GitHub](https://img.shields.io/github/license/alartum/ncvis.svg)](https://github.com/alartum/ncvis/blob/travis-setup/LICENSE)
+[![Build Status](https://travis-ci.com/alartum/ncvis.svg?branch=master)](https://travis-ci.com/alartum/ncvis)
 # ncvis
 
 **NCVis** is an efficient solution for data visualization. It uses [HNSW](https://github.com/nmslib/hnswlib) for fast nearest neighbors graph construction and a parallel approach for building the graph embedding.
 
 # Installation
 
+## Conda [recommended]
+
+You do not need to setup the environment if using *conda*, all dependencies are installed automatically. 
+```bash
+$ conda install -c alartum ncvis 
+```
+
+## Pip
+
+**Important**: be sure to have a compiler with *OpenMP* support. *GCC* has it by default, wich is not the case with *clang*. You may need to install *llvm-openmp* library beforehand.  
+
 Install **numpy** and **cython** packages (compile-time dependencies):
 ```bash
-pip install numpy cython
+$ pip install numpy cython
 ```
 
 Install **ncvis** package:
 ```bash
-pip install ncvis
+$ pip install ncvis
 ```
 
 # Using
@@ -31,16 +44,20 @@ A more detailed example can be found [here](https://nbviewer.jupyter.org/github/
 
 Datasets can be dowloaded by using the *download.sh* script:
 ```bash
-bash examples/data/download.sh <dataset>
+$ bash examples/data/download.sh <dataset>
 ```
 Replace *\<dataset\>* with corresponding entry from the table. You can also download all of them at once:
 ```bash
-bash examples/data/download.sh
+$ bash examples/data/download.sh
 ```
 
  The datasets can be then accessed by using interfaces from the *data* Python module. Make sure that these packages are installed:
  ```bash
- pip install pandas imageio progressbar2
+ $ pip install -r examples/requirements-pip.txt
+ ```
+ or 
+  ```bash
+ $ conda install --file examples/requirements-conda.txt
  ```
 
 |Dataset| \<dataset\> | Dataset Class|
