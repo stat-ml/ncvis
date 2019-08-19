@@ -1,16 +1,16 @@
+{% set name = "ncvis" %}
+{% set version = "0.0.4" %}
+
 package:
-  name: ncvis
-  version: 0.0.4
+  name: {{ name|lower }}
+  version: {{ version }}
 
 source:
-  - path: ../ 
-  # git_rev: travis-setup
-  # git_url: https://github.com/alartum/nЕcvis
+  - path: ../
   - git_url: https://github.com/imneme/pcg-cpp.git
     folder: lib/pcg-cpp
   - git_url: https://github.com/nmslib/hnswlib.git
     folder: lib/hnswlib
-
 
 requirements:
   build:
@@ -33,6 +33,11 @@ test:
     - ncvis
 
 about:
+  home: https://github.com/alartum/ncvis
   license_file: LICENSE
+  license: MIT
+  license_family: MIT
   summary: NCVis is an efficient solution for data visualization
-  dev_url: https://github.com/alartum/ncvis
+  description: |
+    NCVis is an efficient solution for data visualization. It uses HNSW <https://github.com/nmslib/hnswlib> for fast nearest neighbors graph construction and a parallelised noise contrastive estimation for building the graph embedding.
+  dev_url: https://github.com/simplejson/simplejson
