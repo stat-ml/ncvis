@@ -44,8 +44,8 @@ cdef class NCVisWrapper:
     def __dealloc__(self):
         del self.c_ncvis
 
-    def fit(self, float[:, :] X):
-        return np.asarray(<float[:X.shape[0], :self.d]>self.c_ncvis.fit(&X[0, 0], X.shape[0], X.shape[1]))
+    def fit_transform(self, float[:, :] X):
+        return np.asarray(<float[:X.shape[0], :self.d]>self.c_ncvis.fit_transform(&X[0, 0], X.shape[0], X.shape[1]))
 
 class NCVis:
     def __init__(self, d=2, n_threads=-1, n_neighbors=15, M=16, ef_construction=200, random_seed=42, n_epochs=30, n_init_epochs=10, spread=1., min_dist=0.5, alpha=1., alpha_Q=1., n_noise=None):
@@ -118,7 +118,7 @@ class NCVis:
 
         self.model = NCVisWrapper(d, n_threads, n_neighbors, M, ef_construction, random_seed, n_epochs, n_init_epochs, spread, min_dist, alpha, alpha_Q, negative_plan)
 
-    def fit(self, X):
+    def fit_transform(self, X):
         """
         Builds an embedding for given points.
 
@@ -132,4 +132,4 @@ class NCVis:
         out : ndarray of floats of size [n_samples, m_low_dimensions]
             The embedding of the data samples.
         """
-        return self.model.fit(X.astype(np.float32))
+        return self.model.fit_transform(np.ascontiguousarray(X, dtype=np.float32))

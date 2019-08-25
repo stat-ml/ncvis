@@ -21,7 +21,7 @@ int main(int argc, char** argv){
 
   ncvis::NCVis vis(d, n_threads, atoi(argv[2]), 8, 200, 42, atoi(argv[4]), atoi(argv[5]));
 
-  float* Y = vis.fit(X, N, D);
+  float* Y = vis.fit_transform(X, N, D);
   if (Y == nullptr) return 1;
 
   // printf("-----------------\n");
