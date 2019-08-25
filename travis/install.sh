@@ -4,4 +4,3 @@ source activate test
 
 conda install conda-build conda-verify
 conda info
-conda build -b .
