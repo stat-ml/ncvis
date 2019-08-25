@@ -1,7 +1,7 @@
 branches:
   only:
-    - master
-    - /^release-.*$/
+  - master
+  - release
 
 language: python
 env:
