@@ -19,4 +19,5 @@ matrix:
     
 before_install: bash travis/before_install.sh
 install: bash travis/install.sh
+script: bash travis/test.sh
 after_success: bash travis/upload.sh
