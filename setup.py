@@ -89,6 +89,10 @@ PROJECT_URLS = {
 runtime_deps = ['scipy']
 # Add all sources except main
 src = glob('src/*.cpp')
+try:
+    src.remove('src/main.cpp')
+except ValueError:
+    pass
 
 # Handle different platforms
 extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math"]
@@ -102,7 +106,6 @@ elif sys.platform.startswith('linux'):
     extra_compile_args.append("-fopenmp")
 
 import os, json
-print(json.dumps(dict(os.environ), indent=2))
 extensions = [Extension("ncvis",
                         ["wrapper/*.pyx",
                         *src],

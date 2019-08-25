@@ -256,9 +256,9 @@ void ncvis::NCVis::optimize(size_t N, float* Y, float& Q){
     }
 }
 
-float* ncvis::NCVis::fit(const float *const X, size_t N, size_t D){
+float* ncvis::NCVis::fit_transform(const float *const X, size_t N, size_t D){
     if (N == 0 || D == 0){ 
-        throw std::runtime_error("[ncvis::NCVis::fit] Dataset should have at least one element.");
+        throw std::runtime_error("[ncvis::NCVis::fit_transform] Dataset should have at least one element.");
         return nullptr;
     }
     #if defined(DEBUG)

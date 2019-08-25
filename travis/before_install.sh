@@ -21,4 +21,4 @@ conda update -q conda
 conda create -n test python=$TRAVIS_PYTHON_VERSION
 #Using source as shell has not been properly configured to use 'conda activate'.
 source activate test
-conda install conda-build conda-verify anaconda-client
+conda install conda-build conda-verify anaconda-client twine

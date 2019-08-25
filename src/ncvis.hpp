@@ -43,7 +43,7 @@ namespace ncvis {
 
         @return Pointer to the embedding [N, d]. The j-th coordinate of i-th sample is assumed to be found at (X+d*i+j).
          */
-        float* fit(const float *const X, size_t N, size_t D);
+        float* fit_transform(const float *const X, size_t N, size_t D);
     private:
         size_t d_;
         size_t M_;
