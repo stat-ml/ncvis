@@ -38,8 +38,6 @@ class CleanCommand(Command):
                 print('removing %s' % relpath(path))
                 rmtree(path)
 
-# Install all dependencies by default
-runtime_deps = ['scipy']
 deps = []
 class InstallCommand(install):
     description = "Adds custom flags to normal install."
@@ -68,10 +66,14 @@ except ImportError:
     print(">> pip install numpy cython")
     exit(1)
 
-__version__ = "0.0.0"
-exec(open('wrapper/_version.py').read())
-DISTNAME = 'ncvis'
-VERSION = __version__
+import re
+with open('recipe/meta.yaml', 'r') as f:
+    config = f.read()
+    name = re.search("{% set name = \"(.+)\" %}", config).group(1)
+    version = re.search("{% set version = \"([.\d]+)\" %}", config).group(1)
+
+DISTNAME = name
+VERSION = version
 DESCRIPTION = 'Noise contrastive data visualization'
 with open('README.md', 'r') as f:
     LONG_DESCRIPTION = f.read()
@@ -83,8 +85,12 @@ PROJECT_URLS = {
     'Source Code': 'https://github.com/alartum/ncvis'
 }
 
-#Add all sources except main
+# Can be excluded from the install dependencies with --no-deps
+runtime_deps = ['scipy']
+# Add all sources except main
 src = glob('src/*.cpp')
+
+# Handle different platforms
 extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math"]
 libraries=["m"]
 import sys
@@ -94,6 +100,9 @@ if sys.platform.startswith('darwin'):
 elif sys.platform.startswith('linux'):
     libraries.append("gomp")
     extra_compile_args.append("-fopenmp")
+
+import os, json
+print(json.dumps(dict(os.environ), indent=2))
 extensions = [Extension("ncvis",
                         ["wrapper/*.pyx",
                         *src],
