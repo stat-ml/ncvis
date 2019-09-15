@@ -10,6 +10,13 @@
 
 namespace ncvis {
     typedef std::pair<size_t, size_t> Edge;
+    enum Distance
+    {
+        squared_L2,
+        inner_product,
+        cosine_similarity,
+        correlation
+    };
 
     class NCVis{
     public:
@@ -29,8 +36,9 @@ namespace ncvis {
         @param a,b Likelihood kernel parameters from: P(x, y) = 1/(1+a*|x-y|^(2*b))
         @param alpha,alpha_Q Learning rates for the embedding and normalization constant correspondingly.
         @param n_noise Number of noise samples per data sample for each iteration. An array of size [n_epochs]; will be initialized to 3 noise samples per data sample for each epoch if not provided.
+        @param dist Distance to use for nearest neighbors search.
         */
-        NCVis(size_t d=2, size_t n_threads=1, size_t n_neighbors=30, size_t M = 16, size_t ef_construction = 200, size_t random_seed = 42, int n_epochs=50, int n_init_epochs=20, float a=1., float b=1., float alpha=1., float alpha_Q=1., size_t* n_noise=nullptr);
+        NCVis(size_t d=2, size_t n_threads=1, size_t n_neighbors=30, size_t M = 16, size_t ef_construction = 200, size_t random_seed = 42, int n_epochs=50, int n_init_epochs=20, float a=1., float b=1., float alpha=1., float alpha_Q=1., size_t* n_noise=nullptr, ncvis::Distance dist=ncvis::Distance::squared_L2);
         ~NCVis();
         /*!
         @brief Build embedding for points.
@@ -58,10 +66,12 @@ namespace ncvis {
         float alpha_Q_;
         size_t* n_noise_;
 
-        hnswlib::L2Space* l2space_;
-        hnswlib::HierarchicalNSW<float>* appr_alg_;
+        hnswlib::SpaceInterface<float>* space_;
         std::vector<Edge> edges_;
+        hnswlib::HierarchicalNSW<float>* appr_alg_;
+        Distance dist_;
 
+        void preprocess(const float *const x, size_t D, ncvis::Distance dist, float* out);
         float d_sqr(const float *const x, const float *const y);
         void buildKNN(const float *const X, size_t N, size_t D);
         KNNTable findKNN(const float *const X, size_t N, size_t D, size_t k);

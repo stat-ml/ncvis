@@ -7,9 +7,9 @@
 
 ncvis::NCVis::NCVis(size_t d, size_t n_threads, size_t n_neighbors, size_t M, 
                     size_t ef_construction, size_t random_seed, int n_epochs, 
-                    int n_init_epochs, float a, float b, float alpha, float alpha_Q, size_t* n_noise):
+                    int n_init_epochs, float a, float b, float alpha, float alpha_Q, size_t* n_noise, ncvis::Distance dist):
 d_(d), M_(M), ef_construction_(ef_construction), 
-random_seed_(random_seed), n_neighbors_(n_neighbors), n_epochs_(n_epochs), n_init_epochs_(n_init_epochs), a_(a), b_(b), alpha_(alpha), alpha_Q_(alpha_Q), l2space_(nullptr), appr_alg_(nullptr)
+random_seed_(random_seed), n_neighbors_(n_neighbors), n_epochs_(n_epochs), n_init_epochs_(n_init_epochs), a_(a), b_(b), alpha_(alpha), alpha_Q_(alpha_Q), space_(nullptr), appr_alg_(nullptr), dist_(dist)
 {
     omp_set_num_threads(n_threads);
     n_noise_ = new size_t[n_epochs];
@@ -20,37 +20,117 @@ random_seed_(random_seed), n_neighbors_(n_neighbors), n_epochs_(n_epochs), n_ini
 }
 
 ncvis::NCVis::~NCVis(){
-    delete l2space_;
-    l2space_ = nullptr;
+    delete space_;
+    space_ = nullptr;
     delete appr_alg_;
     appr_alg_ = nullptr;
     delete[] n_noise_;
     n_noise_ =  nullptr;
 }
 
+void ncvis::NCVis::preprocess(const float *const x, size_t D, ncvis::Distance dist, float* out){
+    if (dist == ncvis::Distance::correlation){
+        float M = 0;
+        for (size_t i = 0; i < D; ++i){
+            M += x[i];
+        }
+        M /= D;
+        // printf("[ncvis::NCVis::preprocess] M = %f\n", M);
+        for (size_t i = 0; i < D; ++i){
+            out[i] = x[i]-M;
+        }
+    }
+    else{
+        for (size_t i = 0; i < D; ++i){
+            out[i] = x[i];
+        }
+    }
+    // printf("[ncvis::NCVis::preprocess](center) [");
+    // for (size_t j=0; j<D; ++j){
+    //     printf("%5.1f ", out[j]);
+    // }
+    // printf("]\n");
+    if (dist == ncvis::Distance::correlation || dist == ncvis::Distance::cosine_similarity){
+        float N = 0;
+        for (size_t i = 0; i < D; ++i){
+            N += out[i]*out[i];
+        }
+        // printf("[ncvis::NCVis::preprocess] N = %f\n", sqrtf(N));
+        if (N != 0){
+            for (size_t i = 0; i < D; ++i){
+                out[i] /= sqrtf(N);
+            }
+        }
+    }
+    // printf("[ncvis::NCVis::preprocess](norm) [");
+    // for (size_t j=0; j<D; ++j){
+    //     printf("%5.1f ", out[j]);
+    // }
+    // printf("]\n");
+}
+
 void ncvis::NCVis::buildKNN(const float *const X, size_t N, size_t D){
-    delete l2space_;
-    l2space_ = nullptr;
+    delete space_;
+    space_ = nullptr;
     delete appr_alg_;
-    appr_alg_ = nullptr;  
-    l2space_ = new hnswlib::L2Space(D);
-    appr_alg_ = new hnswlib::HierarchicalNSW<float>(l2space_, N, M_, ef_construction_, random_seed_);
+    appr_alg_ = nullptr;
+
+    switch(dist_){
+        case ncvis::Distance::squared_L2:
+            // printf("[ncvis::NCVis::buildKNN] squared_L2\n");
+            space_ = new hnswlib::L2Space(D);
+            break;
+        case ncvis::Distance::inner_product:
+        case ncvis::Distance::cosine_similarity:
+        case ncvis::Distance::correlation:
+            // printf("[ncvis::NCVis::buildKNN] inner_product || cosine_similarity || correlation\n");
+            space_ = new hnswlib::InnerProductSpace(D);
+            break;
+        default: 
+            throw std::runtime_error("[ncvis::NCVis::buildKNN] Unrecognized distance type.");
+            break;
+    }
+    appr_alg_ = new hnswlib::HierarchicalNSW<float>(space_, N, M_, ef_construction_, random_seed_);
 
     // Perform initialisation without messing with mutexes 
-    appr_alg_->addPoint((void*)X, (size_t) 0);
-    #pragma omp parallel for
+    float* x = new float[D];
+    preprocess(X, D, dist_, x);
+    appr_alg_->addPoint((void*)x, 0);
+    delete[] x;
+
+    #pragma omp parallel
+    {
+    float* x = new float[D];
+    #pragma omp for
     for (size_t i=1; i < N; ++i){
-        appr_alg_->addPoint((void*)(X+i*D), i);
+        // printf("[%lu]>> [", i);
+        // for (size_t j=0; j<D; ++j){
+        //     printf("%5.1f ", X[j+D*i]);
+        // }
+        // printf("]\n");
+        preprocess(X+i*D, D, dist_, x);
+        // printf("[%lu]<< [", i);
+        // for (size_t j=0; j<D; ++j){
+        //     printf("%5.1f ", x[j]);
+        // }
+        // printf("]\n");
+        appr_alg_->addPoint((void*)x, i);
+    }
+    delete[] x;
     }
 }
 
 ncvis::KNNTable ncvis::NCVis::findKNN(const float *const X, size_t N, size_t D, size_t k){
     KNNTable table(N, k);
 
-    #pragma omp parallel for
+    #pragma omp parallel
+    {
+    float* x = new float[D];
+    #pragma omp for
     for (size_t i=0; i < N; ++i){
-        // Find k+1 neighbors as one of them is the point itself 
-        auto result = appr_alg_->searchKnn((const void*)(X+i*D), k+1);
+        // Find k+1 neighbors as one of them is the point itself
+        preprocess(X+i*D, D, dist_, x);
+        auto result = appr_alg_->searchKnn((const void*)x, k+1);
         if (result.size() != k+1){
             std::cout << "[ncvis::NCVis::findKNN] Found less than k nearest neighbors, try increasing M or ef_construction.";
         } else{
@@ -61,6 +141,8 @@ ncvis::KNNTable ncvis::NCVis::findKNN(const float *const X, size_t N, size_t D, 
                 result.pop();
             }
         }
+    }
+    delete[] x;
     }
 
     return table;
@@ -257,6 +339,15 @@ void ncvis::NCVis::optimize(size_t N, float* Y, float& Q){
 }
 
 float* ncvis::NCVis::fit_transform(const float *const X, size_t N, size_t D){
+    // printf("==============DATA============\n");
+    // for (size_t i=0; i<N; ++i){
+    //     printf("[");
+    //     for (size_t j=0; j<D; ++j){
+    //         printf("%5.2f ", X[j+D*i]);
+    //     }
+    //     printf("]\n");
+    // }
+    // printf("===============================\n");
     if (N == 0 || D == 0){ 
         throw std::runtime_error("[ncvis::NCVis::fit_transform] Dataset should have at least one element.");
         return nullptr;
@@ -281,8 +372,8 @@ float* ncvis::NCVis::fit_transform(const float *const X, size_t N, size_t D){
         // The graph itself is no longer needed
         delete appr_alg_;
         appr_alg_ = nullptr;
-        delete l2space_;
-        l2space_ = nullptr;
+        delete space_;
+        space_ = nullptr;
 
         t2 = std::chrono::high_resolution_clock::now();
         std::cout << "findKNN: "
@@ -306,8 +397,8 @@ float* ncvis::NCVis::fit_transform(const float *const X, size_t N, size_t D){
         // The graph itself is no longer needed
         delete appr_alg_;
         appr_alg_ = nullptr;
-        delete l2space_;
-        l2space_  = nullptr;
+        delete space_;
+        space_ = nullptr;
 
         table.symmetrize();
         build_edges(table);

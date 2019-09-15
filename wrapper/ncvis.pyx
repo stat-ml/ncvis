@@ -28,7 +28,7 @@ cdef class NCVisWrapper:
     cdef cncvis.NCVis* c_ncvis
     cdef size_t d
 
-    def __cinit__(self, size_t d, size_t n_threads, size_t n_neighbors, size_t M, size_t ef_construction, size_t random_seed, int n_epochs, int n_init_epochs, float spread, float min_dist, float alpha, float alpha_Q, object n_noise):
+    def __cinit__(self, size_t d, size_t n_threads, size_t n_neighbors, size_t M, size_t ef_construction, size_t random_seed, int n_epochs, int n_init_epochs, float spread, float min_dist, float alpha, float alpha_Q, object n_noise, cncvis.Distance distance):
         a, b = find_ab_params(spread, min_dist)
         cdef size_t[:] n_noise_arr
         if isinstance(n_noise, int):
@@ -38,7 +38,7 @@ cdef class NCVisWrapper:
                 raise ValueError("Expected 1D n_noise array.")
             n_epochs = n_noise.shape[0]
             n_noise_arr = n_noise.astype(np.uint)
-        self.c_ncvis = new cncvis.NCVis(d, n_threads, n_neighbors, M, ef_construction, random_seed, n_epochs, n_init_epochs, a, b, alpha, alpha_Q, &n_noise_arr[0])
+        self.c_ncvis = new cncvis.NCVis(d, n_threads, n_neighbors, M, ef_construction, random_seed, n_epochs, n_init_epochs, a, b, alpha, alpha_Q, &n_noise_arr[0], distance)
         self.d = d
 
     def __dealloc__(self):
@@ -48,7 +48,7 @@ cdef class NCVisWrapper:
         return np.asarray(<float[:X.shape[0], :self.d]>self.c_ncvis.fit_transform(&X[0, 0], X.shape[0], X.shape[1]))
 
 class NCVis:
-    def __init__(self, d=2, n_threads=-1, n_neighbors=15, M=16, ef_construction=200, random_seed=42, n_epochs=30, n_init_epochs=10, spread=1., min_dist=0.5, alpha=1., alpha_Q=1., n_noise=None):
+    def __init__(self, d=2, n_threads=-1, n_neighbors=15, M=16, ef_construction=200, random_seed=42, n_epochs=30, n_init_epochs=10, spread=1., min_dist=0.5, alpha=1., alpha_Q=1., n_noise=None, distance="euclidean"):
         """
         Creates new NCVis instance.
 
@@ -90,6 +90,8 @@ class NCVis:
             Learning rate for the normalization constant.
         n_noise : int or ndarray of ints
             Number of noise samples to use per data sample. If ndarray is provided, n_epochs is set to its length. If n_noise is None, it is set to dynamic sampling with noise level gradually increasing from 0 to fixed value. 
+        distance : str {'euclidean', 'cosine', 'correlation', 'inner_product'}
+            Distance to use for nearest neighbors search.
         """
         if n_noise is None:
             n_negative = 5
@@ -116,7 +118,15 @@ class NCVis:
         if n_threads < 1:
             n_threads = cpu_count()
 
-        self.model = NCVisWrapper(d, n_threads, n_neighbors, M, ef_construction, random_seed, n_epochs, n_init_epochs, spread, min_dist, alpha, alpha_Q, negative_plan)
+        distances = {
+            'euclidean': cncvis.squared_L2,
+            'cosine': cncvis.cosine_similarity, 
+            'correlation': cncvis.correlation,
+            'inner_product': cncvis.inner_product 
+        }
+        if distance not in distances:
+            raise ValueError("Unsupported distance, it should be one of: {'euclidean', 'cosine', 'correlation', 'inner_product'}")
+        self.model = NCVisWrapper(d, n_threads, n_neighbors, M, ef_construction, random_seed, n_epochs, n_init_epochs, spread, min_dist, alpha, alpha_Q, negative_plan, distances[distance])
 
     def fit_transform(self, X):
         """
