@@ -6,7 +6,8 @@ branches:
 
 language: python
 env:
-  - OMP_NUM_THREADS=4
+  global:
+    - OMP_NUM_THREADS=4
 
 matrix:
   include:
@@ -22,7 +23,10 @@ matrix:
     - name: "Windows"
       os: windows
       language: shell
-      env: CONDA_NAME=Windows CONDA_EXT=sh SCRIPT_EXT=cmd
+      env:
+        - CONDA_NAME=Windows
+        - CONDA_EXT=exe
+        - SCRIPT_EXT=cmd
 
 before_install: 
   - curl "https://repo.anaconda.com/miniconda/Miniconda3-latest-$CONDA_NAME-x86_64.$CONDA_EXT" -o ~/miniconda.$CONDA_EXT
