@@ -13,15 +13,22 @@ matrix:
     # - name: "Xenial Linux"
     #   python: 3.7 
     #   dist: xenial
+    #   env: CONDA_NAME=Linux CONDA_EXT=sh SCRIPT_EXT=sh
     # - name: "macOS"
     #   os: osx
     #   osx_image: xcode10.2
     #   language: shell
+    #   env: CONDA_NAME=MacOSX CONDA_EXT=sh SCRIPT_EXT=sh
     - name: "Windows"
       os: windows
       language: shell
+      env: CONDA_NAME=Windows CONDA_EXT=sh SCRIPT_EXT=cmd
 
-before_install: bash travis/before_install_handle.sh
-install: bash travis/install.sh
+before_install: 
+  - curl "https://repo.anaconda.com/miniconda/Miniconda3-latest-$CONDA_NAME-x86_64.$CONDA_EXT" -o ~/miniconda.$CONDA_EXT
+  - travis/before_install.$SCRIPT_EXT
+  
+install: 
+  - travis/install.$SCRIPT_EXT
 script: bash travis/test.sh
 after_success: bash travis/upload.sh
