@@ -21,7 +21,7 @@ matrix:
       os: windows
       language: shell
 
-before_install: bash travis/before_install.sh
+before_install: bash travis/before_install_handle.sh
 install: bash travis/install.sh
 script: bash travis/test.sh
 after_success: bash travis/upload.sh
