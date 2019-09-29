@@ -1,2 +1,2 @@
 %UserProfile%\miniconda.exe /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\miniconda
-%UserProfile%\miniconda\Scripts\activate.bat %UserProfile%\miniconda
+cmd.exe /K %UserProfile%\miniconda\Scripts\activate.bat %UserProfile%\miniconda
