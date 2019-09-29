@@ -11,7 +11,7 @@ if [ $TRAVIS_OS_NAME != 'windows' ]; then
     bash ~/miniconda.sh -b -p $HOME/miniconda
     export PATH="$HOME/miniconda/bin:$PATH"
 else
-    ./prepare.bat
+    travis/prepare.bat
     # curl "https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe"
     # cmd.exe /C 'Miniconda4-latest-Windows-x86_64.exe /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\Miniconda3'
     # start /wait "" 
