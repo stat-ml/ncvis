@@ -16,7 +16,10 @@ matrix:
       os: osx
       osx_image: xcode10.2
       language: shell
-    
+    - name: "Windows"
+      os: windows
+      language: shell
+          
 before_install: bash travis/before_install.sh
 install: bash travis/install.sh
 script: bash travis/test.sh
