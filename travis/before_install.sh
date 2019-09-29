@@ -16,6 +16,7 @@ else
     cmd "/C %UserProfile%\miniconda.exe /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\miniconda"
 fi
 export PATH="$HOME/miniconda/bin:$PATH"
+ls "$HOME/miniconda/bin"
 
 conda config --set always_yes yes --set anaconda_upload no
 
