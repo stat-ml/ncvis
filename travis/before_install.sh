@@ -2,7 +2,7 @@ if [ $TRAVIS_OS_NAME = 'osx' ]; then
     conda_name="MacOSX"
 elif [ $TRAVIS_OS_NAME = 'linux' ]; then
     conda_name="Linux"
-elif [ $TRAVIS_OS_NAME = 'windows' ];
+elif [ $TRAVIS_OS_NAME = 'windows' ]; then
     conda_name="Windows"
 fi
 

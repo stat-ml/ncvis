@@ -1,7 +1,8 @@
 branches:
   only:
-  - master
-  - /^release-.*$/
+  # - master
+  # - /^release-.*$/
+  - develop
 
 language: python
 env:
@@ -9,17 +10,17 @@ env:
 
 matrix:
   include:
-    - name: "Xenial Linux"
-      python: 3.7 
-      dist: xenial
-    - name: "macOS"
-      os: osx
-      osx_image: xcode10.2
-      language: shell
+    # - name: "Xenial Linux"
+    #   python: 3.7 
+    #   dist: xenial
+    # - name: "macOS"
+    #   os: osx
+    #   osx_image: xcode10.2
+    #   language: shell
     - name: "Windows"
       os: windows
       language: shell
-          
+
 before_install: bash travis/before_install.sh
 install: bash travis/install.sh
 script: bash travis/test.sh
