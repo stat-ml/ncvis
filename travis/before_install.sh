@@ -9,14 +9,11 @@ fi
 if [ $TRAVIS_OS_NAME != 'windows' ]; then
     curl "https://repo.continuum.io/miniconda/Miniconda3-latest-$conda_name-x86_64.sh" -o ~/miniconda.sh
     bash ~/miniconda.sh -b -p $HOME/miniconda
+    export PATH="$HOME/miniconda/bin:$PATH"
 else
-    echo $HOME
-    travis/prepare.bat
-    curl "https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe" -o $HOME/miniconda.exe
-    cmd "/C %UserProfile%\miniconda.exe /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\miniconda"
+    curl "https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe" -o ~/miniconda.exe
+    travis/prepare.cmd
 fi
-export PATH="$HOME/miniconda/bin:$PATH"
-ls "$HOME/miniconda/bin"
 
 conda config --set always_yes yes --set anaconda_upload no
 
