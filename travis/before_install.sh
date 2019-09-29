@@ -2,9 +2,8 @@ if [ $TRAVIS_OS_NAME = 'osx' ]; then
     conda_name="MacOSX"
 elif [ $TRAVIS_OS_NAME = 'linux' ]; then
     conda_name="Linux"
-else
+elif [ $TRAVIS_OS_NAME = 'windows' ];
     conda_name="Windows"
-    choco install curl
 fi
 
 if [ $TRAVIS_OS_NAME != 'windows' ]; then
@@ -12,8 +11,10 @@ if [ $TRAVIS_OS_NAME != 'windows' ]; then
     bash ~/miniconda.sh -b -p $HOME/miniconda
     export PATH="$HOME/miniconda/bin:$PATH"
 else
-    curl "https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe"
-    start /wait "" Miniconda4-latest-Windows-x86_64.exe /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\Miniconda3
+    ./prepare.bat
+    # curl "https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe"
+    # cmd.exe /C 'Miniconda4-latest-Windows-x86_64.exe /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\Miniconda3'
+    # start /wait "" 
 fi
 
 conda config --set always_yes yes --set anaconda_upload no
