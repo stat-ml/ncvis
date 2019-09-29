@@ -13,8 +13,8 @@ if [ $TRAVIS_OS_NAME != 'windows' ]; then
 else
     echo $HOME
     travis/prepare.bat
-    curl "https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe"
-    cmd "/C Miniconda4-latest-Windows-x86_64.exe /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\Miniconda3"
+    curl "https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe" -o $HOME/miniconda.exe
+    cmd "/C %UserProfile%\miniconda.exe /InstallationType=JustMe /RegisterPython=0 /S /D=%UserProfile%\Miniconda3"
 fi
 
 conda config --set always_yes yes --set anaconda_upload no
