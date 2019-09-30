@@ -6,7 +6,7 @@ conda install anaconda-client
 
 #Upload to Anaconda Cloud
 CONDA_PKG=$(conda build . --output)
-anaconda -t $CONDA_UPLOAD_TOKEN upload $CONDA_PKG --force
+anaconda -t conda_token.txt upload $CONDA_PKG --force
 
 #Upload source distribution to PyPI only once (if we are on Linux)
 if [ $TRAVIS_OS_NAME = 'linux' ]; then

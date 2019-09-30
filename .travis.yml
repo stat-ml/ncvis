@@ -1,8 +1,7 @@
 branches:
   only:
-  # - master
-  # - /^release-.*$/
-  - develop
+  - master
+  - /^release-.*$/
 
 language: python
 env:
@@ -11,22 +10,19 @@ env:
 
 matrix:
   include:
-    # - name: "Xenial Linux"
-    #   python: 3.7 
-    #   dist: xenial
-    #   env: CONDA_NAME=Linux CONDA_EXT=sh SCRIPT_EXT=sh
-    # - name: "macOS"
-    #   os: osx
-    #   osx_image: xcode10.2
-    #   language: shell
-    #   env: CONDA_NAME=MacOSX CONDA_EXT=sh SCRIPT_EXT=sh
+    - name: "Xenial Linux"
+      python: 3.7 
+      dist: xenial
+      env: CONDA_NAME=Linux CONDA_EXT=sh SCRIPT_EXT=sh
+    - name: "macOS"
+      os: osx
+      osx_image: xcode10.2
+      language: shell
+      env: CONDA_NAME=MacOSX CONDA_EXT=sh SCRIPT_EXT=sh
     - name: "Windows"
       os: windows
       language: shell
-      env:
-        - CONDA_NAME=Windows
-        - CONDA_EXT=exe
-        - SCRIPT_EXT=cmd
+      env: CONDA_NAME=Windows CONDA_EXT=exe SCRIPT_EXT=cmd
 
 before_install: 
   - echo $CONDA_UPLOAD_TOKEN > conda_token.txt
@@ -35,5 +31,4 @@ before_install:
   
 install: travis/install.$SCRIPT_EXT
 script: travis/build.$SCRIPT_EXT
-# after_success: if [ $TRAVIS_BRANCH = 'master' ] && [ $TRAVIS_EVENT_TYPE = 'push' ]; then travis/upload.$SCRIPT_EXT; fi
-after_success: travis/upload.$SCRIPT_EXT
+after_success: if [ $TRAVIS_BRANCH = 'master' ] && [ $TRAVIS_EVENT_TYPE = 'push' ]; then travis/upload.$SCRIPT_EXT; fi
