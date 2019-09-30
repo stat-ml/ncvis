@@ -32,12 +32,12 @@ cdef class NCVisWrapper:
         a, b = find_ab_params(spread, min_dist)
         cdef long[:] n_noise_arr
         if isinstance(n_noise, int):
-            n_noise_arr = np.full(n_epochs, n_noise, dtype=np.uint)
+            n_noise_arr = np.full(n_epochs, n_noise, dtype=np.long)
         elif isinstance(n_noise, np.ndarray):
             if len(n_noise.shape) > 1:
                 raise ValueError("Expected 1D n_noise array.")
             n_epochs = n_noise.shape[0]
-            n_noise_arr = n_noise.astype(np.uint)
+            n_noise_arr = n_noise.astype(np.long)
         self.c_ncvis = new cncvis.NCVis(d, n_threads, n_neighbors, M, ef_construction, random_seed, n_epochs, n_init_epochs, a, b, alpha, alpha_Q, &n_noise_arr[0], distance)
         self.d = d
 
