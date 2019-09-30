@@ -102,7 +102,7 @@ void ncvis::KNNTable::symmetrize(){
 long ncvis::KNNTable::size(){
     if (dists.size() != inds.size()){
         std::cerr << "[ncvis::KNNTable::size] Indices and distances sizes differ.";
-        return std::min(dists.size(), inds.size());
+        return (long)std::min(dists.size(), inds.size());
     }
-    return dists.size();
+    return (long)dists.size();
 }

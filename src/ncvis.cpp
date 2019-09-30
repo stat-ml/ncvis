@@ -154,7 +154,7 @@ void ncvis::NCVis::build_edges(ncvis::KNNTable& table){
     #pragma omp parallel for
     for (long i = 0; i < (long)table.inds.size(); ++i){
         #pragma omp atomic
-        n_edges += table.inds[i].size();
+        n_edges += (long)table.inds[i].size();
     }
     edges_.reserve(n_edges);
 

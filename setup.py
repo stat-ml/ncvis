@@ -95,20 +95,16 @@ except ValueError:
     pass
 
 # Handle different platforms
-libraries=["m"]
 import sys
 if sys.platform.startswith('darwin'):
-    extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math"]
-    libraries.append("omp")
-    extra_compile_args.append("-fopenmp=libomp")
+    extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math", "-fopenmp=libomp"]
+    libraries=["m", "omp"]
 elif sys.platform.startswith('linux'):
-    extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math"]
-    libraries.append("gomp")
-    extra_compile_args.append("-fopenmp")
+    extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math", "-fopenmp"]
+    libraries=["m", "gomp"]
 elif sys.platform.startswith('win32'):
-    extra_compile_args=["/O2", "/fp:fast"]
-    libraries.append("/openmp:experimental")
-    extra_compile_args.append("/openmp:experimental")
+    extra_compile_args=["/O2", "/fp:fast", "/openmp:experimental"]
+    libraries=["/openmp:experimental"]
 
 import os, json
 extensions = [Extension("ncvis",
