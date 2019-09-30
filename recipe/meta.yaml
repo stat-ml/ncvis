@@ -29,8 +29,12 @@ requirements:
     - numpy >=1.15
     - scipy >=1.1
 test:
+  requires:
+    - pytest
   imports:
     - ncvis
+  commands:
+    - pytest test.py
 
 about:
   home: https://github.com/alartum/ncvis
