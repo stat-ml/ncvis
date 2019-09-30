@@ -32,12 +32,10 @@ test:
   files:
     - test.py
   requires:
-    - pytest
     - numpy
     - ncvis
   commands:
-    - cat run_test.sh
-    - pytest test.py
+    - python test.py
 
 about:
   home: https://github.com/alartum/ncvis
