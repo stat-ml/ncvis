@@ -5,15 +5,15 @@
 #include "../lib/pcg-cpp/include/pcg_random.hpp"
 #include <chrono>
 
-ncvis::NCVis::NCVis(size_t d, size_t n_threads, size_t n_neighbors, size_t M, 
-                    size_t ef_construction, size_t random_seed, int n_epochs, 
-                    int n_init_epochs, float a, float b, float alpha, float alpha_Q, size_t* n_noise, ncvis::Distance dist):
+ncvis::NCVis::NCVis(long d, long n_threads, long n_neighbors, long M, 
+                    long ef_construction, long random_seed, int n_epochs, 
+                    int n_init_epochs, float a, float b, float alpha, float alpha_Q, long* n_noise, ncvis::Distance dist):
 d_(d), M_(M), ef_construction_(ef_construction), 
 random_seed_(random_seed), n_neighbors_(n_neighbors), n_epochs_(n_epochs), n_init_epochs_(n_init_epochs), a_(a), b_(b), alpha_(alpha), alpha_Q_(alpha_Q), space_(nullptr), appr_alg_(nullptr), dist_(dist)
 {
     omp_set_num_threads(n_threads);
-    n_noise_ = new size_t[n_epochs];
-    size_t default_noise = 3;
+    n_noise_ = new long[n_epochs];
+    long default_noise = 3;
     for (int i=0; i<n_epochs; ++i){
         n_noise_[i] = (n_noise == nullptr)? default_noise:n_noise[i];
     }
@@ -28,48 +28,48 @@ ncvis::NCVis::~NCVis(){
     n_noise_ =  nullptr;
 }
 
-void ncvis::NCVis::preprocess(const float *const x, size_t D, ncvis::Distance dist, float* out){
+void ncvis::NCVis::preprocess(const float *const x, long D, ncvis::Distance dist, float* out){
     if (dist == ncvis::Distance::correlation){
         float M = 0;
-        for (size_t i = 0; i < D; ++i){
+        for (long i = 0; i < D; ++i){
             M += x[i];
         }
         M /= D;
         // printf("[ncvis::NCVis::preprocess] M = %f\n", M);
-        for (size_t i = 0; i < D; ++i){
+        for (long i = 0; i < D; ++i){
             out[i] = x[i]-M;
         }
     }
     else{
-        for (size_t i = 0; i < D; ++i){
+        for (long i = 0; i < D; ++i){
             out[i] = x[i];
         }
     }
     // printf("[ncvis::NCVis::preprocess](center) [");
-    // for (size_t j=0; j<D; ++j){
+    // for (long j=0; j<D; ++j){
     //     printf("%5.1f ", out[j]);
     // }
     // printf("]\n");
     if (dist == ncvis::Distance::correlation || dist == ncvis::Distance::cosine_similarity){
         float N = 0;
-        for (size_t i = 0; i < D; ++i){
+        for (long i = 0; i < D; ++i){
             N += out[i]*out[i];
         }
         // printf("[ncvis::NCVis::preprocess] N = %f\n", sqrtf(N));
         if (N != 0){
-            for (size_t i = 0; i < D; ++i){
+            for (long i = 0; i < D; ++i){
                 out[i] /= sqrtf(N);
             }
         }
     }
     // printf("[ncvis::NCVis::preprocess](norm) [");
-    // for (size_t j=0; j<D; ++j){
+    // for (long j=0; j<D; ++j){
     //     printf("%5.1f ", out[j]);
     // }
     // printf("]\n");
 }
 
-void ncvis::NCVis::buildKNN(const float *const X, size_t N, size_t D){
+void ncvis::NCVis::buildKNN(const float *const X, long N, long D){
     delete space_;
     space_ = nullptr;
     delete appr_alg_;
@@ -104,13 +104,13 @@ void ncvis::NCVis::buildKNN(const float *const X, size_t N, size_t D){
     #pragma omp for
     for (long i=1; i < N; ++i){
         // printf("[%lu]>> [", i);
-        // for (size_t j=0; j<D; ++j){
+        // for (long j=0; j<D; ++j){
         //     printf("%5.1f ", X[j+D*i]);
         // }
         // printf("]\n");
         preprocess(X+i*D, D, dist_, x);
         // printf("[%lu]<< [", i);
-        // for (size_t j=0; j<D; ++j){
+        // for (long j=0; j<D; ++j){
         //     printf("%5.1f ", x[j]);
         // }
         // printf("]\n");
@@ -120,7 +120,7 @@ void ncvis::NCVis::buildKNN(const float *const X, size_t N, size_t D){
     }
 }
 
-ncvis::KNNTable ncvis::NCVis::findKNN(const float *const X, size_t N, size_t D, size_t k){
+ncvis::KNNTable ncvis::NCVis::findKNN(const float *const X, long N, long D, long k){
     KNNTable table(N, k);
 
     #pragma omp parallel
@@ -131,10 +131,10 @@ ncvis::KNNTable ncvis::NCVis::findKNN(const float *const X, size_t N, size_t D, 
         // Find k+1 neighbors as one of them is the point itself
         preprocess(X+i*D, D, dist_, x);
         auto result = appr_alg_->searchKnn((const void*)x, k+1);
-        if (result.size() != k+1){
+        if ((long)result.size() != k+1){
             std::cout << "[ncvis::NCVis::findKNN] Found less than k nearest neighbors, try increasing M or ef_construction.";
         } else{
-            for (size_t j=0; j<k; ++j) {
+            for (long j=0; j<k; ++j) {
                 auto& result_tuple = result.top();
                 table.dists[i].push_back(result_tuple.first);
                 table.inds[i].push_back(result_tuple.second);
@@ -149,17 +149,17 @@ ncvis::KNNTable ncvis::NCVis::findKNN(const float *const X, size_t N, size_t D, 
 }
 
 void ncvis::NCVis::build_edges(ncvis::KNNTable& table){
-    size_t n_edges = 0;
+    long n_edges = 0;
 
     #pragma omp parallel for
-    for (long i = 0; i < table.inds.size(); ++i){
+    for (long i = 0; i < (long)table.inds.size(); ++i){
         #pragma omp atomic
         n_edges += table.inds[i].size();
     }
     edges_.reserve(n_edges);
 
-    for (size_t i = 0; i < table.inds.size(); ++i){
-        for (size_t j =0; j < table.inds[i].size(); ++j){
+    for (long i = 0; i < (long)table.inds.size(); ++i){
+        for (long j =0; j < (long)table.inds[i].size(); ++j){
             edges_.emplace_back(i, table.inds[i][j]);
         }
     }
@@ -167,14 +167,14 @@ void ncvis::NCVis::build_edges(ncvis::KNNTable& table){
 
 float ncvis::NCVis::d_sqr(const float *const x, const float *const y){
     float dist_sqr = 0;
-    for (size_t i = 0; i < d_; ++i){
+    for (long i = 0; i < d_; ++i){
         dist_sqr += (x[i]-y[i])*(x[i]-y[i]);
     }
 
     return dist_sqr;
 }
 
-void ncvis::NCVis::init_embedding(size_t N, float*& Y, float alpha){
+void ncvis::NCVis::init_embedding(long N, float*& Y, float alpha){
     // For temporary values 
     float* Y_swap = new float[N*d_];
     float* mean = new float[d_];
@@ -203,11 +203,11 @@ void ncvis::NCVis::init_embedding(size_t N, float*& Y, float alpha){
             Y[i] = 0;
         }
         #pragma omp for
-        for (long i = 0; i < edges_.size(); ++i){
-            size_t id = edges_[i].first;
-            size_t other_id = edges_[i].second;
+        for (long i = 0; i < (long)edges_.size(); ++i){
+            long id = edges_[i].first;
+            long other_id = edges_[i].second;
             
-            for (size_t k = 0; k < d_; ++k){
+            for (long k = 0; k < d_; ++k){
                 // float dx_k = Y[other_id*d_+k] - Y[id*d_+k];
                 // dx_k = dx_k * init_alpha;
                 // printf("dx[%ld] = %f\n", k, dx_k);
@@ -225,7 +225,7 @@ void ncvis::NCVis::init_embedding(size_t N, float*& Y, float alpha){
 
         #pragma omp for
         for (long i = 0; i < N; ++i){
-            for (size_t k = 0; k < d_; ++k){
+            for (long k = 0; k < d_; ++k){
                 #pragma omp atomic
                 mean[k] += Y[i*d_+k];
             }
@@ -238,7 +238,7 @@ void ncvis::NCVis::init_embedding(size_t N, float*& Y, float alpha){
 
         #pragma omp for
         for (long i = 0; i < N; ++i){
-            for (size_t k = 0; k < d_; ++k){
+            for (long k = 0; k < d_; ++k){
                 #pragma omp atomic
                 sigma[k] += (Y[i*d_+k] - mean[k])*(Y[i*d_+k] - mean[k]);
             }
@@ -252,7 +252,7 @@ void ncvis::NCVis::init_embedding(size_t N, float*& Y, float alpha){
 
         #pragma omp for
         for (long i = 0; i < N; ++i){
-            for (size_t k = 0; k < d_; ++k){
+            for (long k = 0; k < d_; ++k){
                 Y[i*d_+k] = (Y[i*d_+k] - mean[k])/sigma[k];
             }
         }
@@ -264,26 +264,26 @@ void ncvis::NCVis::init_embedding(size_t N, float*& Y, float alpha){
     delete[] sigma;
 }
 
-void ncvis::NCVis::optimize(size_t N, float* Y, float& Q){
+void ncvis::NCVis::optimize(long N, float* Y, float& Q){
     float Q_cum=0.;
     #pragma omp parallel
     {
     pcg64 pcg(random_seed_+omp_get_thread_num());
     // Build layout
-    std::uniform_int_distribution<size_t> gen_ind(0, N-1);
+    std::uniform_int_distribution<long> gen_ind(0, N-1);
 
     for (int epoch = 0; epoch < n_epochs_; ++epoch){
         // Hogwild: lock-free parameters reading and writing
         float step = alpha_*(1-(((float)epoch)/n_epochs_)*(((float)epoch)/n_epochs_));
         float Q_copy = Q;
-        size_t cur_noise = n_noise_[epoch];
+        long cur_noise = n_noise_[epoch];
         Q_cum = 0;
         #pragma omp for
-        for (long i = 0; i < edges_.size(); ++i){
+        for (long i = 0; i < (long)edges_.size(); ++i){
             // printf("[%d] (%ld, %ld)\n", epoch, edges_[i].first, edges_[i].second);
-            size_t id = edges_[i].first;
-            for (size_t j = 0; j < cur_noise+1; ++j){
-                size_t other_id;
+            long id = edges_[i].first;
+            for (long j = 0; j < cur_noise+1; ++j){
+                long other_id;
                 if (j == 0){
                     other_id = edges_[i].second; 
                 } else{
@@ -317,7 +317,7 @@ void ncvis::NCVis::optimize(size_t N, float* Y, float& Q){
                 // printf("[%d:%d] Q = %f\n", epoch, omp_get_thread_num(), Q);
                 // }
                 // Also non-blocking write
-                for (size_t k = 0; k < d_; ++k){
+                for (long k = 0; k < d_; ++k){
                     float dx_k = Y[other_id*d_+k] - Y[id*d_+k];
                     dx_k = dx_k * w * step;
                     if (dx_k > 4.){
@@ -338,11 +338,11 @@ void ncvis::NCVis::optimize(size_t N, float* Y, float& Q){
     }
 }
 
-float* ncvis::NCVis::fit_transform(const float *const X, size_t N, size_t D){
+float* ncvis::NCVis::fit_transform(const float *const X, long N, long D){
     // printf("==============DATA============\n");
-    // for (size_t i=0; i<N; ++i){
+    // for (long i=0; i<N; ++i){
     //     printf("[");
-    //     for (size_t j=0; j<D; ++j){
+    //     for (long j=0; j<D; ++j){
     //         printf("%5.2f ", X[j+D*i]);
     //     }
     //     printf("]\n");
@@ -363,7 +363,7 @@ float* ncvis::NCVis::fit_transform(const float *const X, size_t N, size_t D){
         buildKNN(X, N, D);
     #endif
     // Number of neighbors can't exceed the total number of other points 
-    size_t k = (n_neighbors_ < N-1)? n_neighbors_:(N-1);
+    long k = (n_neighbors_ < N-1)? n_neighbors_:(N-1);
     k = (k > 0)? k:1;
     #if defined(DEBUG)
         t1 = std::chrono::high_resolution_clock::now();
@@ -424,9 +424,9 @@ float* ncvis::NCVis::fit_transform(const float *const X, size_t N, size_t D){
                 << " ms\n";
     #endif
     // printf("============DISTANCES==========\n");
-    // for (size_t i=0; i<N; ++i){
+    // for (long i=0; i<N; ++i){
     //     printf("[");
-    //     for (size_t j=0; j<table.dists[i].size(); ++j){
+    //     for (long j=0; j<table.dists[i].size(); ++j){
     //         printf("%f ", table.dists[i][j]);
     //     }
     //     printf("]\n");
@@ -434,9 +434,9 @@ float* ncvis::NCVis::fit_transform(const float *const X, size_t N, size_t D){
     // printf("===============================\n");
 
     // printf("============NEIGHBORS==========\n");
-    // for (size_t i=0; i<N; ++i){
+    // for (long i=0; i<N; ++i){
     //     printf("[");
-    //     for (size_t j=0; j<table.inds[i].size(); ++j){
+    //     for (long j=0; j<table.inds[i].size(); ++j){
     //         printf("%ld ", table.inds[i][j]);
     //     }
     //     printf("]\n");

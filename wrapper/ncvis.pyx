@@ -26,11 +26,11 @@ def find_ab_params(spread=1., min_dist=0.1):
 
 cdef class NCVisWrapper:
     cdef cncvis.NCVis* c_ncvis
-    cdef size_t d
+    cdef long d
 
-    def __cinit__(self, size_t d, size_t n_threads, size_t n_neighbors, size_t M, size_t ef_construction, size_t random_seed, int n_epochs, int n_init_epochs, float spread, float min_dist, float alpha, float alpha_Q, object n_noise, cncvis.Distance distance):
+    def __cinit__(self, long d, long n_threads, long n_neighbors, long M, long ef_construction, long random_seed, int n_epochs, int n_init_epochs, float spread, float min_dist, float alpha, float alpha_Q, object n_noise, cncvis.Distance distance):
         a, b = find_ab_params(spread, min_dist)
-        cdef size_t[:] n_noise_arr
+        cdef long[:] n_noise_arr
         if isinstance(n_noise, int):
             n_noise_arr = np.full(n_epochs, n_noise, dtype=np.uint)
         elif isinstance(n_noise, np.ndarray):
