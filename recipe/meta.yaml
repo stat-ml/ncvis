@@ -29,11 +29,14 @@ requirements:
     - numpy >=1.15
     - scipy >=1.1
 test:
+  files:
+    - test.py
   requires:
     - pytest
-  imports:
+    - numpy
     - ncvis
   commands:
+    - ls
     - pytest test.py
 
 about:
