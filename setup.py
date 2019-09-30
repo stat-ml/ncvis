@@ -107,8 +107,8 @@ elif sys.platform.startswith('linux'):
     extra_compile_args.append("-fopenmp")
 elif sys.platform.startswith('win32'):
     extra_compile_args=["/O2", "/fp:fast"]
-    libraries.append("/openmp")
-    extra_compile_args.append("/openmp")
+    libraries.append("/openmp:experimental")
+    extra_compile_args.append("/openmp:experimental")
 
 import os, json
 extensions = [Extension("ncvis",

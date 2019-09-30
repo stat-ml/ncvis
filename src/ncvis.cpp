@@ -102,7 +102,7 @@ void ncvis::NCVis::buildKNN(const float *const X, size_t N, size_t D){
     {
     float* x = new float[D];
     #pragma omp for
-    for (size_t i=1; i < N; ++i){
+    for (long i=1; i < N; ++i){
         // printf("[%lu]>> [", i);
         // for (size_t j=0; j<D; ++j){
         //     printf("%5.1f ", X[j+D*i]);
@@ -127,7 +127,7 @@ ncvis::KNNTable ncvis::NCVis::findKNN(const float *const X, size_t N, size_t D, 
     {
     float* x = new float[D];
     #pragma omp for
-    for (size_t i=0; i < N; ++i){
+    for (long i=0; i < N; ++i){
         // Find k+1 neighbors as one of them is the point itself
         preprocess(X+i*D, D, dist_, x);
         auto result = appr_alg_->searchKnn((const void*)x, k+1);
@@ -152,7 +152,7 @@ void ncvis::NCVis::build_edges(ncvis::KNNTable& table){
     size_t n_edges = 0;
 
     #pragma omp parallel for
-    for (size_t i = 0; i < table.inds.size(); ++i){
+    for (long i = 0; i < table.inds.size(); ++i){
         #pragma omp atomic
         n_edges += table.inds[i].size();
     }
@@ -186,7 +186,7 @@ void ncvis::NCVis::init_embedding(size_t N, float*& Y, float alpha){
     std::uniform_real_distribution<float> gen_Y(0, 1);
 
     #pragma omp for
-    for (size_t i = 0; i < N*d_; ++i){
+    for (long i = 0; i < N*d_; ++i){
         Y[i] = gen_Y(pcg);
     }
 
@@ -199,11 +199,11 @@ void ncvis::NCVis::init_embedding(size_t N, float*& Y, float alpha){
         Y = tmp;
         }
         #pragma omp for
-        for (size_t i = 0; i < N*d_; ++i){
+        for (long i = 0; i < N*d_; ++i){
             Y[i] = 0;
         }
         #pragma omp for
-        for (size_t i = 0; i < edges_.size(); ++i){
+        for (long i = 0; i < edges_.size(); ++i){
             size_t id = edges_[i].first;
             size_t other_id = edges_[i].second;
             
@@ -218,13 +218,13 @@ void ncvis::NCVis::init_embedding(size_t N, float*& Y, float alpha){
         }
 
         #pragma omp single
-        for (size_t k = 0; k < d_; ++k){
+        for (long k = 0; k < d_; ++k){
             mean[k] = 0;
             sigma[k] = 0;
         }
 
         #pragma omp for
-        for (size_t i = 0; i < N; ++i){
+        for (long i = 0; i < N; ++i){
             for (size_t k = 0; k < d_; ++k){
                 #pragma omp atomic
                 mean[k] += Y[i*d_+k];
@@ -232,12 +232,12 @@ void ncvis::NCVis::init_embedding(size_t N, float*& Y, float alpha){
         }
 
         #pragma omp single
-        for (size_t k = 0; k < d_; ++k){
+        for (long k = 0; k < d_; ++k){
             mean[k] /= N;
         }
 
         #pragma omp for
-        for (size_t i = 0; i < N; ++i){
+        for (long i = 0; i < N; ++i){
             for (size_t k = 0; k < d_; ++k){
                 #pragma omp atomic
                 sigma[k] += (Y[i*d_+k] - mean[k])*(Y[i*d_+k] - mean[k]);
@@ -245,13 +245,13 @@ void ncvis::NCVis::init_embedding(size_t N, float*& Y, float alpha){
         }
 
         #pragma omp single
-        for (size_t k = 0; k < d_; ++k){
+        for (long k = 0; k < d_; ++k){
             sigma[k] /= N;
             sigma[k] = sqrtf(sigma[k]);
         }
 
         #pragma omp for
-        for (size_t i = 0; i < N; ++i){
+        for (long i = 0; i < N; ++i){
             for (size_t k = 0; k < d_; ++k){
                 Y[i*d_+k] = (Y[i*d_+k] - mean[k])/sigma[k];
             }
@@ -279,7 +279,7 @@ void ncvis::NCVis::optimize(size_t N, float* Y, float& Q){
         size_t cur_noise = n_noise_[epoch];
         Q_cum = 0;
         #pragma omp for
-        for (size_t i = 0; i < edges_.size(); ++i){
+        for (long i = 0; i < edges_.size(); ++i){
             // printf("[%d] (%ld, %ld)\n", epoch, edges_[i].first, edges_[i].second);
             size_t id = edges_[i].first;
             for (size_t j = 0; j < cur_noise+1; ++j){

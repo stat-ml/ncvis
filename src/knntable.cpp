@@ -29,7 +29,7 @@ void ncvis::KNNTable::symmetrize(){
     #pragma omp parallel
     {
     #pragma omp for
-    for (size_t i = 0; i < N_; ++i){
+    for (long i = 0; i < N_; ++i){
         omp_init_lock(&locks[i]);
         // Preallocate memory for new edges
         size_t size = (size_t)(k_*reserve_ratio_);
@@ -39,8 +39,8 @@ void ncvis::KNNTable::symmetrize(){
     
     // Collect incoming edges
     #pragma omp for
-    for (size_t i = 0; i < N_; ++i){
-        for (size_t j = 0; j < k_; ++j){
+    for (long i = 0; i < N_; ++i){
+        for (long j = 0; j < k_; ++j){
             size_t edge_to = inds[i][j];
             omp_set_lock(&locks[edge_to]);
             inds_add[edge_to].push_back(i);
@@ -51,13 +51,13 @@ void ncvis::KNNTable::symmetrize(){
     
     // Clear locks
     #pragma omp for
-    for (size_t i = 0; i < N_; ++i){
+    for (long i = 0; i < N_; ++i){
         omp_destroy_lock(&locks[i]);
     }
 
     // Merge, remove duplicates and sort by distance
     #pragma omp for
-    for (size_t i = 0; i < N_; ++i){
+    for (long i = 0; i < N_; ++i){
         // std::cout << "i = " << i << std::endl;
         // std::copy(
         // inds_add[i].begin(),
