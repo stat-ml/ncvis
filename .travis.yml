@@ -30,7 +30,7 @@ matrix:
 
 before_install: 
   - curl "https://repo.anaconda.com/miniconda/Miniconda3-latest-$CONDA_NAME-x86_64.$CONDA_EXT" -o ~/miniconda.$CONDA_EXT
-  - travis/before_install.$SCRIPT_EXT
+  - travis/before_install.$SCRIPT_EXT $TRAVIS_PYTHON_VERSION
   
 install: 
   - travis/install.$SCRIPT_EXT
