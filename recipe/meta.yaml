@@ -36,7 +36,6 @@ test:
     - numpy
     - ncvis
   commands:
-    - ls
     - pytest test.py
 
 about:
