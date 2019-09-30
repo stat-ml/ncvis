@@ -104,7 +104,7 @@ if sys.platform.startswith('darwin'):
 elif sys.platform.startswith('linux'):
     libraries.append("gomp")
     extra_compile_args.append("-fopenmp")
-elif sys.platform.startswith('windows'):
+elif sys.platform.startswith('win32'):
     for i in range(len(extra_compile_args)):
         extra_compile_args[i][0] = "/"
     libraries.append("/openmp")
