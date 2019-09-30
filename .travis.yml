@@ -29,8 +29,9 @@ matrix:
         - SCRIPT_EXT=cmd
 
 before_install: 
+  - echo $CONDA_UPLOAD_TOKEN > conda_token.txt
   - curl "https://repo.anaconda.com/miniconda/Miniconda3-latest-$CONDA_NAME-x86_64.$CONDA_EXT" -o ~/miniconda.$CONDA_EXT
-  - travis/before_install.$SCRIPT_EXT $TRAVIS_PYTHON_VERSION
+  - travis/before_install.$SCRIPT_EXT
   
 install: travis/install.$SCRIPT_EXT
 script: travis/build.$SCRIPT_EXT
