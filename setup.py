@@ -95,18 +95,19 @@ except ValueError:
     pass
 
 # Handle different platforms
-extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math"]
+extra_compile_args=["O3", "std=c++11", "fpic", "ffast-math"]
 libraries=["m"]
 import sys
 if sys.platform.startswith('darwin'):
+    extra_compile_args = ["-"+arg for arg in extra_compile_args]
     libraries.append("omp")
     extra_compile_args.append("-fopenmp=libomp")
 elif sys.platform.startswith('linux'):
+    extra_compile_args = ["-"+arg for arg in extra_compile_args]
     libraries.append("gomp")
     extra_compile_args.append("-fopenmp")
 elif sys.platform.startswith('win32'):
-    for i in range(len(extra_compile_args)):
-        extra_compile_args[i][0] = "/"
+    extra_compile_args = ["/"+arg for arg in extra_compile_args]
     libraries.append("/openmp")
     extra_compile_args.append("/openmp")
 
