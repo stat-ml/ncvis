@@ -5,19 +5,30 @@ branches:
 
 language: python
 env:
-  - OMP_NUM_THREADS=4
+  global:
+    - OMP_NUM_THREADS=4
 
 matrix:
   include:
     - name: "Xenial Linux"
       python: 3.7 
       dist: xenial
+      env: CONDA_NAME=Linux CONDA_EXT=sh SCRIPT_EXT=sh
     - name: "macOS"
       os: osx
       osx_image: xcode10.2
       language: shell
-    
-before_install: bash travis/before_install.sh
-install: bash travis/install.sh
-script: bash travis/test.sh
-after_success: bash travis/upload.sh
+      env: CONDA_NAME=MacOSX CONDA_EXT=sh SCRIPT_EXT=sh
+    - name: "Windows"
+      os: windows
+      language: shell
+      env: CONDA_NAME=Windows CONDA_EXT=exe SCRIPT_EXT=cmd
+
+before_install: 
+  - echo $CONDA_UPLOAD_TOKEN > conda_token.txt
+  - curl "https://repo.anaconda.com/miniconda/Miniconda3-latest-$CONDA_NAME-x86_64.$CONDA_EXT" -o ~/miniconda.$CONDA_EXT
+  - travis/before_install.$SCRIPT_EXT
+  
+install: travis/install.$SCRIPT_EXT
+script: travis/build.$SCRIPT_EXT
+after_success: if [ $TRAVIS_BRANCH = 'master' ] && [ $TRAVIS_EVENT_TYPE = 'push' ]; then travis/upload.$SCRIPT_EXT; fi

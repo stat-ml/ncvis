@@ -9,7 +9,14 @@
 #define NCVIS_H
 
 namespace ncvis {
-    typedef std::pair<size_t, size_t> Edge;
+    typedef std::pair<long, long> Edge;
+    enum Distance
+    {
+        squared_L2,
+        inner_product,
+        cosine_similarity,
+        correlation
+    };
 
     class NCVis{
     public:
@@ -29,8 +36,9 @@ namespace ncvis {
         @param a,b Likelihood kernel parameters from: P(x, y) = 1/(1+a*|x-y|^(2*b))
         @param alpha,alpha_Q Learning rates for the embedding and normalization constant correspondingly.
         @param n_noise Number of noise samples per data sample for each iteration. An array of size [n_epochs]; will be initialized to 3 noise samples per data sample for each epoch if not provided.
+        @param dist Distance to use for nearest neighbors search.
         */
-        NCVis(size_t d=2, size_t n_threads=1, size_t n_neighbors=30, size_t M = 16, size_t ef_construction = 200, size_t random_seed = 42, int n_epochs=50, int n_init_epochs=20, float a=1., float b=1., float alpha=1., float alpha_Q=1., size_t* n_noise=nullptr);
+        NCVis(long d=2, long n_threads=1, long n_neighbors=30, long M = 16, long ef_construction = 200, long random_seed = 42, int n_epochs=50, int n_init_epochs=20, float a=1., float b=1., float alpha=1., float alpha_Q=1., long* n_noise=nullptr, ncvis::Distance dist=ncvis::Distance::squared_L2);
         ~NCVis();
         /*!
         @brief Build embedding for points.
@@ -43,31 +51,33 @@ namespace ncvis {
 
         @return Pointer to the embedding [N, d]. The j-th coordinate of i-th sample is assumed to be found at (X+d*i+j).
          */
-        float* fit_transform(const float *const X, size_t N, size_t D);
+        float* fit_transform(const float *const X, long N, long D);
     private:
-        size_t d_;
-        size_t M_;
-        size_t ef_construction_; 
-        size_t random_seed_;
-        size_t n_neighbors_;
+        long d_;
+        long M_;
+        long ef_construction_; 
+        long random_seed_;
+        long n_neighbors_;
         int n_epochs_;
         int n_init_epochs_;
         float a_;
         float b_;
         float alpha_;
         float alpha_Q_;
-        size_t* n_noise_;
+        long* n_noise_;
 
-        hnswlib::L2Space* l2space_;
-        hnswlib::HierarchicalNSW<float>* appr_alg_;
+        hnswlib::SpaceInterface<float>* space_;
         std::vector<Edge> edges_;
+        hnswlib::HierarchicalNSW<float>* appr_alg_;
+        Distance dist_;
 
+        void preprocess(const float *const x, long D, ncvis::Distance dist, float* out);
         float d_sqr(const float *const x, const float *const y);
-        void buildKNN(const float *const X, size_t N, size_t D);
-        KNNTable findKNN(const float *const X, size_t N, size_t D, size_t k);
+        void buildKNN(const float *const X, long N, long D);
+        KNNTable findKNN(const float *const X, long N, long D, long k);
         void build_edges(KNNTable& table);
-        void init_embedding(size_t N, float*& Y, float alpha);
-        void optimize(size_t N, float* Y, float& Q);
+        void init_embedding(long N, float*& Y, float alpha);
+        void optimize(long N, float* Y, float& Q);
     };
 }
 

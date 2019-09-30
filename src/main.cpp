@@ -8,14 +8,14 @@ int main(int argc, char** argv){
     std::cout << "Usage: ncvis [number of points] [number of neighbors] [number of threads] [maximum epochs] [number of init epochs]";
     return 1;
   }
-  size_t N=atoi(argv[1]), D=28*28, d=2;
-  size_t n_threads = atoi(argv[3]);
+  long N=atoi(argv[1]), D=28*28, d=2;
+  long n_threads = atoi(argv[3]);
   float* X = new float[N*D];
 
   // pcg_extras::seed_seq_from<std::random_device> seed_source;
   pcg64 pcg(42);
   std::uniform_real_distribution<float> gen_X(0, 1);
-  for (size_t i=0; i<N*D; ++i){
+  for (long i=0; i<N*D; ++i){
     X[i] = gen_X(pcg);
   }
 
@@ -25,9 +25,9 @@ int main(int argc, char** argv){
   if (Y == nullptr) return 1;
 
   // printf("-----------------\n");
-  // for (size_t i=0; i<N; ++i){
+  // for (long i=0; i<N; ++i){
   //   printf("[");
-  //   for (size_t j=0; j<d; ++j){
+  //   for (long j=0; j<d; ++j){
   //     printf("%6.2lf ", Y[d*i+j]);
   //   }
   //   printf("]\n");

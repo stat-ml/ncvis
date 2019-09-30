@@ -54,7 +54,10 @@
         "complex": "cpp",
         "unordered_set": "cpp",
         "numeric": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "iterator": "cpp",
+        "memory_resource": "cpp",
+        "random": "cpp"
     },
     "cSpell.ignoreWords": [
         "ext",
