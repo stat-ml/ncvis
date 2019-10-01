@@ -97,8 +97,8 @@ except ValueError:
 # Handle different platforms
 import sys
 if sys.platform.startswith('darwin'):
-    extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math", "-fopenmp=libomp"]
-    libraries=["m", "omp"]
+    extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math", "-fopenmp=libiomp5"]
+    libraries=["m", "iomp5"]
 elif sys.platform.startswith('linux'):
     extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math", "-fopenmp"]
     libraries=["m", "gomp"]

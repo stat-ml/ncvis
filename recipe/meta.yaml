@@ -1,5 +1,5 @@
 {% set name = "ncvis" %}
-{% set version = "0.0.7" %}
+{% set version = "1.0" %}
 
 package:
   name: {{ name|lower }}
@@ -29,8 +29,17 @@ requirements:
     - numpy >=1.15
     - scipy >=1.1
 test:
-  imports:
+  files:
+    - test.py
+    - test_init.py
+  requires:
+    - pytest
+    - numpy
     - ncvis
+  commands:
+    - python test_init.py
+    - pytest test.py
+
 
 about:
   home: https://github.com/alartum/ncvis
