@@ -98,12 +98,13 @@ except ValueError:
 import sys
 if sys.platform.startswith('darwin'):
     extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math", "-fopenmp=libiomp5"]
-    libraries=["m"]
+    libraries=["m", "iomp5"]
 elif sys.platform.startswith('linux'):
     extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math", "-fopenmp"]
-    libraries=["m"]
+    libraries=["m", "gomp"]
 elif sys.platform.startswith('win32'):
     extra_compile_args=["/O2", "/fp:fast", "/openmp:experimental"]
+    libraries=["/openmp:experimental"]
 
 import os, json
 extensions = [Extension("ncvis",
