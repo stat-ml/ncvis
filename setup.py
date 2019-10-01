@@ -101,10 +101,9 @@ if sys.platform.startswith('darwin'):
     libraries=["m"]
 elif sys.platform.startswith('linux'):
     extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math", "-fopenmp"]
-    libraries=["m", "gomp"]
+    libraries=["m"]
 elif sys.platform.startswith('win32'):
     extra_compile_args=["/O2", "/fp:fast", "/openmp:experimental"]
-    libraries=["/openmp:experimental"]
 
 import os, json
 extensions = [Extension("ncvis",

@@ -31,11 +31,15 @@ requirements:
 test:
   files:
     - test.py
+    - test_init.py
   requires:
+    - pytest
     - numpy
     - ncvis
   commands:
-    - python test.py
+    - python test_init.py
+    - pytest test.py
+
 
 about:
   home: https://github.com/alartum/ncvis
