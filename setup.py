@@ -103,8 +103,8 @@ elif sys.platform.startswith('linux'):
     extra_compile_args=["-O3", "-std=c++11", "-fpic", "-ffast-math", "-fopenmp"]
     libraries=["m", "gomp"]
 elif sys.platform.startswith('win32'):
-    extra_compile_args=["/O2", "/fp:fast", "/openmp:experimental"]
-    libraries=["/openmp:experimental"]
+    extra_compile_args=["/O2", "/fp:fast", "/openmp"]
+    libraries=["/openmp"]
 
 import os, json
 extensions = [Extension("ncvis",
