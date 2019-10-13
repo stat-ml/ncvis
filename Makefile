@@ -49,12 +49,6 @@ clean:
 wrapper: .lib_init $(CSources)
 	pip install -e . --user || pip install -e .
 
-lib: .lib_init
-
-.lib_init:
-	mkdir -p $(LibDir)
-	
-	git clone https://github.com/nmslib/hnswlib.git $(LibDir)hnswlib
-	git clone https://github.com/imneme/pcg-cpp $(LibDir)pcg-cpp
-
-	touch .lib_init
+lib:
+	git submodule init
+	git submodule update

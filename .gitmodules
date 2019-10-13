@@ -1,0 +1,6 @@
+[submodule "lib/pcg-cpp"]
+	path = lib/pcg-cpp
+	url = https://github.com/imneme/pcg-cpp.git
+[submodule "lib/hnswlib"]
+	path = lib/hnswlib
+	url = https://github.com/nmslib/hnswlib.git

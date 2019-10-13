@@ -9,6 +9,4 @@ dist/
 bin/
 obj/
 .dir_init
-.lib_init
-lib/
 examples/data/*/

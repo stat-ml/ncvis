@@ -19,15 +19,16 @@ $ conda install -c alartum ncvis
 
 **Important**: be sure to have a compiler with *OpenMP* support. *GCC* has it by default, wich is not the case with *clang*. You may need to install *llvm-openmp* library beforehand.  
 
-Install **numpy** and **cython** packages (compile-time dependencies):
-```bash
-$ pip install numpy cython
-```
+1. Download neccesary 
 
-Install **ncvis** package:
-```bash
-$ pip install ncvis
-```
+1. Install **numpy** and **cython** packages (compile-time dependencies):
+    ```bash
+    $ pip install numpy cython
+    ```
+2. Install **ncvis** package:
+    ```bash
+    $ pip install ncvis
+    ```
 
 # Using
 
@@ -35,7 +36,7 @@ $ pip install ncvis
 import ncvis
 
 vis = ncvis.NCVis()
-Y = vis.fit(X)
+Y = vis.fit_transform(X)
 ```
 
 A more detailed example can be found [here](https://nbviewer.jupyter.org/github/alartum/ncvis/blob/master/examples/benchmark.ipynb).

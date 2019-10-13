@@ -1,8 +1,0 @@
-numpy
-pandas
-imageio
-progressbar2
-matplotlib
-scikit-learn
-umap-learn
-wurlitzer
