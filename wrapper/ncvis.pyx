@@ -48,7 +48,7 @@ cdef class NCVisWrapper:
         return np.asarray(<float[:X.shape[0], :self.d]>self.c_ncvis.fit_transform(&X[0, 0], X.shape[0], X.shape[1]))
 
 class NCVis:
-    def __init__(self, d=2, n_threads=-1, n_neighbors=15, M=16, ef_construction=200, random_seed=42, n_epochs=30, n_init_epochs=10, spread=1., min_dist=0.5, alpha=1., alpha_Q=1., n_noise=None, distance="euclidean"):
+    def __init__(self, d=2, n_threads=-1, n_neighbors=15, M=16, ef_construction=200, random_seed=42, n_epochs=50, n_init_epochs=20, spread=1., min_dist=0.4, alpha=1., alpha_Q=1., n_noise=None, distance="euclidean"):
         """
         Creates new NCVis instance.
 

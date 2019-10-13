@@ -46,15 +46,9 @@ $(ObjectDir)%.o: $(SourceDir)%.cpp .lib_init .dir_init
 clean:
 	rm -rf $(ObjectDir) $(BinDir) .dir_init build wrapper/*.cpp ncvis.egg-info build
 
-wrapper: .lib_init $(CSources)
+wrapper: lib $(CSources)
 	pip install -e . --user || pip install -e .
 
-lib: .lib_init
-
-.lib_init:
-	mkdir -p $(LibDir)
-	
-	git clone https://github.com/nmslib/hnswlib.git $(LibDir)hnswlib
-	git clone https://github.com/imneme/pcg-cpp $(LibDir)pcg-cpp
-
-	touch .lib_init
+lib:
+	git submodule init
+	git submodule update
