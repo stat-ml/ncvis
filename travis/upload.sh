@@ -12,8 +12,8 @@ anaconda -t conda_token.txt upload $CONDA_PKG --force
 if [ $TRAVIS_OS_NAME = 'linux' ]; then
     conda install numpy cython twine
     #Install C++ libraries
-    git clone https://github.com/nmslib/hnswlib.git lib/hnswlib
-    git clone https://github.com/imneme/pcg-cpp lib/pcg-cpp 
+    git submodule init
+	git submodule update
     python setup.py sdist
     twine upload -u '__token__' -p $PYPI_UPLOAD_TOKEN dist/*
 fi
