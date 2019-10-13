@@ -11,9 +11,7 @@ anaconda -t conda_token.txt upload $CONDA_PKG --force
 #Upload source distribution to PyPI only once (if we are on Linux)
 if [ $TRAVIS_OS_NAME = 'linux' ]; then
     conda install numpy cython twine
-    #Install C++ libraries
-    git submodule init
-	git submodule update
+    # Submodules are updated be default
     python setup.py sdist
     twine upload -u '__token__' -p $PYPI_UPLOAD_TOKEN dist/*
 fi
