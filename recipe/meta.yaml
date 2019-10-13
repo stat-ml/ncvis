@@ -7,10 +7,6 @@ package:
 
 source:
   - path: ../
-  # - git_url: https://github.com/imneme/pcg-cpp.git
-  #   folder: lib/pcg-cpp
-  # - git_url: https://github.com/nmslib/hnswlib.git
-  #   folder: lib/hnswlib
 
 requirements:
   build:
