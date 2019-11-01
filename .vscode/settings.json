@@ -57,7 +57,10 @@
         "cinttypes": "cpp",
         "iterator": "cpp",
         "memory_resource": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "future": "cpp",
+        "valarray": "cpp",
+        "variant": "cpp"
     },
     "cSpell.ignoreWords": [
         "ext",

@@ -20,19 +20,18 @@ int main(int argc, char** argv){
   }
 
   ncvis::NCVis vis(d, n_threads, atoi(argv[2]), 8, 200, 42, atoi(argv[4]), atoi(argv[5]));
+  float* Y = new float[N*d];
+  vis.fit_transform(X, N, D, Y);
 
-  float* Y = vis.fit_transform(X, N, D);
-  if (Y == nullptr) return 1;
-
-  // printf("-----------------\n");
-  // for (long i=0; i<N; ++i){
-  //   printf("[");
-  //   for (long j=0; j<d; ++j){
-  //     printf("%6.2lf ", Y[d*i+j]);
-  //   }
-  //   printf("]\n");
-  // }
-  // printf("-----------------\n");
+  printf("-----------------\n");
+  for (long i=0; i<N; ++i){
+    printf("[");
+    for (long j=0; j<d; ++j){
+      printf("%6.2lf ", Y[d*i+j]);
+    }
+    printf("]\n");
+  }
+  printf("-----------------\n");
   
   delete[] X;
   delete[] Y;

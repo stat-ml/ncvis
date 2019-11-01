@@ -48,10 +48,10 @@ namespace ncvis {
         @param X Pointer to the data array [N, D]. The j-th coordinate of i-th sample is assumed to be found at (X+D*i+j).
         @param N Number of samples.
         @param D Dimensionality of samples.
-
-        @return Pointer to the embedding [N, d]. The j-th coordinate of i-th sample is assumed to be found at (X+d*i+j).
-         */
-        float* fit_transform(const float *const X, long N, long D);
+        @param Y Pointer to the embedding [N, d]. The j-th coordinate of i-th sample is assumed to be found at (X+d*i+j).
+        */
+        void fit_transform(const float *const X, long N, long D, float* Y);
+    
     private:
         long d_;
         long M_;
@@ -67,7 +67,6 @@ namespace ncvis {
         long* n_noise_;
 
         hnswlib::SpaceInterface<float>* space_;
-        std::vector<Edge> edges_;
         hnswlib::HierarchicalNSW<float>* appr_alg_;
         Distance dist_;
 
@@ -75,9 +74,9 @@ namespace ncvis {
         float d_sqr(const float *const x, const float *const y);
         void buildKNN(const float *const X, long N, long D);
         KNNTable findKNN(const float *const X, long N, long D, long k);
-        void build_edges(KNNTable& table);
-        void init_embedding(long N, float*& Y, float alpha);
-        void optimize(long N, float* Y, float& Q);
+        std::vector<Edge> build_edges(KNNTable& table);
+        void init_embedding(long N, float* Y, float alpha, std::vector<ncvis::Edge>& edges);
+        void optimize(long N, float* Y, float& Q, std::vector<ncvis::Edge>& edges);
     };
 }
 
