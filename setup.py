@@ -9,7 +9,7 @@ from shutil import rmtree
 here = normpath(abspath(dirname(__file__)))
 class CleanCommand(Command):
     """Custom clean command to tidy up the project root."""
-    CLEAN_FILES = './build ./dist ./*.pyc ./*.tgz ./*.egg-info ./__pycache__'.split(' ')
+    CLEAN_FILES = './build ./dist ./*.pyc ./*.tgz ./*.egg-info ./__pycache__ ./*.so'.split(' ')
 
     # Support the "all" option. Setuptools expects it in some situations.
     user_options = [
@@ -34,9 +34,12 @@ class CleanCommand(Command):
             for path in [str(p) for p in abs_paths]:
                 if not path.startswith(here):
                     # Die if path in CLEAN_FILES is absolute + outside this directory
-                    raise ValueError("%s is not a path inside %s" % (path, here))
-                print('removing %s' % relpath(path))
-                rmtree(path)
+                    raise ValueError("{} is not a path inside {}".format(path, here))
+                print('removing {}'.format(relpath(path)))
+                try:
+                    rmtree(path)
+                except:
+                    os.remove(path)
 
 deps = []
 class InstallCommand(install):
