@@ -7,4 +7,6 @@ __pycache__/
 dist/
 bin/
 obj/
-.dir_init
+.object_dir
+.bin_dir
+.lib_dir

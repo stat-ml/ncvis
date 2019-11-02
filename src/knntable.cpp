@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <iostream>
 #include <algorithm>
-// #include <iterator>
 #include <omp.h>
 
 ncvis::KNNTable::KNNTable(long N, long k, float reserve_ratio):

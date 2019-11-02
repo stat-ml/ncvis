@@ -144,11 +144,10 @@ ncvis::KNNTable ncvis::NCVis::findKNN(const float *const X, long N, long D, long
     }
     delete[] x;
     }
-
     return table;
 }
 
-void ncvis::NCVis::build_edges(ncvis::KNNTable& table){
+std::vector<ncvis::Edge> ncvis::NCVis::build_edges(ncvis::KNNTable& table){
     long n_edges = 0;
 
     #pragma omp parallel for
@@ -156,13 +155,16 @@ void ncvis::NCVis::build_edges(ncvis::KNNTable& table){
         #pragma omp atomic
         n_edges += (long)table.inds[i].size();
     }
-    edges_.reserve(n_edges);
+    std::vector<ncvis::Edge> edges;
+    edges.reserve(n_edges);
 
     for (long i = 0; i < (long)table.inds.size(); ++i){
         for (long j =0; j < (long)table.inds[i].size(); ++j){
-            edges_.emplace_back(i, table.inds[i][j]);
+            edges.emplace_back(i, table.inds[i][j]);
         }
     }
+
+    return edges;
 }
 
 float ncvis::NCVis::d_sqr(const float *const x, const float *const y){
@@ -174,46 +176,39 @@ float ncvis::NCVis::d_sqr(const float *const x, const float *const y){
     return dist_sqr;
 }
 
-void ncvis::NCVis::init_embedding(long N, float*& Y, float alpha){
-    // For temporary values 
-    float* Y_swap = new float[N*d_];
+void ncvis::NCVis::init_embedding(long N, float* Y, float alpha, std::vector<ncvis::Edge>& edges){
+    // For temporary values
+    float* Ys[2];
+    Ys[0] = Y;
+    Ys[1] = new float[N*d_];
     float* mean = new float[d_];
     float* sigma = new float[d_];
 
     #pragma omp parallel
     {
-    pcg64 pcg(random_seed_+omp_get_thread_num());
+    int id = omp_get_thread_num();
+    pcg64 pcg(random_seed_ + id);
     std::uniform_real_distribution<float> gen_Y(0, 1);
 
     #pragma omp for
     for (long i = 0; i < N*d_; ++i){
         Y[i] = gen_Y(pcg);
     }
-
     // Initialize layout
     for (int init_epoch = 0; init_epoch < n_init_epochs_; ++init_epoch){
-        #pragma omp single
-        {
-        float* tmp = Y_swap;
-        Y_swap = Y;
-        Y = tmp;
-        }
+        float* Y_old = Ys[init_epoch % 2];
+        float* Y_new = Ys[(init_epoch+1) % 2];
         #pragma omp for
         for (long i = 0; i < N*d_; ++i){
-            Y[i] = 0;
+            Y_new[i] = 0;
         }
+        
         #pragma omp for
-        for (long i = 0; i < (long)edges_.size(); ++i){
-            long id = edges_[i].first;
-            long other_id = edges_[i].second;
-            
+        for (long i = 0; i < (long)edges.size(); ++i){
+            long id = edges[i].first;
+            long other_id = edges[i].second;
             for (long k = 0; k < d_; ++k){
-                // float dx_k = Y[other_id*d_+k] - Y[id*d_+k];
-                // dx_k = dx_k * init_alpha;
-                // printf("dx[%ld] = %f\n", k, dx_k);
-                // Y[id*d_+k] += dx_k;
-                // Y[other_id*d_+k] -= dx_k;
-                Y[id*d_+k] += alpha * Y_swap[other_id*d_+k];
+                Y_new[id*d_+k] += alpha * Y_old[other_id*d_+k];
             }
         }
 
@@ -227,7 +222,7 @@ void ncvis::NCVis::init_embedding(long N, float*& Y, float alpha){
         for (long i = 0; i < N; ++i){
             for (long k = 0; k < d_; ++k){
                 #pragma omp atomic
-                mean[k] += Y[i*d_+k];
+                mean[k] += Y_new[i*d_+k];
             }
         }
 
@@ -235,12 +230,14 @@ void ncvis::NCVis::init_embedding(long N, float*& Y, float alpha){
         for (long k = 0; k < d_; ++k){
             mean[k] /= N;
         }
-
+    
         #pragma omp for
         for (long i = 0; i < N; ++i){
             for (long k = 0; k < d_; ++k){
+                float delta2 = Y_new[i*d_+k] - mean[k];
+                delta2 *= delta2;
                 #pragma omp atomic
-                sigma[k] += (Y[i*d_+k] - mean[k])*(Y[i*d_+k] - mean[k]);
+                sigma[k] += delta2;
             }
         }
 
@@ -249,26 +246,33 @@ void ncvis::NCVis::init_embedding(long N, float*& Y, float alpha){
             sigma[k] /= N;
             sigma[k] = sqrtf(sigma[k]);
         }
-
+        
         #pragma omp for
         for (long i = 0; i < N; ++i){
             for (long k = 0; k < d_; ++k){
-                Y[i*d_+k] = (Y[i*d_+k] - mean[k])/sigma[k];
+                Y_new[i*d_+k] = (Y_new[i*d_+k] - mean[k])/sigma[k];
             }
+        }
+    }
+    if (n_init_epochs_ % 2){
+        #pragma omp for
+        for (long i = 0; i < N*d_; ++i){
+            Ys[0][i] = Ys[1][i];
         }
     }
     }
     
-    delete[] Y_swap;
+    delete[] Ys[1];
     delete[] mean;
     delete[] sigma;
 }
 
-void ncvis::NCVis::optimize(long N, float* Y, float& Q){
+void ncvis::NCVis::optimize(long N, float* Y, float& Q, std::vector<ncvis::Edge>& edges){
     float Q_cum=0.;
     #pragma omp parallel
     {
-    pcg64 pcg(random_seed_+omp_get_thread_num());
+    int id = omp_get_thread_num();
+    pcg64 pcg(random_seed_+id);
     // Build layout
     std::uniform_int_distribution<long> gen_ind(0, N-1);
 
@@ -279,13 +283,13 @@ void ncvis::NCVis::optimize(long N, float* Y, float& Q){
         long cur_noise = n_noise_[epoch];
         Q_cum = 0;
         #pragma omp for
-        for (long i = 0; i < (long)edges_.size(); ++i){
-            // printf("[%d] (%ld, %ld)\n", epoch, edges_[i].first, edges_[i].second);
-            long id = edges_[i].first;
+        for (long i = 0; i < (long)edges.size(); ++i){
+            // printf("[%d] (%ld, %ld)\n", epoch, edges[i].first, edges[i].second);
+            long id = edges[i].first;
             for (long j = 0; j < cur_noise+1; ++j){
                 long other_id;
                 if (j == 0){
-                    other_id = edges_[i].second; 
+                    other_id = edges[i].second; 
                 } else{
                     do{
                         other_id = gen_ind(pcg);
@@ -338,7 +342,7 @@ void ncvis::NCVis::optimize(long N, float* Y, float& Q){
     }
 }
 
-float* ncvis::NCVis::fit_transform(const float *const X, long N, long D){
+void ncvis::NCVis::fit_transform(const float *const X, long N, long D, float* Y){
     // printf("==============DATA============\n");
     // for (long i=0; i<N; ++i){
     //     printf("[");
@@ -350,76 +354,77 @@ float* ncvis::NCVis::fit_transform(const float *const X, long N, long D){
     // printf("===============================\n");
     if (N == 0 || D == 0){ 
         throw std::runtime_error("[ncvis::NCVis::fit_transform] Dataset should have at least one element.");
-        return nullptr;
+    }
+    if (Y == nullptr){
+        throw std::runtime_error("[ncvis::NCVis::fit_transform] Null pointer provided for output.");
     }
     #if defined(DEBUG)
         auto t1 = std::chrono::high_resolution_clock::now();
-        buildKNN(X, N, D);
+    #endif
+    buildKNN(X, N, D);
+    #if defined(DEBUG)
         auto t2 = std::chrono::high_resolution_clock::now();
         std::cout << "buildKNN: "
                   << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
                   << " ms\n";
-    #else 
-        buildKNN(X, N, D);
     #endif
     // Number of neighbors can't exceed the total number of other points 
     long k = (n_neighbors_ < N-1)? n_neighbors_:(N-1);
     k = (k > 0)? k:1;
     #if defined(DEBUG)
         t1 = std::chrono::high_resolution_clock::now();
-        KNNTable table = findKNN(X, N, D, k);
-        
-        // The graph itself is no longer needed
-        delete appr_alg_;
-        appr_alg_ = nullptr;
-        delete space_;
-        space_ = nullptr;
+    #endif
+    KNNTable table = findKNN(X, N, D, k);
+    
+    // The graph itself is no longer needed
+    delete appr_alg_;
+    appr_alg_ = nullptr;
+    delete space_;
+    space_ = nullptr;
 
+    #if defined(DEBUG)
         t2 = std::chrono::high_resolution_clock::now();
         std::cout << "findKNN: "
                 << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
                 << " ms\n";
         t1 = std::chrono::high_resolution_clock::now();
-        table.symmetrize();
+    #endif
+    table.symmetrize();
+    #if defined(DEBUG)
         t2 = std::chrono::high_resolution_clock::now();
         std::cout << "symmetrize: "
                 << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
                 << " ms\n";
         t1 = std::chrono::high_resolution_clock::now();
-        build_edges(table);
+    #endif
+    std::vector<ncvis::Edge> edges = build_edges(table);
+    #if defined(DEBUG)
         t2 = std::chrono::high_resolution_clock::now();
         std::cout << "build_edges: "
                 << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
                 << " ms\n";
-    #else
-        KNNTable table = findKNN(X, N, D, k);
-
-        // The graph itself is no longer needed
-        delete appr_alg_;
-        appr_alg_ = nullptr;
-        delete space_;
-        space_ = nullptr;
-
-        table.symmetrize();
-        build_edges(table);
     #endif
-
-    // Likelihood parameters
-    float* Y = new float[N*d_];
     // Normalization
     float Q=0.;
     float init_alpha = 1./k;
-    
+
     #if defined(DEBUG)
         t1 = std::chrono::high_resolution_clock::now();
-    #endif
+    #endif 
 
-    init_embedding(N, Y, init_alpha);
-    optimize(N, Y, Q);
+    init_embedding(N, Y, init_alpha, edges);
     
     #if defined(DEBUG)
         t2 = std::chrono::high_resolution_clock::now();
-        std::cout << "main cycle: "
+        std::cout << "initialize: "
+                << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
+                << " ms\n";
+        t1 = std::chrono::high_resolution_clock::now();
+    #endif
+    optimize(N, Y, Q, edges);
+    #if defined(DEBUG)
+        t2 = std::chrono::high_resolution_clock::now();
+        std::cout << "optimize: "
                 << std::chrono::duration_cast<std::chrono::milliseconds>(t2-t1).count()
                 << " ms\n";
     #endif
@@ -442,6 +447,4 @@ float* ncvis::NCVis::fit_transform(const float *const X, long N, long D){
     //     printf("]\n");
     // }
     // printf("===============================\n");
-
-    return Y;
 }

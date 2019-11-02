@@ -44,8 +44,8 @@ cdef class NCVisWrapper:
     def __dealloc__(self):
         del self.c_ncvis
 
-    def fit_transform(self, float[:, :] X):
-        return np.asarray(<float[:X.shape[0], :self.d]>self.c_ncvis.fit_transform(&X[0, 0], X.shape[0], X.shape[1]))
+    def fit_transform(self, float[:, :] X, float[:, :] Y):
+        self.c_ncvis.fit_transform(&X[0, 0], X.shape[0], X.shape[1], &Y[0, 0])
 
 class NCVis:
     def __init__(self, d=2, n_threads=-1, n_neighbors=15, M=16, ef_construction=200, random_seed=42, n_epochs=50, n_init_epochs=20, spread=1., min_dist=0.4, alpha=1., alpha_Q=1., n_noise=None, distance="euclidean"):
@@ -93,6 +93,7 @@ class NCVis:
         distance : str {'euclidean', 'cosine', 'correlation', 'inner_product'}
             Distance to use for nearest neighbors search.
         """
+        self.d = d
         if n_noise is None:
             n_negative = 5
 
@@ -139,7 +140,11 @@ class NCVis:
 
         Returns:
         --------
-        out : ndarray of floats of size [n_samples, m_low_dimensions]
+        Y : ndarray of floats of size [n_samples, m_low_dimensions]
             The embedding of the data samples.
         """
-        return self.model.fit_transform(np.ascontiguousarray(X, dtype=np.float32))
+        Y = np.empty((X.shape[0], self.d), dtype=np.float32)
+        self.model.fit_transform(np.ascontiguousarray(X, dtype=np.float32),
+                                 np.ascontiguousarray(Y, dtype=np.float32))
+
+        return Y

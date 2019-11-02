@@ -1,10 +1,10 @@
 Sources=main.cpp ncvis.cpp knntable.cpp
 Executable=ncvis
 
-CFlags=-c -Wall -std=c++11 -fopenmp -fpic -O3
-DebugCFlags=-c -Wall -std=c++11 -fopenmp -fpic -O3 -g3 -DDEBUG
+CFlags=-c -Wall -std=c++11 -fopenmp -fpic -O3 -ffast-math
+DebugCFlags=-c -Wall -std=c++11 -fopenmp -fpic -O3 -g3 -DDEBUG -ffast-math
 LDFlags=-lm -lgomp
-DebugLDFlags=-lm -lgomp -lprofiler
+DebugLDFlags=-lm -lgomp
 ObjectDir=obj/
 SourceDir=src/
 BinDir=bin/
@@ -16,39 +16,47 @@ Objects=$(Sources:.cpp=.o)
 CSources=$(addprefix $(SourceDir),$(Sources))
 CObjects=$(addprefix $(ObjectDir),$(Objects))
 CExecutable=$(addprefix $(BinDir),$(Executable))
-all: $(CSources) $(CExecutable)
+all: $(CExecutable)
 
 DebugObjects=$(Sources:.cpp=_debug.o)
 DebugCObjects=$(addprefix $(ObjectDir),$(DebugObjects))
 DebugCExecutable=$(addprefix $(BinDir),$(Executable)_debug)
-debug: $(CSources) $(DebugCExecutable)
+debug: $(DebugCExecutable)
 
-$(DebugCExecutable): $(DebugCObjects) .dir_init
+$(DebugCExecutable): $(DebugCObjects) .bin_dir
 	$(CC) $(DebugLDFlags) $(DebugCObjects) -o $@
 
-$(ObjectDir)%_debug.o: $(SourceDir)%.cpp .lib_init .dir_init
+$(ObjectDir)%_debug.o: $(SourceDir)%.cpp .object_dir .lib_dir
 	$(CC) $(DebugCFlags) $< -o $@
 
 $(Executable): $(CExecutable)
 
-$(CExecutable): $(CObjects) .dir_init
+$(CExecutable): $(CObjects) .bin_dir
 	$(CC) $(LDFlags) $(CObjects) -o $@
 
-$(ObjectDir)%.o: $(SourceDir)%.cpp .lib_init .dir_init
+$(ObjectDir)%.o: $(SourceDir)%.cpp .object_dir .lib_dir
 	$(CC) $(CFlags) $< -o $@
 
-.PHONY: wrapper clean lib
+.object_dir: 
+	mkdir -p $(ObjectDir)
+	touch .object_dir
 
-.dir_init:
-	mkdir -p $(ObjectDir) $(BinDir) $(LibDir)
-	touch .dir_init
+.bin_dir:
+	mkdir -p $(BinDir)
+	touch .bin_dir
+
+.lib_dir:
+	mkdir -p $(LibDir)
+	touch .lib_dir
+
+.PHONY: wrapper clean libs
 
 clean:
-	rm -rf $(ObjectDir) $(BinDir) .dir_init build wrapper/*.cpp ncvis.egg-info build
+	rm -rf $(ObjectDir) $(BinDir) build wrapper/*.cpp ncvis.egg-info build .object_dir .bin_dir *.so
 
-wrapper: lib $(CSources)
+wrapper: libs $(CSources)
 	pip install -e . --user || pip install -e .
 
-lib:
+libs: .lib_dir
 	git submodule init
 	git submodule update
