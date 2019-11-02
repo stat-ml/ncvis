@@ -3,17 +3,17 @@ branches:
   - master
   - /^release-.*$/
 
-language: python
+env:
+  global:
+    - OMP_NUM_THREADS=4
+
 env:
   - CONDA_PYTHON_VERSION=3.7
   - CONDA_PYTHON_VERSION=3.6
-  global:
-    - OMP_NUM_THREADS=4
 
 matrix:
   include:
     - name: "Xenial Linux"
-      python: 3.7 
       dist: xenial
       env: CONDA_NAME=Linux CONDA_EXT=sh SCRIPT_EXT=sh
     - name: "macOS"
