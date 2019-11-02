@@ -11,10 +11,12 @@ env:
 matrix:
   include:
     - name: "Linux Python 3.6"
+      python: 3.6
       dist: xenial
       env: CONDA_NAME=Linux CONDA_EXT=sh SCRIPT_EXT=sh CONDA_PYTHON_VERSION=3.6
 
     - name: "Linux Python 3.7"
+      python: 3.7
       dist: xenial
       env: CONDA_NAME=Linux CONDA_EXT=sh SCRIPT_EXT=sh CONDA_PYTHON_VERSION=3.7
 
