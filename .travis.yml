@@ -4,9 +4,6 @@ branches:
   - /^release-.*$/
 
 language: python
-python: 
-  - 3.6
-  - 3.7
 env:
   global:
     - OMP_NUM_THREADS=4
@@ -14,17 +11,24 @@ env:
 matrix:
   include:
     - name: "Xenial Linux"
+      python: 3.7 
       dist: xenial
-      env: CONDA_NAME=Linux CONDA_EXT=sh SCRIPT_EXT=sh
+      env: 
+        - CONDA_NAME=Linux CONDA_EXT=sh SCRIPT_EXT=sh CONDA_PYTHON_VERSION=3.6
+        - CONDA_NAME=Linux CONDA_EXT=sh SCRIPT_EXT=sh CONDA_PYTHON_VERSION=3.7
     - name: "macOS"
       os: osx
       osx_image: xcode10.2
       language: shell
-      env: CONDA_NAME=MacOSX CONDA_EXT=sh SCRIPT_EXT=sh
+      env:
+        - CONDA_NAME=MacOSX CONDA_EXT=sh SCRIPT_EXT=sh CONDA_PYTHON_VERSION=3.6
+        - CONDA_NAME=MacOSX CONDA_EXT=sh SCRIPT_EXT=sh CONDA_PYTHON_VERSION=3.7
     - name: "Windows"
       os: windows
       language: shell
-      env: CONDA_NAME=Windows CONDA_EXT=exe SCRIPT_EXT=cmd
+      env: 
+        - CONDA_NAME=Windows CONDA_EXT=exe SCRIPT_EXT=cmd CONDA_PYTHON_VERSION=3.6
+        - CONDA_NAME=Windows CONDA_EXT=exe SCRIPT_EXT=cmd CONDA_PYTHON_VERSION=3.7
 
 before_install: 
   - echo $CONDA_UPLOAD_TOKEN > conda_token.txt
