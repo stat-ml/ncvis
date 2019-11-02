@@ -5,6 +5,8 @@ branches:
 
 language: python
 env:
+  - CONDA_PYTHON_VERSION=3.7
+  - CONDA_PYTHON_VERSION=3.6
   global:
     - OMP_NUM_THREADS=4
 
