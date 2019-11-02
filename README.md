@@ -6,6 +6,17 @@
 
 **NCVis** is an efficient solution for data visualization. It uses [HNSW](https://github.com/nmslib/hnswlib) for fast nearest neighbors graph construction and a parallel approach for building the graph embedding.
 
+# Using
+
+```python
+import ncvis
+
+vis = ncvis.NCVis()
+Y = vis.fit_transform(X)
+```
+
+More detailed examples can be found [here](https://github.com/alartum/ncvis-examples).
+
 # Installation
 
 ## Conda [recommended]
@@ -15,9 +26,9 @@ You do not need to setup the environment if using *conda*, all dependencies are 
 $ conda install -c alartum ncvis 
 ```
 
-## Pip
+## Pip [not recommended]
 
-**Important**: be sure to have a compiler with *OpenMP* support. *GCC* has it by default, wich is not the case with *clang*. You may need to install *llvm-openmp* library beforehand.  
+**Important**: be sure to have a compiler with *OpenMP* support. *GCC* has it by default, which is not the case with *clang*. You may need to install *llvm-openmp* library beforehand.  
 
 1. Install **numpy** and **cython** packages (compile-time dependencies):
     ```bash
@@ -28,23 +39,45 @@ $ conda install -c alartum ncvis
     $ pip install ncvis
     ```
 
-## From source
+## From source [not recommended]
 
-1. Install **numpy** and **cython** packages (compile-time dependencies):
+**Important**: be sure to have *OpenMP* available.
+
+First of all, download the *pcg-cpp* and *hnswlib* libraries:
+```bash
+$ make libs
+``` 
+### Python Wrapper 
+
+If *conda* environment is used, it replaces library search paths. To prevent compilation errors, you either need to use compilers provided by *conda* or switch to *pip*  and system compilers. 
+
+* Conda
+    ```bash
+    $ conda install conda-build numpy cython scipy
+    $ conda install -c conda-forge cxx-compiler c-compiler
+    $ conda-develop -bc .
+    ``` 
+
+* Pip
     ```bash
     $ pip install numpy cython
-    ```
-2. Use Makefile, it will call *pip* for you
-    ```bash
     $ make wrapper
     ```
-# Using
 
-```python
-import ncvis
-
-vis = ncvis.NCVis()
-Y = vis.fit_transform(X)
+You can then use *pytest* to run some basic checks
+```bash
+$ pytest -v recipe/test.py
 ```
 
-A more detailed example can be found [here](https://github.com/alartum/ncvis-examples).
+
+### C++ Binary
+
+* Release
+    ```bash
+    $ make ncvis
+    ```
+
+* Debug
+    ```bash
+    $ make debug
+    ```
