@@ -8,13 +8,11 @@ strategy:
     Python38:
       python.version: '3.8'
 steps:
-- task: CondaEnvironment@1
-  inputs:
-    environmentName: 'test'
-    packageSpecs: 'python=$(python.version) conda-build'
+- script: | 
+    conda config --set always_yes yes --set anaconda_upload no
+    conda create -n test python=$(python.version) conda-build
   displayName: '[Conda] Setup Python $(python.version)'
 
 - script: |
-    conda config --set always_yes yes --set anaconda_upload no
     conda build .
   displayName: '[Conda] Build'
