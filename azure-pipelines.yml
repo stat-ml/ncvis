@@ -11,9 +11,10 @@ steps:
 - script: | 
     conda config --set always_yes yes --set anaconda_upload no
     conda update -q conda
-    conda create -n test python=$(python.version) conda-build
+    conda create -n test python=$(python.version) conda-build conda-verify
   displayName: '[Conda] Setup Python $(python.version)'
 
 - script: |
+    conda activate test
     conda build .
   displayName: '[Conda] Build'
