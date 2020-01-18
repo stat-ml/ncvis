@@ -8,6 +8,9 @@ strategy:
     Python38:
       python.version: '3.7'
 steps:
+- script: git submodule update --init --recursive
+  displayName: Init submodules
+
 - bash: echo "##vso[task.prependpath]$CONDA/bin"
   displayName: Add conda to PATH
 
