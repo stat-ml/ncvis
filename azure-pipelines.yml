@@ -8,7 +8,7 @@ strategy:
     Python38:
       python.version: '3.7'
 steps:
-- bash: echo "##vso[task.prependpath]$CONDA/bin"
+- bash: conda init bash
   displayName: Add conda to PATH
 
 - script: | 
