@@ -8,16 +8,16 @@ strategy:
     Python38:
       python.version: '3.7'
 steps:
-- bash: conda init bash
+- bash: echo "##vso[task.prependpath]$CONDA/bin"
   displayName: Add conda to PATH
 
 - script: | 
     conda config --set always_yes yes --set anaconda_upload no
     conda update -q conda
     conda create -n test python=$(python.version) conda-build conda-verify
-  displayName: '[Conda] Setup Python $(python.version)'
+  displayName: '[Conda] Create environment Python $(python.version)'
 
 - script: |
-    conda activate test
+    source activate test
     conda build .
   displayName: '[Conda] Build'
