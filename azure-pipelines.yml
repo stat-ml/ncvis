@@ -6,7 +6,7 @@ pool:
 strategy:
   matrix:
     Python38:
-      python.version: '3.8'
+      python.version: '3.7'
 steps:
 - script: | 
     conda config --set always_yes yes --set anaconda_upload no
