@@ -7,13 +7,12 @@ parameters:
     default: []
 
 jobs:
-  - job: 'template'
-    displayName: 'Template'
+  - job:
     strategy:
       matrix:
         ${{ each platform in parameters.platforms }}:
           ${{ each pythonVersion in parameters.pythonVersions }}:
-            ${{ platform.name }}:
+            ${{ platform.name }} Python ${{ pythonVersion }}:
               pool: ${{ platform.image }}
               python.version: ${{ pythonVersion }}
     steps:
