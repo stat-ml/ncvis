@@ -1,12 +1,24 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
+parameters:
+  platforms: 
+    - name: 'Linux'
+      image: 'ubuntu-latest'
+    - name: 'Windows'
+      image: 'windows-latest'
+    - name: 'macOS' 
+      image: 'macOS-latest'
+  pythonVersions: 
+    - '3.7'
+
 strategy:
   matrix:
-    Python38:
-      python.version: '3.7'
+    ${{ each platform in parameters.platforms }}:
+      ${{ each pythonVersion in parameters.pythonVersions }}:
+        ${{ platform.name }}:
+          pool: ${{ platform.image }}
+          python.version: ${{ pythonVersion }}
 steps:
 - script: git submodule update --init --recursive
   displayName: Init submodules
@@ -18,9 +30,9 @@ steps:
     conda config --set always_yes yes --set anaconda_upload no
     conda update -q conda
     conda create -n test python=$(python.version) conda-build conda-verify
-  displayName: '[Conda] Create environment Python $(python.version)'
+  displayName: 'Create environment Python $(python.version)'
 
 - script: |
     source activate test
     conda build .
-  displayName: '[Conda] Build'
+  displayName: 'Build'
