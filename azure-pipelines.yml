@@ -13,5 +13,6 @@ extends:
       - name: 'macOS' 
         image: 'macOS-latest'
     pythonVersions:
+      - '3.6'
       - '3.7'
     uploadSrc: 'Linux3.7'
