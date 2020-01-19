@@ -5,9 +5,9 @@ parameters:
   - name: pythonVersions
     type: object
     default: []
-  - name: whenUploadPyPI
+  - name: uploadSrc
     type: object
-    default: Linux3.7
+    default: 'Linux3.7'
 
 jobs:
   - job:
@@ -19,7 +19,7 @@ jobs:
               pool: ${{ platform.image }}
               python.version: ${{ pythonVersion }}
               shortName: ${{ platform.name }}${{ pythonVersion }}
-              selectedName: ${{ whenUploadPyPI }}
+              selectedName: ${{ uploadSrc }}
     steps:
     - script: git submodule update --init --recursive
       displayName: Download submodules
