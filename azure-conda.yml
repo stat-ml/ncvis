@@ -19,7 +19,7 @@ jobs:
               pool: ${{ platform.image }}
               python.version: ${{ pythonVersion }}
               shortName: ${{ platform.name }}${{ pythonVersion }}
-              selectedName: ${{ uploadSrc }}
+              selectedName: ${{ parameters.uploadSrc }}
     steps:
     - script: git submodule update --init --recursive
       displayName: Download submodules
