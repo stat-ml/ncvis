@@ -2,15 +2,15 @@ trigger:
 - master
 
 variables:
-  platforms: 
-    - name: 'Linux'
-      image: 'ubuntu-latest'
-    - name: 'Windows'
-      image: 'windows-latest'
-    - name: 'macOS' 
-      image: 'macOS-latest'
-  pythonVersions: 
-    - '3.7'
+  platforms: ['1', '2']
+    # - name: 'Linux'
+    #   image: 'ubuntu-latest'
+    # - name: 'Windows'
+    #   image: 'windows-latest'
+    # - name: 'macOS' 
+    #   image: 'macOS-latest'
+  pythonVersions: ['a', 'b'] 
+    # - '3.7'
 
 strategy:
   matrix:
