@@ -58,5 +58,5 @@ jobs:
         # conda install numpy cython twine
         # python setup.py sdist
         # twine upload -u '__token__' -p $PYPI_UPLOAD_TOKEN dist/*
-      condition: and(eq(join(os.name, python.version), uploadPyPI), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      condition: and(eq(join($(os.name), $(python.version)), $(uploadPyPI)), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       displayName: Upload to PyPI
