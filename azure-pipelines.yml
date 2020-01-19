@@ -1,7 +1,7 @@
 trigger:
 - master
 
-parameters:
+variables:
   platforms: 
     - name: 'Linux'
       image: 'ubuntu-latest'
