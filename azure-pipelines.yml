@@ -14,8 +14,8 @@ variables:
 
 strategy:
   matrix:
-    ${{ each platform in parameters.platforms }}:
-      ${{ each pythonVersion in parameters.pythonVersions }}:
+    ${{ each platform in variables.platforms }}:
+      ${{ each pythonVersion in variables.pythonVersions }}:
         ${{ platform.name }}:
           pool: ${{ platform.image }}
           python.version: ${{ pythonVersion }}
