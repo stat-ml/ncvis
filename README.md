@@ -1,7 +1,7 @@
 [![Conda](https://anaconda.org/alartum/ncvis/badges/version.svg)](https://anaconda.org/alartum/ncvis)
 [![PyPI](https://img.shields.io/pypi/v/ncvis.svg)](https://pypi.python.org/pypi/ncvis/)
 [![GitHub](https://img.shields.io/github/license/alartum/ncvis.svg)](https://github.com/alartum/ncvis/blob/master/LICENSE)
-[![Build Status](https://travis-ci.com/alartum/ncvis.svg?branch=master)](https://travis-ci.com/alartum/ncvis)
+[![Build Status](https://dev.azure.com/stat-ml/ncvis/_apis/build/status/stat-ml.ncvis?branchName=master)](https://dev.azure.com/stat-ml/ncvis/_build/latest?definitionId=1&branchName=master)
 # ncvis
 
 **NCVis** is an efficient solution for data visualization. It uses [HNSW](https://github.com/nmslib/hnswlib) for fast nearest neighbors graph construction and a parallel approach for building the graph embedding.
