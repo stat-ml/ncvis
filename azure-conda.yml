@@ -16,7 +16,8 @@ jobs:
         ${{ each platform in parameters.platforms }}:
           ${{ each pythonVersion in parameters.pythonVersions }}:
             ${{ platform.name }} Python ${{ pythonVersion }}:
-              pool: ${{ platform.image }}
+              pool:
+                vmImage: ${{ platform.image }}
               python.version: ${{ pythonVersion }}
               shortName: ${{ platform.name }}${{ pythonVersion }}
               selectedName: ${{ parameters.uploadSrc }}
