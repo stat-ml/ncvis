@@ -17,7 +17,7 @@ jobs:
               python.version: ${{ pythonVersion }}
     steps:
     - script: git submodule update --init --recursive
-      displayName: Init submodules
+      displayName: Download submodules
 
     - bash: echo "##vso[task.prependpath]$CONDA/bin"
       displayName: Add conda to PATH
@@ -26,9 +26,14 @@ jobs:
         conda config --set always_yes yes --set anaconda_upload no
         conda update -q conda
         conda create -n test python=$(python.version) conda-build conda-verify
-      displayName: 'Create environment Python $(python.version)'
+      displayName: Create environment
 
     - script: |
         source activate test
-        conda build .
-      displayName: 'Build'
+        conda-build --no-test .
+        CONDA_PKG=$(conda-build --output .)
+      displayName: Build
+    
+    - script: |
+        conda-build -t $CONDA_PKG
+      displayName: Test
