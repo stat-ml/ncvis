@@ -14,4 +14,4 @@ extends:
         image: 'macOS-latest'
     pythonVersions:
       - '3.7'
-    uploadPyPI: 'Linux3.7'
+    whenUploadPyPI: 'Linux3.7'

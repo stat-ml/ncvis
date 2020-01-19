@@ -5,7 +5,7 @@ parameters:
   - name: pythonVersions
     type: object
     default: []
-  - name: uploadPyPI
+  - name: whenUploadPyPI
     type: object
     default: Linux3.7
 
@@ -18,8 +18,8 @@ jobs:
             ${{ platform.name }} Python ${{ pythonVersion }}:
               pool: ${{ platform.image }}
               python.version: ${{ pythonVersion }}
-              os.name: ${{ platform.name }}
-              checkPyPI: ${{ platform.name }}${{ pythonVersion }}
+              shortName: ${{ platform.name }}${{ pythonVersion }}
+              selectedName: ${{ whenUploadPyPI }}
     steps:
     - script: git submodule update --init --recursive
       displayName: Download submodules
@@ -33,25 +33,25 @@ jobs:
         conda create -n test python=$(python.version) conda-build conda-verify
       displayName: Create environment
 
-    - script: |
-        source activate test
-        conda-build --no-test .
-        CONDA_PKG=$(conda-build --output .)
-        echo "##vso[task.setvariable variable=CONDA_PKG]$CONDA_PKG"
-      displayName: Build
+    # - script: |
+    #     source activate test
+    #     conda-build --no-test .
+    #     CONDA_PKG=$(conda-build --output .)
+    #     echo "##vso[task.setvariable variable=CONDA_PKG]$CONDA_PKG"
+    #   displayName: Build
     
-    - script: |
-        source activate test
-        conda-build -t $CONDA_PKG
-      displayName: Test
+    # - script: |
+    #     source activate test
+    #     conda-build -t $CONDA_PKG
+    #   displayName: Test
 
-    - script: |
-        echo 'Uploading to Anaconda'
-        # source activate test
-        # conda install anaconda-client
-        # anaconda -t conda_token.txt upload $CONDA_PKG --force
-      condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')  
-      displayName: Upload to Anaconda
+    # - script: |
+    #     echo 'Uploading to Anaconda'
+    #     # source activate test
+    #     # conda install anaconda-client
+    #     # anaconda -t conda_token.txt upload $CONDA_PKG --force
+    #   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')  
+    #   displayName: Upload to Anaconda
 
     - script: |
         echo 'Uploading to PyPI'
@@ -59,5 +59,5 @@ jobs:
         # conda install numpy cython twine
         # python setup.py sdist
         # twine upload -u '__token__' -p $PYPI_UPLOAD_TOKEN dist/*
-      condition: and(eq(variables['checkPyPI'], variables['uploadPyPI']), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      condition: and(eq(variables['shortName'], variables['selectedName']), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       displayName: Upload to PyPI
