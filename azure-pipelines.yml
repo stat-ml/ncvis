@@ -1,5 +1,6 @@
 trigger:
 - master
+- release-*
 
 extends:
   template: azure-conda.yml
@@ -13,3 +14,4 @@ extends:
         image: 'macOS-latest'
     pythonVersions:
       - '3.7'
+    uploadPyPI: 'Linux3.7'

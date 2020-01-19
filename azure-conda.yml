@@ -5,6 +5,9 @@ parameters:
   - name: pythonVersions
     type: object
     default: []
+  - name: uploadPyPI
+    type: object
+    default: Linux3.7
 
 jobs:
   - job:
@@ -15,6 +18,7 @@ jobs:
             ${{ platform.name }} Python ${{ pythonVersion }}:
               pool: ${{ platform.image }}
               python.version: ${{ pythonVersion }}
+              os.name: ${{ platform.name }}
     steps:
     - script: git submodule update --init --recursive
       displayName: Download submodules
@@ -39,3 +43,20 @@ jobs:
         source activate test
         conda-build -t $CONDA_PKG
       displayName: Test
+
+    - script: |
+        echo 'Uploading to Anaconda'
+        # source activate test
+        # conda install anaconda-client
+        # anaconda -t conda_token.txt upload $CONDA_PKG --force
+      condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')  
+      displayName: Upload to Anaconda
+
+    - script: |
+        echo 'Uploading to PyPI'
+        # source activate test
+        # conda install numpy cython twine
+        # python setup.py sdist
+        # twine upload -u '__token__' -p $PYPI_UPLOAD_TOKEN dist/*
+      condition: and(eq(join(os.name, python.version), uploadPyPI), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+      displayName: Upload to PyPI
