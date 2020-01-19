@@ -1,0 +1,32 @@
+parameters:
+  - name: platforms
+    type: object
+    default: []
+  - name: pythonVersions
+    type: object
+    default: []
+
+strategy:
+  matrix:
+    ${{ each platform in parameters.platforms }}:
+      ${{ each pythonVersion in parameters.pythonVersions }}:
+        ${{ platform.name }}:
+          pool: ${{ platform.image }}
+          python.version: ${{ pythonVersion }}
+steps:
+- script: git submodule update --init --recursive
+  displayName: Init submodules
+
+- bash: echo "##vso[task.prependpath]$CONDA/bin"
+  displayName: Add conda to PATH
+
+- script: | 
+    conda config --set always_yes yes --set anaconda_upload no
+    conda update -q conda
+    conda create -n test python=$(python.version) conda-build conda-verify
+  displayName: 'Create environment Python $(python.version)'
+
+- script: |
+    source activate test
+    conda build .
+  displayName: 'Build'
