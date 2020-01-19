@@ -35,5 +35,6 @@ jobs:
       displayName: Build
     
     - script: |
+        source activate test
         conda-build -t $CONDA_PKG
       displayName: Test
