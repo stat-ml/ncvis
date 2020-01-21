@@ -24,7 +24,7 @@ jobs:
     displayName: Add conda to PATH
 
   - script: |
-      rename "Program Files (x86)\Windows Kits\10\include\wdf" "10.0"      
+      rename "C:\Program Files (x86)\Windows Kits\10\include\wdf" "10.0"      
     displayName: Fix SDK names
 
   - script: | 
