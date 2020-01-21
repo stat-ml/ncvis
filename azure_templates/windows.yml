@@ -9,7 +9,8 @@ jobs:
     matrix:
       ${{ each pythonVersion in parameters.pythonVersions }}:
         Windows Python ${{ pythonVersion }}:
-          imageName: 'vs2017-win2016'
+          imageName: 'windows-latest'
+          # imageName: 'vs2017-win2016'
           python.version: ${{ pythonVersion }}
 
   pool:
@@ -36,8 +37,8 @@ jobs:
     displayName: Build
   
   - script: |
-      source activate test
-      conda-build -t $CONDA_PKG
+      call activate test
+      conda-build -t %CONDA_PKG%
     displayName: Test
 
   # - script: |

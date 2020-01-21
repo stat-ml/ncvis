@@ -82,10 +82,10 @@ with open('README.md', 'r') as f:
     LONG_DESCRIPTION = f.read()
 MAINTAINER = 'Aleksandr Artemenkov'
 MAINTAINER_EMAIL = 'alartum@gmail.com'
-URL = 'https://github.com/alartum/ncvis'
+URL = 'https://github.com/stat-ml/ncvis'
 LICENSE = 'MIT'
 PROJECT_URLS = {
-    'Source Code': 'https://github.com/alartum/ncvis'
+    'Source Code': 'https://github.com/stat-ml/ncvis'
 }
 
 # Can be excluded from the install dependencies with --no-deps
