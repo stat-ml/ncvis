@@ -19,9 +19,6 @@ jobs:
   - checkout: self
     submodules: true
 
-  - bash: echo '${{ parameters.pythonVersions }}'
-    displayName: Echo test
-
   - bash: |
       echo "##vso[task.prependpath]$CONDA/bin"
       sudo chown -R $USER $CONDA
