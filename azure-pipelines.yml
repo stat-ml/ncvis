@@ -5,4 +5,6 @@ trigger:
 extends:
   template: azure_templates/all.yml
   parameters:
-    pythonVersions: ['3.6', '3.7']
+    pythonVersions:
+      - '3.6'
+      - '3.7'

@@ -9,6 +9,6 @@ parameters:
 
 jobs:
 - ${{ each platform in parameters.platforms }}:
-  - template: azure_templates/${{ platform }}.yml
+  - template: ${{ platform }}.yml
     parameters:
       pythonVersions: ${{ parameters.pythonVersions }}
