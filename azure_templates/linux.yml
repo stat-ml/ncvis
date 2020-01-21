@@ -11,7 +11,7 @@ jobs:
         Linux Python ${{ pythonVersion }}:
           imageName: 'ubuntu-latest'
           python.version: ${{ pythonVersion }}
-          python.upload: ${{ coalesce(parameters.pythonVersions) }}
+          python.joined: ${{ join(" ", parameters.pythonVersions) }}
 
   pool:
     vmImage: $(imageName)
@@ -20,7 +20,7 @@ jobs:
   - checkout: self
     submodules: true
 
-  - bash: echo "Selected Python " $(python.upload)
+  - bash: echo "Selected Python " $(python.joined)
     displayName: Echo test
 
   - bash: echo "##vso[task.prependpath]$CONDA/bin"
