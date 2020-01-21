@@ -48,6 +48,6 @@ jobs:
   - script: |
       call activate test
       call conda install anaconda-client
-      call anaconda -v -t $(Conda Token) upload %CONDA_PKG% --force
+      call anaconda -v -t $(Conda Token) upload --force "%CONDA_PKG%" 
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')  
     displayName: Upload to Anaconda
