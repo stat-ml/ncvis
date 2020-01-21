@@ -46,18 +46,17 @@ jobs:
       conda-build -t $CONDA_PKG
     displayName: Test
 
-  # - script: |
-  #     source activate test
-  #     conda install anaconda-client
-  #     anaconda -t $(Conda Token) upload $CONDA_PKG --force
-  #   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')  
-  #   displayName: Upload to Anaconda
+  - script: |
+      source activate test
+      conda install anaconda-client
+      anaconda -t $(Conda Token) upload $CONDA_PKG --force
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')  
+    displayName: Upload to Anaconda
 
   - script: |
-      echo 'Uploading to PyPI'
-      # source activate test
-      # conda install numpy cython twine
-      # python setup.py sdist
-      # twine upload -u '__token__' -p $(PyPI Token) dist/*
+      source activate test
+      conda install numpy cython twine
+      python setup.py sdist
+      twine upload -u '__token__' -p $(PyPI Token) dist/*
     condition: and(eq(variables['SELECTED_PYTHON'], variables['python.version']), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     displayName: Upload to PyPI

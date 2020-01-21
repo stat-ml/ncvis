@@ -10,7 +10,6 @@ jobs:
       ${{ each pythonVersion in parameters.pythonVersions }}:
         Windows Python ${{ pythonVersion }}:
           imageName: 'windows-latest'
-          # imageName: 'vs2017-win2016'
           python.version: ${{ pythonVersion }}
 
   pool:
@@ -23,6 +22,7 @@ jobs:
   - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
     displayName: Add conda to PATH
 
+  # Windows Driver Frameworks is also located in that directory and is detected as SDK...
   - script: |
       rename "C:\Program Files (x86)\Windows Kits\10\include\wdf" "10.0"      
     displayName: Fix SDK names
@@ -45,17 +45,9 @@ jobs:
       conda-build -t %CONDA_PKG%
     displayName: Test
 
-  # - script: |
-  #     source activate test
-  #     conda install anaconda-client
-  #     anaconda -t $(Conda Token) upload $CONDA_PKG --force
-  #   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')  
-  #   displayName: Upload to Anaconda
-
-  # - script: |
-  #     source activate test
-  #     conda install numpy cython twine
-  #     python setup.py sdist
-  #     twine upload -u '__token__' -p $(PyPI Token) dist/*
-  #   condition: and(eq(variables['shortName'], variables['selectedName']), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  #   displayName: Upload to PyPI
+  - script: |
+      call activate test
+      conda install anaconda-client
+      anaconda -t $(Conda Token) upload %CONDA_PKG% --force
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')  
+    displayName: Upload to Anaconda
