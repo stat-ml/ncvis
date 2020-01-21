@@ -25,13 +25,24 @@ jobs:
       vmImage: $(imageName)
 
     steps:
-    - bash: git submodule update --init --recursive
-      displayName: Download submodules
+    - checkout: self
+      submodules: true
 
     - bash: echo "##vso[task.prependpath]$CONDA/bin"
-      displayName: Add conda to PATH
+      condition: eq( variables['Agent.OS'], 'Linux' )
+      displayName: Add conda to PATH (Linux)
 
-    - bash: | 
+    - bash: |
+        echo "##vso[task.prependpath]$CONDA/bin"
+        sudo chown -R $USER $CONDA
+      condition: eq(variables['Agent.OS'], 'Darwin')
+      displayName: Add conda to PATH (macOS)
+
+    - powershell: Write-Host "##vso[task.prependpath]$env:CONDA\Scripts"
+      condition: eq(variables['Agent.OS'], 'Windows_NT')
+      displayName: Add conda to PATH (Windows)
+
+    - script: | 
         conda config --set always_yes yes --set anaconda_upload no
         conda update -q conda
         conda create -n test python=$(python.version) conda-build conda-verify
