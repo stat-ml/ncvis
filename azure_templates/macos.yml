@@ -45,6 +45,6 @@ jobs:
   - script: |
       source activate test
       conda install anaconda-client
-      anaconda -t $(Conda Token) upload --force "$CONDA_PKG"
+      anaconda -t $(Conda Token) upload --force $CONDA_PKG
     condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')  
     displayName: Upload to Anaconda
