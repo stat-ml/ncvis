@@ -3,16 +3,8 @@ trigger:
 - release-*
 
 extends:
-  template: azure-conda.yml
+  template: azure_templates/all.yml
   parameters:
-    platforms:
-      - name: 'Linux'
-        image: 'ubuntu-latest'
-      - name: 'Windows'
-        image: 'windows-latest'
-      - name: 'macOS' 
-        image: 'macOS-latest'
     pythonVersions:
       - '3.6'
       - '3.7'
-    uploadSrc: 'Linux3.7'
