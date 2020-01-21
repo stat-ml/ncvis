@@ -9,7 +9,7 @@ jobs:
     matrix:
       ${{ each pythonVersion in parameters.pythonVersions }}:
         Windows Python ${{ pythonVersion }}:
-          imageName: 'windows-latest'
+          imageName: 'vs2017-win2016'
           python.version: ${{ pythonVersion }}
 
   pool:
@@ -31,8 +31,8 @@ jobs:
   - script: |
       call activate test
       conda-build --no-test .
-      CONDA_PKG=$(conda-build --output .)
-      echo "##vso[task.setvariable variable=CONDA_PKG]$CONDA_PKG"
+      for /f %%i in ('conda build . --output') do set CONDA_PKG=%%i
+      echo "##vso[task.setvariable variable=CONDA_PKG]%CONDA_PKG%"
     displayName: Build
   
   - script: |
