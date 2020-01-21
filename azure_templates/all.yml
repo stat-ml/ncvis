@@ -8,9 +8,8 @@ parameters:
     default: ['linux', 'macos', 'windows']
 
 jobs:
-  ${{ each platform in parameters.platforms }}:
-    - template: azure_templates/${{ platform }}.yml
-      parameters:
-        pythonVersions:
-          ${{ each pythonVersion in parameters.pythonVersions }}:
-            - ${{ pythonVersion }}
+- template: azure_templates/${{ each platform in parameters.platforms }}.yml
+  parameters:
+    pythonVersions:
+      ${{ each pythonVersion in parameters.pythonVersions }}:
+        - ${{ pythonVersion }}
