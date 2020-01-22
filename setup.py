@@ -78,7 +78,7 @@ with open('recipe/meta.yaml', 'r') as f:
 DISTNAME = name
 VERSION = version
 DESCRIPTION = 'Noise contrastive data visualization'
-with open('README.md', 'r') as f:
+with open('SHORT_README.md', 'r') as f:
     LONG_DESCRIPTION = f.read()
 MAINTAINER = 'Aleksandr Artemenkov'
 MAINTAINER_EMAIL = 'alartum@gmail.com'

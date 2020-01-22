@@ -6,4 +6,5 @@ graft recipe
 include Makefile
 include LICENSE
 include README.md
+include SHORT_README.md
 include setup.py
