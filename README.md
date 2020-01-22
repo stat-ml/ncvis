@@ -5,7 +5,7 @@
 
 # ncvis
 
-**NCVis** is an efficient solution for data visualization. It uses [HNSW](https://github.com/nmslib/hnswlib) for fast nearest neighbors graph construction and a parallel approach for building the graph embedding.
+**NCVis** is an efficient solution for data visualization and dimensionality reduction. It uses [HNSW](https://github.com/nmslib/hnswlib) to quickly construct the nearest neighbors graph and a parallel (batched) approach to build its embedding. Efficient random sampling is achieved via [PCGRandom](https://github.com/imneme/pcg-cpp). Detailed application examples can be found [here](https://github.com/alartum/ncvis-examples).
 
 # Why NCVis?
 
