@@ -59,7 +59,11 @@ More detailed examples can be found [here](https://github.com/alartum/ncvis-exam
 
 ## Conda [recommended]
 
-You do not need to setup the environment if using *conda*, all dependencies are installed automatically. 
+You do not need to setup the environment if using *conda*, all dependencies are installed automatically. Using *conda-forge* channel is preferred, but using *alartum* channel is also possible in case of any issues with *conda-forge*.
+```bash
+$ conda install conda-forge::ncvis 
+```
+or
 ```bash
 $ conda install alartum::ncvis 
 ```
