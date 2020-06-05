@@ -1,0 +1,14 @@
+trigger:
+- master
+- release-*
+
+extends:
+  template: azure_templates/all.yml
+  parameters:
+    pythonVersions:
+    - '3.6'
+    - '3.7'
+    platforms:
+    - 'linux'
+    - 'macos'
+    - 'windows'

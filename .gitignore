@@ -10,3 +10,4 @@ obj/
 .object_dir
 .bin_dir
 .lib_dir
+.vscode/

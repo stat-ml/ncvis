@@ -1,0 +1,14 @@
+parameters:
+  - name: pythonVersions
+    type: object
+    default: []
+
+  - name: platforms
+    type: object
+    default: ['linux', 'macos', 'windows']
+
+jobs:
+- ${{ each platform in parameters.platforms }}:
+  - template: ${{ platform }}.yml
+    parameters:
+      pythonVersions: ${{ parameters.pythonVersions }}
