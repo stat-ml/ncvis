@@ -334,7 +334,7 @@ void ncvis::NCVis::optimize(long N, float* Y, float& Q, std::vector<ncvis::Edge>
                 }
             }  
         }
-        #pragma omp critical
+        #pragma omp atomic
         Q_cum += Q_copy;
         #pragma omp barrier
         #pragma omp single
