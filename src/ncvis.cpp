@@ -268,10 +268,11 @@ void ncvis::NCVis::init_embedding(long N, float* Y, float alpha, std::vector<ncv
 }
 
 void ncvis::NCVis::optimize(long N, float* Y, float& Q, std::vector<ncvis::Edge>& edges){
-    float Q_cum=0.;
+    float Q_cum=0.; 
     #pragma omp parallel
     {
     int id = omp_get_thread_num();
+    int n_threads = omp_get_num_threads();
     pcg64 pcg(random_seed_+id);
     // Build layout
     std::uniform_int_distribution<long> gen_ind(0, N-1);
@@ -281,8 +282,7 @@ void ncvis::NCVis::optimize(long N, float* Y, float& Q, std::vector<ncvis::Edge>
         float step = alpha_*(1-(((float)epoch)/n_epochs_)*(((float)epoch)/n_epochs_));
         float Q_copy = Q;
         long cur_noise = n_noise_[epoch];
-        Q_cum = 0;
-        #pragma omp for
+        #pragma omp for nowait
         for (long i = 0; i < (long)edges.size(); ++i){
             // printf("[%d] (%ld, %ld)\n", epoch, edges[i].first, edges[i].second);
             long id = edges[i].first;
@@ -336,8 +336,12 @@ void ncvis::NCVis::optimize(long N, float* Y, float& Q, std::vector<ncvis::Edge>
         }
         #pragma omp critical
         Q_cum += Q_copy;
+        #pragma omp barrier
         #pragma omp single
-        Q = Q_cum/omp_get_num_threads();
+        {
+        Q = Q_cum/n_threads;
+        Q_cum = 0;
+        }
     }
     }
 }
