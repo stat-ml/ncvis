@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ostream>
 #include <utility>
+#include <assert.h>
 #include "../lib/hnswlib/hnswlib/hnswlib.h"
 #include "knntable.hpp"
 #include <cstddef>
