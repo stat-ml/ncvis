@@ -51,3 +51,16 @@ def test_1d_clustering():
     Y = vis.fit_transform(X).ravel()
     n_pos = np.count_nonzero(Y-Y.mean() > 0)
     assert np.abs(n_pos - n) < 5, "Clustering quality is too poor"
+
+def test_1d_tsne():
+    np.random.seed(42)
+    n = 50
+    X = np.concatenate((np.random.normal(-1, 1.5, (n, 1)), 
+                        np.random.normal( 1, 1.5, (n, 1))))
+
+    vis = ncvis.NCVis(n_neighbors=15, M=16, ef_construction=200, d=1,
+                    n_init_epochs=20, n_epochs=50, a=1, b=1, n_threads=-1, 
+                    distance="euclidean", random_seed=42)
+    Y = vis.fit_transform(X).ravel()
+    n_pos = np.count_nonzero(Y-Y.mean() > 0)
+    assert np.abs(n_pos - n) < 5, "Clustering quality is too poor"

@@ -128,7 +128,7 @@ $ pytest -v recipe/test.py
 
 # Citation
 
-The original paper can be found [here](https://dl.acm.org/doi/abs/10.1145/3366423.3380061).
+The original paper can be found [here](https://dl.acm.org/doi/abs/10.1145/3366423.3380061). If you use **NCVis**, we kindly ask you to cite:
 
 ```
 @inproceedings{10.1145/3366423.3380061,

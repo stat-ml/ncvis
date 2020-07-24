@@ -28,8 +28,7 @@ cdef class NCVisWrapper:
     cdef cncvis.NCVis* c_ncvis
     cdef long d
 
-    def __cinit__(self, long d, long n_threads, long n_neighbors, long M, long ef_construction, long random_seed, int n_epochs, int n_init_epochs, float spread, float min_dist, float alpha, float alpha_Q, object n_noise, cncvis.Distance distance):
-        a, b = find_ab_params(spread, min_dist)
+    def __cinit__(self, long d, long n_threads, long n_neighbors, long M, long ef_construction, long random_seed, int n_epochs, int n_init_epochs, float a, float b, float alpha, float alpha_Q, object n_noise, cncvis.Distance distance):
         cdef long[:] n_noise_arr
         if isinstance(n_noise, int):
             n_noise_arr = np.full(n_epochs, n_noise, dtype=np.long)
@@ -48,7 +47,7 @@ cdef class NCVisWrapper:
         self.c_ncvis.fit_transform(&X[0, 0], X.shape[0], X.shape[1], &Y[0, 0])
 
 class NCVis:
-    def __init__(self, d=2, n_threads=-1, n_neighbors=15, M=16, ef_construction=200, random_seed=42, n_epochs=50, n_init_epochs=20, spread=1., min_dist=0.4, alpha=1., alpha_Q=1., n_noise=None, distance="euclidean"):
+    def __init__(self, d=2, n_threads=-1, n_neighbors=15, M=16, ef_construction=200, random_seed=42, n_epochs=50, n_init_epochs=20, spread=1., min_dist=0.4, a=None, b=None, alpha=1., alpha_Q=1., n_noise=None, distance="euclidean"):
         """
         Creates new NCVis instance.
 
@@ -84,6 +83,14 @@ class NCVis:
             relative to the ``spread`` value, which determines the scale at which
             embedded points will be spread out.
             See https://github.com/lmcinnes/umap/blob/834184f9c0455f26db13ab148c0abd2d3767d968/umap/umap_.py#L1135
+        a : (optional, default None)
+            More specific parameters controlling the embedding. If None these values
+            are set automatically as determined by ``min_dist`` and ``spread``.
+            See https://github.com/lmcinnes/umap/blob/834184f9c0455f26db13ab148c0abd2d3767d968/umap/umap_.py#L1179
+        b : (optional, default None)
+            More specific parameters controlling the embedding. If None these values
+            are set automatically as determined by ``min_dist`` and ``spread``.
+            See https://github.com/lmcinnes/umap/blob/834184f9c0455f26db13ab148c0abd2d3767d968/umap/umap_.py#L1183
         alpha : float
             Learning rate for the embedding positions.
         alpha_Q : float
@@ -126,8 +133,15 @@ class NCVis:
             'inner_product': cncvis.inner_product 
         }
         if distance not in distances:
-            raise ValueError("Unsupported distance, it should be one of: {'euclidean', 'cosine', 'correlation', 'inner_product'}")
-        self.model = NCVisWrapper(d, n_threads, n_neighbors, M, ef_construction, random_seed, n_epochs, n_init_epochs, spread, min_dist, alpha, alpha_Q, negative_plan, distances[distance])
+            raise ValueError(f"Unsupported distance, expected one of: {'euclidean', 'cosine', 'correlation', 'inner_product'}, but got {distance}")
+
+        if (a is None) or (b is None):
+            if (a is None) and (b is None):
+                a, b = find_ab_params(spread, min_dist)
+            else:
+                raise ValueError(f'Expected (a, b) to be (float, float) or (None, None),con but got (a, b) = ({a}, {b})')
+
+        self.model = NCVisWrapper(d, n_threads, n_neighbors, M, ef_construction, random_seed, n_epochs, n_init_epochs, a, b, alpha, alpha_Q, negative_plan, distances[distance])
 
     def fit_transform(self, X):
         """
