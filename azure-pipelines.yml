@@ -8,6 +8,7 @@ extends:
     pythonVersions:
     - '3.6'
     - '3.7'
+    - '3.8'
     platforms:
     - 'linux'
     - 'macos'
