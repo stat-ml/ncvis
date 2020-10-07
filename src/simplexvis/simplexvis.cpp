@@ -8,7 +8,7 @@
 simplexvis::SimplexVis::SimplexVis(long d, long n_threads, long max_clique_size, 
                                    long random_seed, int n_epochs, int n_init_epochs,
                                    float a, float b, float alpha, float alpha_Q, long* n_noise):
-d_(d), M_(M), max_clique_size_(max_clique_size), 
+d_(d), max_clique_size_(max_clique_size), 
 random_seed_(random_seed), n_epochs_(n_epochs), n_init_epochs_(n_init_epochs), 
 a_(a), b_(b), alpha_(alpha), alpha_Q_(alpha_Q)
 {
@@ -25,7 +25,7 @@ simplexvis::SimplexVis::~SimplexVis(){
     n_noise_ =  nullptr;
 }
 
-void simplexvis::SimplexVis::init_embedding(long N, long M, const long *const E, const float *const W, float* Y){
+void simplexvis::SimplexVis::init_embedding(long N, long M, float alpha, const long *const E, const float *const W, float* Y){
     // For temporary values
     float* Ys[2];
     Ys[0] = Y;

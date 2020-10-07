@@ -1,0 +1,2 @@
+find_package(OpenMP)
+add_subdirectory(simplexvis)

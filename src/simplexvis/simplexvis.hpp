@@ -41,9 +41,10 @@ namespace simplexvis {
 
         Builds low-dimensional embedding for the graph with edges [M, 2], where E is the number of edges and each row is a pair of nodes' indices. Indices are supposed to be in range [0..N].
 
+        @param N Number of nodes.
+        @param M Number of edges.
         @param E Pointer to the edges array [M, 2].
         @param W Pointer to the weights array [M].
-        @param N Number of nodes.
         @param Y Pointer to the embedding [N, d]. The j-th coordinate of i-th sample is assumed to be found at (Y+d*i+j).
         */
         void fit_transform(long N, long M, const long *const E, const float *const W, float* Y);
