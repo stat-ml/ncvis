@@ -26,6 +26,8 @@ public:
     ~SimplicialSet() = default;
     // Get simplices of the given dimensionality
     const std::vector<long>& get_simplices(long d);
+    // Build d-simplices if they are not already present, d >= 2
+    void build_simplices(long d);
 private:
     long N_;
     // subset_[k] stores all k-simplices (k+1 nodes each) present in the set
@@ -34,6 +36,9 @@ private:
     // each vector stores all connected nodes with the index smaller 
     // than the target 
     std::vector<std::vector<long>> adjacency_;
+
+    // Build d-dimensional simplices presuming d-1 dimensional
+    void build_simplices_(long d);
 };
 
 #endif // __SIMPLICIALSET_H__

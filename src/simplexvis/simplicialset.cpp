@@ -36,7 +36,10 @@ N_(N), subsets_(2), adjacency_(N)
         adjacency_[from].emplace_back(to);
     }
 
+    #pragma omp single
+    {
     std::cout << "Adjacency" << std::endl;
+    }
     #pragma omp for
     for(long i=0; i < adjacency_.size(); ++i){
         auto& conn = adjacency_[i];
@@ -52,6 +55,22 @@ N_(N), subsets_(2), adjacency_(N)
 
 const std::vector<long>& SimplicialSet::get_simplices(long d) 
 {
+    if (subsets_.size() < d+1){
+        build_simplices(d);
+    }
     return subsets_[d];
 }
 
+void void SimplicialSet::build_simplices_(long d)
+{
+
+}
+
+void SimplicialSet::build_simplices(long d)
+{
+    if (d < 3) return;
+
+    for (long i = 0; i < d; ++i){
+        build_simplices_(i);
+    }
+}
