@@ -18,3 +18,4 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g3")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 ")
 
 add_subdirectory(src)
+add_subdirectory(lib)

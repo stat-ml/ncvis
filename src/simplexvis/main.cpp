@@ -1,7 +1,9 @@
 #include <iostream>
 // #include "simplicialset.hpp"
-#include "table.hpp"
+#include <table.hpp>
 #include <array>
+#include <numeric>
+#include <tuple>
 
 int main(int argc, char* argv[]){
     // long N = 4, M = 4;
@@ -14,15 +16,17 @@ int main(int argc, char* argv[]){
     // SimplicialSet S(4, 4, E, 2);
     // for(auto e : S.get_simplices(1)) std::cout << e << ", ";
     // std::cout << std::endl;
-    Table<long> table(5, 1);
+    std::size_t row_size = 5;
+
+    Table<long> table(row_size, 1);
     long n_rows, n_cols;
 
     std::tie(n_rows, n_cols) = table.shape();
     std::cout << "shape " << n_rows << ", " << n_cols << std::endl;
     std::cout << table << std::endl;
 
-    // std::vector<int> row = {1,2,3,4,5};
-    std::array<long, 5> row = {1,2,3,4,5};
+    std::vector<int> row(row_size);
+    std::iota(row.begin(), row.end(), 0);
 
     table.resize(3);
     table[1] = row;
@@ -30,10 +34,8 @@ int main(int argc, char* argv[]){
     std::cout << table << std::endl;
 
     std::cout << table.begin()[1] << std::endl;
-
-    std::sort(table.begin(), table.end(), [](Table<long>::Row a, Table<long>::Row b) {
-        return b < a;   
-    });
+    
+    table.sort();
 
     std::cout << table << std::endl;
 

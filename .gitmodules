@@ -4,3 +4,6 @@
 [submodule "lib/hnswlib"]
 	path = lib/hnswlib
 	url = https://github.com/nmslib/hnswlib.git
+[submodule "lib/tbb"]
+	path = lib/tbb
+	url = git@github.com:wjakob/tbb.git
