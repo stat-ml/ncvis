@@ -6,9 +6,12 @@
 #include <iterator>
 #include <stdexcept>
 #include <iostream>
+#include <algorithm>
 #include <tuple>
 #include <numeric>
 #include <tbb/parallel_sort.h>
+#include <tbb/task_arena.h>
+#include <cassert>
 
 template<typename T>
 class Table{
@@ -26,10 +29,10 @@ public:
         std::size_t size() const {return row_size_; };
 
         friend void swap(Row x, Row y){
-            if (x.row_size_ != y.row_size_){
-                throw std::runtime_error(std::string("Can't swap Rows of different size: ")
-                                        + std::to_string(x.row_size_) + " != " + std::to_string(y.row_size_));
-            }
+            #ifndef NDEBUG
+            assert(x.row_size_ == y.row_size_);
+            #endif
+
             if (x.data_ptr_ != y.data_ptr_){
                 std::swap_ranges(x.data_ptr_, x.data_ptr_ + x.row_size_, y.data_ptr_);
             }
@@ -37,10 +40,10 @@ public:
 
         template<typename U>
         Row& operator=(const U& other){
-            if (other.size() != row_size_){
-                throw std::runtime_error(std::string("Can't assign to iterable of different size: ")
-                                        + std::to_string(row_size_) + " != " + std::to_string(other.size()));
-            }
+            #ifndef NDEBUG
+            assert(other.size() == row_size_);
+            #endif
+
             std::copy(other.begin(), other.end(), data_ptr_);
             return *this;
         }
@@ -71,10 +74,10 @@ public:
         }
 
         int compare(const Row& other) const{
-            if (row_size_ != other.row_size_){
-                throw std::runtime_error(std::string("Can't compare Rows of different size: ")
-                                        + std::to_string(row_size_) + " != " + std::to_string(other.row_size_));
-            }
+            #ifndef NDEBUG
+            assert(row_size_ == other.row_size_);
+            #endif
+
             int result = 0;
             for (std::size_t i = 0; i < row_size_; ++i){
                 if (data_ptr_[i] < other.data_ptr_[i]){
@@ -150,22 +153,96 @@ public:
         difference_type row_size_;
     };
 
-    Table() = default;
-    Table(std::size_t row_size, std::size_t n_rows=0) : row_size_(row_size), n_rows_(n_rows){
+    Table() : row_size_(0), n_rows_(0) {};
+    Table(std::size_t row_size, std::size_t n_rows=0) 
+    : row_size_(row_size), n_rows_(n_rows) {
         data_.resize(n_rows_ * row_size_);
     };
     RowIterator begin() { return RowIterator(&(data_.front()), row_size_); }
     RowIterator end() { return RowIterator(&(data_.back())+1, row_size_); }
-    Row operator[](const std::size_t n) { return Row(&(data_[n * row_size_]), row_size_); }
+    Row at(const std::size_t n) { 
+        if (n >= n_rows_){
+            throw std::runtime_error(std::string("Wrong row index: ")
+                                    + std::to_string(n) + " >= " + std::to_string(n_rows_));
+        }
+        return Row(&(data_[n * row_size_]), row_size_);
+    }
+    Row operator[](const std::size_t n) {
+        #ifndef NDEBUG
+        assert(n < n_rows_);
+        #endif
+        return Row(&(data_[n * row_size_]), row_size_); 
+    }
     std::size_t size() {return n_rows_ * row_size_; };
     std::tuple<std::size_t, std::size_t> shape() {return std::make_tuple(n_rows_, row_size_); }
 
     template<typename U>
-    void permute(U& positions){
-        if (positions.size() != n_rows_){
-            throw std::runtime_error(std::string("Permutations have different size: ")
-                                    + std::to_string(n_rows_) + " != " + std::to_string(positions.size()));
+    void push_back(const U& row){
+        #ifndef NDEBUG
+        assert(row.size() == row_size_);
+        #endif
+
+        data_.insert(data_.end(), row.begin(), row.end());
+        n_rows_++;
+    }
+
+    template<typename U>
+    void parallel_permute(U& positions, int n_threads=tbb::task_arena::automatic){
+        #ifndef NDEBUG
+        assert(positions.size() == n_rows_);
+        #endif
+        
+        // First of all, we find cycles
+        std::size_t n = positions.size();
+        // The array containing cycles
+        std::vector<std::size_t> cycles(n);
+        // The positions of cycles starts
+        std::vector<std::size_t> offsets = {0};
+        // Flags for checked positions
+        std::vector<bool> is_checked(n);
+        // Offset iterator
+        std::size_t it = 0;
+        // Position iterator
+        std::size_t i = 0;
+
+        while (i < n){
+            if (is_checked[i]){
+                // If the cycle contains only 1 element, ignore it
+                if (it == offsets.back() + 1){
+                    it--;
+                } else{
+                    offsets.emplace_back(it);
+                }
+                for (; i < n && is_checked[i]; i++);
+            } else{
+                cycles[it] = i;
+                is_checked[i] = true;
+                i = positions[i];
+                it++;
+            }
         }
+
+        // Then we do permutations for different cycles in parallel
+        tbb::task_arena arena(n_threads);
+        arena.execute([&]{
+            tbb::parallel_for(tbb::blocked_range<size_t>(0, offsets.size()-1), 
+                [&](const tbb::blocked_range<size_t>& r){
+                    for(size_t i=r.begin(); i!=r.end(); ++i){
+                        std::size_t from = offsets[i], to = offsets[i+1];
+                        for (size_t k=from+1; k < to; ++k){
+                            swap((*this)[cycles[from]], (*this)[cycles[k]]);
+                        }
+                    }
+                });
+        });
+    }
+
+    template<typename U>
+    void permute(U& positions){
+        #ifndef NDEBUG
+        assert(positions.size() == n_rows_);
+        #endif
+        
         std::size_t pos = 0;
         while (pos < n_rows_){
             std::size_t new_pos = positions[pos];
@@ -182,10 +259,29 @@ public:
         std::vector<std::size_t> pos(n_rows_);
         std::iota(pos.begin(), pos.end(), 0);
 
-        tbb::parallel_sort(pos.begin(), pos.end(), [&](std::size_t a, std::size_t b) {
-            return (*this)[a] < (*this)[b];   
+        std::sort(pos.begin(), pos.end(), [&](std::size_t a, std::size_t b) {
+            return (*this)[a] < (*this)[b];
         });
-        permute(pos);
+        std::vector<size_t> perm(pos.size());
+        for (std::size_t i = 0; i < perm.size(); ++i) perm[pos[i]] = i;
+
+        permute(perm);
+    }
+
+    void parallel_sort(int n_threads=tbb::task_arena::automatic){
+        std::vector<std::size_t> pos(n_rows_);
+        std::iota(pos.begin(), pos.end(), 0);
+
+        tbb::task_arena arena(n_threads);
+        arena.execute([&]{
+            tbb::parallel_sort(pos.begin(), pos.end(), [&](std::size_t a, std::size_t b) {
+                return (*this)[a] < (*this)[b];
+            });
+        });
+        std::vector<size_t> perm(pos.size());
+        for (std::size_t i = 0; i < perm.size(); ++i) perm[pos[i]] = i;
+
+        parallel_permute(perm, n_threads);
     }
 
     void reserve(std::size_t new_cap) {
@@ -193,8 +289,8 @@ public:
     }
 
     void resize(std::size_t n) {
-        n_rows_ = n;
         data_.resize(n * row_size_);
+        n_rows_ = n;
     }
 
     friend std::ostream& operator<<(std::ostream& os, const Table& table){
@@ -208,7 +304,9 @@ public:
         return os;
     }
 private:
+    // Number of elements per row
     std::size_t row_size_;
+    // Number of rows
     std::size_t n_rows_;
     std::vector<T> data_;
 };
