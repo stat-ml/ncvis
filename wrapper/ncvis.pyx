@@ -31,12 +31,12 @@ cdef class NCVisWrapper:
     def __cinit__(self, long d, long n_threads, long n_neighbors, long M, long ef_construction, long random_seed, int n_epochs, int n_init_epochs, float a, float b, float alpha, float alpha_Q, object n_noise, cncvis.Distance distance):
         cdef long[:] n_noise_arr
         if isinstance(n_noise, int):
-            n_noise_arr = np.full(n_epochs, n_noise, dtype=np.long)
+            n_noise_arr = np.full(n_epochs, n_noise, dtype=np.int64)
         elif isinstance(n_noise, np.ndarray):
             if len(n_noise.shape) > 1:
                 raise ValueError("Expected 1D n_noise array.")
             n_epochs = n_noise.shape[0]
-            n_noise_arr = n_noise.astype(np.long)
+            n_noise_arr = n_noise.astype(np.int64)
         self.c_ncvis = new cncvis.NCVis(d, n_threads, n_neighbors, M, ef_construction, random_seed, n_epochs, n_init_epochs, a, b, alpha, alpha_Q, &n_noise_arr[0], distance)
         self.d = d
 
@@ -109,17 +109,17 @@ class NCVis:
 
             negative_plan /= negative_plan.sum()
             negative_plan *= n_epochs*n_negative
-            negative_plan = negative_plan.round().astype(np.int)
+            negative_plan = negative_plan.round().astype(np.int32)
             negative_plan[negative_plan < 1] = 1
         elif type(n_noise) is np.ndarray:
             if len(n_noise.shape) != 1:
                 raise ValueError("n_noise should have exactly one dimension, but shape {} was passed".format(n_noise.shape))
-            negative_plan = n_noise.astype(np.int)
+            negative_plan = n_noise.astype(np.int32)
             n_epochs = negative_plan.size
         elif type(n_noise) is int:
             if n_noise < 1:
                 raise ValueError("n_noise should be at least 1, but {} was passed".format(n_noise))
-            negative_plan = np.full(n_epochs, n_noise).astype(np.int)
+            negative_plan = np.full(n_epochs, n_noise).astype(np.int32)
         else:
             raise ValueError("n_noise has unsupported type")
 
