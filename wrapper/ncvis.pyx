@@ -29,7 +29,7 @@ cdef class NCVisWrapper:
     cdef long d
 
     def __cinit__(self, long d, long n_threads, long n_neighbors, long M, long ef_construction, long random_seed, int n_epochs, int n_init_epochs, float a, float b, float alpha, float alpha_Q, object n_noise, cncvis.Distance distance):
-        cdef long[:] n_noise_arr
+        cdef cnp.int64_t[:] n_noise_arr
         if isinstance(n_noise, int):
             n_noise_arr = np.full(n_epochs, n_noise, dtype=np.int64)
         elif isinstance(n_noise, np.ndarray):
