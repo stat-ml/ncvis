@@ -38,12 +38,12 @@ jobs:
       source activate test
       CONDA_PKG=$(conda-build --output .)
       echo "##vso[task.setvariable variable=CONDA_PKG]$CONDA_PKG"
-      conda-build --no-test .
+      conda build --no-test .
     displayName: Build
   
   - bash: |
       source activate test
-      conda-build -t $CONDA_PKG
+      conda build -t $CONDA_PKG
     displayName: Test
 
   - script: |
