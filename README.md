@@ -74,9 +74,9 @@ $ conda install alartum::ncvis
 
 **Important**: be sure to have a compiler with *OpenMP* support. *GCC* has it by default, which is not the case with *clang*. You may need to install *llvm-openmp* library beforehand.  
 
-1. Install **numpy** and **cython** packages (compile-time dependencies):
+1. Install **numpy**, **cython** and **pybind11** packages (compile-time dependencies):
     ```bash
-    $ pip install numpy cython
+    $ pip install numpy cython pybind11
     ```
 2. Install **ncvis** package:
     ```bash
@@ -97,14 +97,13 @@ If *conda* environment is used, it replaces library search paths. To prevent com
 
 * Conda
     ```bash
-    $ conda install conda-build numpy cython scipy
-    $ conda install -c conda-forge cxx-compiler c-compiler
+    $ conda install -c conda-forge cxx-compiler c-compiler conda-build numpy cython pybind11 scipy
     $ conda-develop -bc .
     ``` 
 
 * Pip
     ```bash
-    $ pip install numpy cython
+    $ pip install numpy cython pybind11
     $ make wrapper
     ```
 
