@@ -35,9 +35,9 @@ jobs:
 
   - script: |
       call activate test
-      call conda-build --no-test .
       for /f %%i in ('conda build . --output') do set CONDA_PKG=%%i
       echo "##vso[task.setvariable variable=CONDA_PKG]%CONDA_PKG%"
+      call conda-build --no-test .
     displayName: Build
   
   - script: |
