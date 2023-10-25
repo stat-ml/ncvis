@@ -7,11 +7,5 @@ pr:
 extends:
   template: azure_templates/all.yml
   parameters:
-    pythonVersions:
-    - "3.8"
-    - "3.9"
-    - "3.10"
-    platforms:
-    - "linux"
-    - "macos"
-    - "windows"
+    pythonVersions: ['3.8', '3.9', '3.10']
+    platforms: ['linux', 'macos', 'windows']
