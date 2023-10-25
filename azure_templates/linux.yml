@@ -10,8 +10,8 @@ jobs:
       ${{ each pythonVersion in parameters.pythonVersions }}:
         Linux Python ${{ pythonVersion }}:
           imageName: 'ubuntu-latest'
-          python.version: ${{ pythonVersion }}
-          python.joined: ${{ join(' ', parameters.pythonVersions) }}
+          python.version: ${{ replace(pythonVersion,'_','.') }}
+          python.joined: ${{ replace(join(' ', parameters.pythonVersions),'_','.') }}
 
   pool:
     vmImage: $(imageName)

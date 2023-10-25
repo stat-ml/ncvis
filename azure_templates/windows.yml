@@ -10,7 +10,7 @@ jobs:
       ${{ each pythonVersion in parameters.pythonVersions }}:
         Windows Python ${{ pythonVersion }}:
           imageName: 'windows-latest'
-          python.version: ${{ pythonVersion }}
+          python.version: ${{ replace(pythonVersion,'_','.') }}
 
   pool:
     vmImage: $(imageName)
