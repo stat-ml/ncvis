@@ -11,4 +11,4 @@ jobs:
 - ${{ each platform in parameters.platforms }}:
   - template: ${{ platform }}.yml
     parameters:
-      pythonVersions: ${{ parameters.pythonVersions }}
+      pythonVersions: ${{ split(replace(join(';',parameters.pythonVersions),'_','.'),';') }}

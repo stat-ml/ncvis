@@ -8,9 +8,9 @@ extends:
   template: azure_templates/all.yml
   parameters:
     pythonVersions:
-    - '3.8'
-    - '3.9'
-    - '3.10'
+    - '3_8'
+    - '3_9'
+    - '3_10'
     platforms:
     - 'linux'
     - 'macos'
