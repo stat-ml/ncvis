@@ -17,14 +17,14 @@ requirements:
     - llvm-openmp     # [osx]
     - python
     - setuptools
-    - numpy >=1.15
-    - cython >=0.29
-    - pybind11 >=2.2
+    - numpy
+    - cython >=3.0.5
+    - pybind11 >=2.11.1
   run:
     - llvm-openmp     # [osx]
     - python
-    - numpy >=1.15
-    - scipy >=1.1
+    - {{ pin_compatible('numpy') }}
+    - scipy >=1.11.3
 test:
   files:
     - test.py
