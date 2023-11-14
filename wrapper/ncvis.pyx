@@ -1,7 +1,6 @@
 from wrapper cimport cncvis
 import numpy as np
 cimport numpy as cnp
-import ctypes
 from multiprocessing import cpu_count
 
 from scipy.optimize import curve_fit
@@ -26,17 +25,17 @@ def find_ab_params(spread=1., min_dist=0.1):
 
 cdef class NCVisWrapper:
     cdef cncvis.NCVis* c_ncvis
-    cdef long d
+    cdef size_t d
 
-    def __cinit__(self, long d, long n_threads, long n_neighbors, long M, long ef_construction, long random_seed, int n_epochs, int n_init_epochs, float a, float b, float alpha, float alpha_Q, object n_noise, cncvis.Distance distance):
-        cdef cnp.int64_t[:] n_noise_arr
+    def __cinit__(self, size_t d, size_t n_threads, size_t n_neighbors, size_t M, size_t ef_construction, size_t random_seed, int n_epochs, int n_init_epochs, float a, float b, float alpha, float alpha_Q, object n_noise, cncvis.Distance distance):
+        cdef cnp.uintp_t[:] n_noise_arr
         if isinstance(n_noise, int):
-            n_noise_arr = np.full(n_epochs, n_noise, dtype=np.int64)
+            n_noise_arr = np.full(n_epochs, n_noise, dtype=np.uintp)
         elif isinstance(n_noise, np.ndarray):
             if len(n_noise.shape) > 1:
                 raise ValueError("Expected 1D n_noise array.")
             n_epochs = n_noise.shape[0]
-            n_noise_arr = n_noise.astype(np.int64)
+            n_noise_arr = n_noise.astype(np.uintp)
         self.c_ncvis = new cncvis.NCVis(d, n_threads, n_neighbors, M, ef_construction, random_seed, n_epochs, n_init_epochs, a, b, alpha, alpha_Q, &n_noise_arr[0], distance)
         self.d = d
 
