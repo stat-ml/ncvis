@@ -1,16 +1,25 @@
 Sources=main.cpp ncvis.cpp knntable.cpp
 Executable=ncvis
 
-CFlags=-c -Wall -std=c++11 -fopenmp -fpic -O3 -ffast-math
-DebugCFlags=-c -Wall -std=c++11 -fopenmp -fpic -O3 -g3 -DDEBUG -ffast-math
-LDFlags=-lm -lgomp
-DebugLDFlags=-lm -lgomp
+CFlags=-c -Wall -std=c++14 -fopenmp -fPIC -O3 -ffast-math -I $(CONDA_PREFIX)/include
+DebugCFlags=-c -Wall -std=c++14 -fopenmp -fPIC -O3 -g3 -DDEBUG -ffast-math -I $(CONDA_PREFIX)/include
+
+# For Linux:
+# LDFlags=-lm -lgomp
+# DebugLDFlags=-lm -lgomp
+# CC=g++
+
+# For Mac:
+# Don't forget to run for proper dynamic linking:
+# $ export DYLD_LIBRARY_PATH=$CONDA_PREFIX/lib:$DYLD_LIBRARY_PATH 
+LDFlags=-lm -fopenmp=libiomp5
+DebugLDFlags=-lm -fopenmp=libiomp5
+CC=clang++
+
 ObjectDir=obj/
 SourceDir=src/
 BinDir=bin/
 LibDir=lib/
-
-CC=g++
 
 Objects=$(Sources:.cpp=.o)
 CSources=$(addprefix $(SourceDir),$(Sources))
