@@ -122,7 +122,7 @@ if sys.platform.startswith("darwin"):
     ]
     libraries = ["m", "iomp5"]
 elif sys.platform.startswith("linux"):
-    extra_compile_args = ["-O3", "-std=c++14", "-fpic", "-ffast-math", "-fopenmp"]
+    extra_compile_args = ["-O3", "-std=c++14", "-ffast-math", "-fopenmp"]
     libraries = ["m", "gomp"]
 elif sys.platform.startswith("win32"):
     extra_compile_args = ["/O2", "/fp:fast", "/openmp"]
