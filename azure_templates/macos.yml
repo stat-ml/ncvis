@@ -10,6 +10,7 @@ jobs:
       ${{ each pythonVersion in parameters.pythonVersions }}:
         macOS Python ${{ pythonVersion }}:
           imageName: 'macOS-latest'
+          # Hack around 3.10 being called 3_10 in the matrix
           python.version: ${{ replace(pythonVersion,'_','.') }}
 
   pool:
@@ -32,9 +33,9 @@ jobs:
 
   - bash: |
       source activate test
-      CONDA_PKG=$(conda build --output .)
-      echo "##vso[task.setvariable variable=CONDA_PKG]$CONDA_PKG"
       conda build --no-test .
+      CONDA_PKG=$(conda-build --output .)
+      echo "##vso[task.setvariable variable=CONDA_PKG]$CONDA_PKG"
     displayName: Build
   
   - bash: |

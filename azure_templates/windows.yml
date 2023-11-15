@@ -10,6 +10,7 @@ jobs:
       ${{ each pythonVersion in parameters.pythonVersions }}:
         Windows Python ${{ pythonVersion }}:
           imageName: 'windows-latest'
+          # Hack around 3.10 being called 3_10 in the matrix
           python.version: ${{ replace(pythonVersion,'_','.') }}
 
   pool:
@@ -35,9 +36,9 @@ jobs:
 
   - script: |
       call activate test
+      call conda build --no-test .
       for /f %%i in ('conda build . --output') do set CONDA_PKG=%%i
       echo "##vso[task.setvariable variable=CONDA_PKG]%CONDA_PKG%"
-      call conda build --no-test .
     displayName: Build
   
   - script: |

@@ -7,6 +7,7 @@ pr:
 extends:
   template: azure_templates/all.yml
   parameters:
+    # Dots were replaced with underscores in the matrix, as 3.10 is parsed as 3.1
     pythonVersions:
     - '3_8'
     - '3_9'
