@@ -18,8 +18,8 @@ requirements:
     - python
     - setuptools
     - numpy
-    - cython >=3.0.0
-    - pybind11 >=2.10.4
+    - cython >=0.29.0,<3.0.0
+    - pybind11
   run:
     - llvm-openmp     # [osx]
     - python
