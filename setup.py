@@ -1,11 +1,14 @@
-from setuptools import Command, setup, find_packages
-from setuptools.command.install import install
-from setuptools.extension import Extension
+import os
+import re
 from glob import glob
 
 # https://github.com/pypa/setuptools/issues/1347
-from os.path import abspath, basename, dirname, join, normpath, relpath
+from os.path import abspath, dirname, join, normpath, relpath
 from shutil import rmtree
+
+from setuptools import Command, setup
+from setuptools.command.install import install
+from setuptools.extension import Extension
 
 here = normpath(abspath(dirname(__file__)))
 
@@ -74,15 +77,12 @@ class InstallCommand(install):
 
 
 try:
-    from Cython.Build import cythonize
     import numpy
-    import pybind11
+    from Cython.Build import cythonize
 except ImportError:
     print("numpy/cython/pybind11 are not installed:")
     print(">> pip install numpy cython pybind11")
     exit(1)
-
-import re
 
 with open("recipe/meta.yaml", "r") as f:
     config = f.read()
@@ -128,8 +128,6 @@ elif sys.platform.startswith("win32"):
     extra_compile_args = ["/O2", "/fp:fast", "/openmp"]
     libraries = ["/openmp"]
 
-import os, json
-
 extensions = [
     Extension(
         "ncvis",
@@ -138,6 +136,7 @@ extensions = [
         libraries=libraries,
         include_dirs=[numpy.get_include()],
         language="c++",
+        define_macros=[("NPY_NO_DEPRECATED_API", "NPY_1_7_API_VERSION")],
     )
 ]
 
