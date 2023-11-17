@@ -33,7 +33,7 @@ jobs:
 
   - bash: |
       source activate test
-      conda build --no-test .
+      conda build -c conda-forge --no-test .
       CONDA_PKG=$(conda-build --output .)
       echo "##vso[task.setvariable variable=CONDA_PKG]$CONDA_PKG"
     displayName: Build
