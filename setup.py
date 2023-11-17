@@ -115,14 +115,13 @@ import sys
 if sys.platform.startswith("darwin"):
     extra_compile_args = [
         "-O3",
-        "-std=c++14",
-        "-fpic",
+        "-std=c++11",
         "-ffast-math",
         "-fopenmp=libiomp5",
     ]
     libraries = ["m", "iomp5"]
 elif sys.platform.startswith("linux"):
-    extra_compile_args = ["-O3", "-std=c++14", "-ffast-math", "-fopenmp"]
+    extra_compile_args = ["-O3", "-std=c++11", "-ffast-math", "-fopenmp"]
     libraries = ["m", "gomp"]
 elif sys.platform.startswith("win32"):
     extra_compile_args = ["/O2", "/fp:fast", "/openmp"]
@@ -167,4 +166,4 @@ metadata = dict(
     },
 )
 
-setup(ext_modules=cythonize(extensions, language_level=3), **metadata)
+setup(ext_modules=cythonize(extensions), **metadata)
