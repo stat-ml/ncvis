@@ -13,10 +13,8 @@ requirements:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
     - llvm-openmp     # [osx]
-    - libgomp         # [linux]
   host:
     - llvm-openmp     # [osx]
-    - libgomp         # [linux]
     - python
     - setuptools
     - numpy
@@ -24,7 +22,6 @@ requirements:
 
   run:
     - llvm-openmp     # [osx]
-    - libgomp         # [linux]
     - python
     - {{ pin_compatible('numpy') }}
     - scipy ~=1.11.3
