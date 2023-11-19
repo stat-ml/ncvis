@@ -1,3 +1,6 @@
+#ifndef NCVIS_H
+#define NCVIS_H
+
 #include <assert.h>
 
 #include <cstddef>
@@ -7,11 +10,6 @@
 
 #include "../lib/hnswlib/hnswlib/hnswlib.h"
 #include "knntable.hpp"
-
-#ifndef NCVIS_H
-#define NCVIS_H
-
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 
 namespace ncvis {
 typedef std::pair<size_t, size_t> Edge;
