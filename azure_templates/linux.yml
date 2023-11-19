@@ -37,7 +37,7 @@ jobs:
 
   - bash: |
       source activate test
-      CONDA_VERBOSITY=10 conda build --no-test .
+      CONDA_VERBOSITY=2 conda build --no-test .
       CONDA_PKG=$(conda-build --output .)
       echo "##vso[task.setvariable variable=CONDA_PKG]$CONDA_PKG"
     displayName: Build
