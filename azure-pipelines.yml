@@ -9,10 +9,10 @@ extends:
   parameters:
     # Dots were replaced with underscores in the matrix, as 3.10 is parsed as 3.1
     pythonVersions:
-    - '3_8'
+    # - '3_8'
     # - '3_9'
-    # - '3_10'
+     - '3_10'
     platforms:
-    - 'linux'
-    # - 'macos'
+    # - 'linux'
+     - 'macos'
     # - 'windows'
