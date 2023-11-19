@@ -17,7 +17,7 @@ requirements:
     - llvm-openmp     # [osx]
     - python
     - setuptools
-    - numpy ~=1.22.0
+    - numpy
     - cython ~=3.0.0
 
   run:
