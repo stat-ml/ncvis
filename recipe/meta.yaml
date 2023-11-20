@@ -18,13 +18,13 @@ requirements:
     - python
     - setuptools
     - numpy
-    - cython ~=3.0.0
+    - cython >=3,<4
 
   run:
     - llvm-openmp     # [osx]
     - python
     - {{ pin_compatible('numpy') }}
-    - scipy ~=1.11.3
+    - scipy >=1.10,<2
 test:
   files:
     - test.py
