@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 from glob import glob
 
 # https://github.com/pypa/setuptools/issues/1347
@@ -80,8 +81,8 @@ try:
     import numpy
     from Cython.Build import cythonize
 except ImportError:
-    print("numpy/cython/pybind11 are not installed:")
-    print(">> pip install numpy cython pybind11")
+    print("numpy and/or cython are not installed:")
+    print(">> pip install numpy cython")
     exit(1)
 
 with open("recipe/meta.yaml", "r") as f:
@@ -109,8 +110,6 @@ try:
 except ValueError:
     pass
 
-# Handle different platforms
-import sys
 
 if sys.platform.startswith("darwin"):
     extra_compile_args = [
@@ -167,4 +166,4 @@ metadata = dict(
     },
 )
 
-setup(ext_modules=cythonize(extensions, language_level=3), **metadata)
+setup(ext_modules=cythonize(extensions), **metadata)
