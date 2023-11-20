@@ -8,8 +8,19 @@
 #include <ostream>
 #include <utility>
 
-#include "../lib/hnswlib/hnswlib/hnswlib.h"
 #include "knntable.hpp"
+
+// Forward declaration to prevent including hnswlib.hpp
+// The problem is that the implementation of the methods is also in hnswlib.hpp
+// Every time we include hnswlib.hpp, we also include their source code that
+// results in multiple definitions during linking.
+namespace hnswlib {
+template <typename T>
+class SpaceInterface;
+
+template <typename T>
+class HierarchicalNSW;
+}  // namespace hnswlib
 
 namespace ncvis {
 typedef std::pair<size_t, size_t> Edge;

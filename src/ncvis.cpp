@@ -6,6 +6,7 @@
 #include <cmath>
 #include <random>
 
+#include "../lib/hnswlib/hnswlib/hnswlib.h"
 #include "../lib/pcg-cpp/include/pcg_random.hpp"
 
 ncvis::NCVis::NCVis(size_t d, size_t n_threads, size_t n_neighbors, size_t M,
