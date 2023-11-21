@@ -9,7 +9,11 @@ jobs:
     matrix:
       ${{ each pythonVersion in parameters.pythonVersions }}:
         macOS Python ${{ pythonVersion }}:
-          imageName: 'macOS-11'
+          imageName: 'macOS-latest'
+          # To be consistent with conda-forge approach
+          # https://conda-forge.org/docs/maintainer/knowledge_base.html#requiring-newer-macos-sdks
+          # Don't forget to update the option in the conda_build_config.yaml
+          target_platform: 10.9
           # Hack around 3.10 being called 3_10 in the matrix
           python.version: ${{ replace(pythonVersion,'_','.') }}
 
@@ -19,6 +23,11 @@ jobs:
   steps:
   - checkout: self
     submodules: true
+
+  - bash: |
+      wget https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX$(target_platform).sdk.tar.xz
+      tar xf MacOSX$(target_platform).sdk.tar.xz -C /opt
+    displayName: Install MacOSX $(target_platform) SDK
 
   - bash: |
       echo "##vso[task.prependpath]$CONDA/bin"
