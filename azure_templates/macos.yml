@@ -26,7 +26,7 @@ jobs:
 
   - bash: |
       wget https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX$(target_platform).sdk.tar.xz
-      tar xf MacOSX$(target_platform).sdk.tar.xz -C /opt
+      tar Jxvf MacOSX$(target_platform).sdk.tar.xz
     displayName: Install MacOSX $(target_platform) SDK
 
   - bash: |
