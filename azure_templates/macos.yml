@@ -9,7 +9,7 @@ jobs:
     matrix:
       ${{ each pythonVersion in parameters.pythonVersions }}:
         macOS Python ${{ pythonVersion }}:
-          imageName: 'macOS-latest'
+          imageName: 'macOS-11'
           # Hack around 3.10 being called 3_10 in the matrix
           python.version: ${{ replace(pythonVersion,'_','.') }}
 
