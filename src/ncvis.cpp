@@ -101,8 +101,13 @@ void ncvis::NCVis::buildKNN(const float *const X, size_t N, size_t D) {
 #pragma omp parallel
     {
         float *x = new float[D];
+
+        // For some reason, OpenMP on Windows fails with
+        // "error C3016: 'i': index variable in OpenMP 'for' statement must have
+        // signed integral type"
+        // So I had to replace `size_t` with `long long`, which is error-prone
 #pragma omp for
-        for (size_t i = 1; i < N; ++i) {
+        for (long long i = 1; i < N; ++i) {
             // printf("[%lu]>> [", i);
             // for (size_t j=0; j<D; ++j){
             //     printf("%5.1f ", X[j+D*i]);
@@ -127,7 +132,7 @@ ncvis::KNNTable ncvis::NCVis::findKNN(const float *const X, size_t N, size_t D, 
     {
         float *x = new float[D];
 #pragma omp for
-        for (size_t i = 0; i < N; ++i) {
+        for (long long i = 0; i < N; ++i) {
             // Find k+1 neighbors as one of them is the point itself
             preprocess(X + i * D, D, dist_, x);
             auto result = appr_alg_->searchKnn((const void *)x, k + 1);
@@ -151,7 +156,7 @@ std::vector<ncvis::Edge> ncvis::NCVis::build_edges(ncvis::KNNTable &table) {
     size_t n_edges = 0;
 
 #pragma omp parallel for
-    for (size_t i = 0; i < (size_t)table.inds.size(); ++i) {
+    for (long long i = 0; i < table.inds.size(); ++i) {
 #pragma omp atomic
         n_edges += (size_t)table.inds[i].size();
     }
@@ -191,7 +196,7 @@ void ncvis::NCVis::init_embedding(size_t N, float *Y, float alpha, std::vector<n
         std::uniform_real_distribution<float> gen_Y(0, 1);
 
 #pragma omp for
-        for (size_t i = 0; i < N * d_; ++i) {
+        for (long long i = 0; i < N * d_; ++i) {
             Y[i] = gen_Y(pcg);
         }
         // Initialize layout
@@ -199,12 +204,12 @@ void ncvis::NCVis::init_embedding(size_t N, float *Y, float alpha, std::vector<n
             float *Y_old = Ys[init_epoch % 2];
             float *Y_new = Ys[(init_epoch + 1) % 2];
 #pragma omp for
-            for (size_t i = 0; i < N * d_; ++i) {
+            for (long long i = 0; i < N * d_; ++i) {
                 Y_new[i] = 0;
             }
 
 #pragma omp for
-            for (size_t i = 0; i < (size_t)edges.size(); ++i) {
+            for (long long i = 0; i < edges.size(); ++i) {
                 size_t id = edges[i].first;
                 size_t other_id = edges[i].second;
                 for (size_t k = 0; k < d_; ++k) {
@@ -219,7 +224,7 @@ void ncvis::NCVis::init_embedding(size_t N, float *Y, float alpha, std::vector<n
             }
 
 #pragma omp for
-            for (size_t i = 0; i < N; ++i) {
+            for (long long i = 0; i < N; ++i) {
                 for (size_t k = 0; k < d_; ++k) {
 #pragma omp atomic
                     mean[k] += Y_new[i * d_ + k];
@@ -232,7 +237,7 @@ void ncvis::NCVis::init_embedding(size_t N, float *Y, float alpha, std::vector<n
             }
 
 #pragma omp for
-            for (size_t i = 0; i < N; ++i) {
+            for (long long i = 0; i < N; ++i) {
                 for (size_t k = 0; k < d_; ++k) {
                     float delta2 = Y_new[i * d_ + k] - mean[k];
                     delta2 *= delta2;
@@ -248,7 +253,7 @@ void ncvis::NCVis::init_embedding(size_t N, float *Y, float alpha, std::vector<n
             }
 
 #pragma omp for
-            for (size_t i = 0; i < N; ++i) {
+            for (long long i = 0; i < N; ++i) {
                 for (size_t k = 0; k < d_; ++k) {
                     Y_new[i * d_ + k] = (Y_new[i * d_ + k] - mean[k]) / sigma[k];
                 }
@@ -256,7 +261,7 @@ void ncvis::NCVis::init_embedding(size_t N, float *Y, float alpha, std::vector<n
         }
         if (n_init_epochs_ % 2) {
 #pragma omp for
-            for (size_t i = 0; i < N * d_; ++i) {
+            for (long long i = 0; i < N * d_; ++i) {
                 Ys[0][i] = Ys[1][i];
             }
         }
@@ -283,7 +288,7 @@ void ncvis::NCVis::optimize(size_t N, float *Y, float &Q, std::vector<ncvis::Edg
             float Q_copy = Q;
             size_t cur_noise = n_noise_[epoch];
 #pragma omp for nowait
-            for (size_t i = 0; i < (size_t)edges.size(); ++i) {
+            for (long long i = 0; i < edges.size(); ++i) {
                 // printf("[%d] (%ld, %ld)\n", epoch, edges[i].first, edges[i].second);
                 size_t id = edges[i].first;
                 for (size_t j = 0; j < cur_noise + 1; ++j) {
