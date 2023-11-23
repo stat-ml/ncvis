@@ -13,6 +13,6 @@ extends:
     # - '3_9'
     - '3_10'
     platforms:
-    # - 'linux'
-    - 'macos'
+    - 'linux'
+    # - 'macos'
     # - 'windows'
