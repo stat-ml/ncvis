@@ -1,5 +1,5 @@
 {% set name = "ncvis" %}
-{% set version = "1.5.9" %}
+{% set version = "1.5.10" %}
 
 package:
   name: {{ name|lower }}
@@ -17,13 +17,14 @@ requirements:
     - llvm-openmp     # [osx]
     - python
     - setuptools
-    - numpy >=1.15
-    - cython >=0.29
+    - numpy
+    - cython >=3,<4
+
   run:
     - llvm-openmp     # [osx]
     - python
-    - numpy >=1.15
-    - scipy >=1.1
+    - {{ pin_compatible('numpy') }}
+    - scipy >=1.10,<2
 test:
   files:
     - test.py

@@ -10,7 +10,12 @@ jobs:
       ${{ each pythonVersion in parameters.pythonVersions }}:
         macOS Python ${{ pythonVersion }}:
           imageName: 'macOS-latest'
-          python.version: ${{ pythonVersion }}
+          # To be consistent with conda-forge approach
+          # https://conda-forge.org/docs/maintainer/knowledge_base.html#requiring-newer-macos-sdks
+          # Don't forget to update the option in the conda_build_config.yaml
+          target_platform: 10.9
+          # Hack around 3.10 being called 3_10 in the matrix
+          python.version: ${{ replace(pythonVersion,'_','.') }}
 
   pool:
     vmImage: $(imageName)
@@ -18,6 +23,12 @@ jobs:
   steps:
   - checkout: self
     submodules: true
+
+  - bash: |
+      wget https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX$(target_platform).sdk.tar.xz
+      tar Jxf MacOSX$(target_platform).sdk.tar.xz
+      mv MacOSX$(target_platform).sdk /usr/local/miniconda/custom_sdk
+    displayName: Install MacOSX $(target_platform) SDK
 
   - bash: |
       echo "##vso[task.prependpath]$CONDA/bin"
@@ -32,14 +43,14 @@ jobs:
 
   - bash: |
       source activate test
-      conda-build --no-test .
+      conda build --no-test .
       CONDA_PKG=$(conda-build --output .)
       echo "##vso[task.setvariable variable=CONDA_PKG]$CONDA_PKG"
     displayName: Build
   
   - bash: |
       source activate test
-      conda-build -t $CONDA_PKG
+      conda build -t $CONDA_PKG
     displayName: Test
 
   - script: |

@@ -1,7 +1,6 @@
 from wrapper cimport cncvis
 import numpy as np
 cimport numpy as cnp
-import ctypes
 from multiprocessing import cpu_count
 
 from scipy.optimize import curve_fit
@@ -26,17 +25,17 @@ def find_ab_params(spread=1., min_dist=0.1):
 
 cdef class NCVisWrapper:
     cdef cncvis.NCVis* c_ncvis
-    cdef long d
+    cdef size_t d
 
-    def __cinit__(self, long d, long n_threads, long n_neighbors, long M, long ef_construction, long random_seed, int n_epochs, int n_init_epochs, float a, float b, float alpha, float alpha_Q, object n_noise, cncvis.Distance distance):
-        cdef long[:] n_noise_arr
+    def __cinit__(self, size_t d, size_t n_threads, size_t n_neighbors, size_t M, size_t ef_construction, size_t random_seed, int n_epochs, int n_init_epochs, float a, float b, float alpha, float alpha_Q, object n_noise, cncvis.Distance distance):
+        cdef cnp.uintp_t[:] n_noise_arr
         if isinstance(n_noise, int):
-            n_noise_arr = np.full(n_epochs, n_noise, dtype=np.long)
+            n_noise_arr = np.full(n_epochs, n_noise, dtype=np.uintp)
         elif isinstance(n_noise, np.ndarray):
             if len(n_noise.shape) > 1:
                 raise ValueError("Expected 1D n_noise array.")
             n_epochs = n_noise.shape[0]
-            n_noise_arr = n_noise.astype(np.long)
+            n_noise_arr = n_noise.astype(np.uintp)
         self.c_ncvis = new cncvis.NCVis(d, n_threads, n_neighbors, M, ef_construction, random_seed, n_epochs, n_init_epochs, a, b, alpha, alpha_Q, &n_noise_arr[0], distance)
         self.d = d
 
@@ -47,7 +46,7 @@ cdef class NCVisWrapper:
         self.c_ncvis.fit_transform(&X[0, 0], X.shape[0], X.shape[1], &Y[0, 0])
 
 class NCVis:
-    def __init__(self, d=2, n_threads=-1, n_neighbors=15, M=16, ef_construction=200, random_seed=42, n_epochs=50, n_init_epochs=20, spread=1., min_dist=0.4, a=None, b=None, alpha=1., alpha_Q=1., n_noise=None, distance="euclidean"):
+    def __init__(self, d=2, n_threads=-1, n_neighbors=15, M=8, ef_construction=100, random_seed=42, n_epochs=50, n_init_epochs=20, spread=1., min_dist=0.4, a=None, b=None, alpha=1., alpha_Q=1., n_noise=None, distance="euclidean"):
         """
         Creates new NCVis instance.
 
@@ -109,17 +108,17 @@ class NCVis:
 
             negative_plan /= negative_plan.sum()
             negative_plan *= n_epochs*n_negative
-            negative_plan = negative_plan.round().astype(np.int)
+            negative_plan = negative_plan.round().astype(np.uintp)
             negative_plan[negative_plan < 1] = 1
         elif type(n_noise) is np.ndarray:
             if len(n_noise.shape) != 1:
                 raise ValueError("n_noise should have exactly one dimension, but shape {} was passed".format(n_noise.shape))
-            negative_plan = n_noise.astype(np.int)
+            negative_plan = n_noise.astype(np.uintp)
             n_epochs = negative_plan.size
         elif type(n_noise) is int:
             if n_noise < 1:
                 raise ValueError("n_noise should be at least 1, but {} was passed".format(n_noise))
-            negative_plan = np.full(n_epochs, n_noise).astype(np.int)
+            negative_plan = np.full(n_epochs, n_noise).astype(np.uintp)
         else:
             raise ValueError("n_noise has unsupported type")
 

@@ -1,0 +1,2 @@
+CONDA_BUILD_SYSROOT:                      # [osx and x86_64]
+ - /usr/local/miniconda/custom_sdk        # [osx and x86_64]
