@@ -56,7 +56,7 @@ def test_parallel(capsys: CaptureFixture):
             times[n_th] = stop - start
 
             with capsys.disabled():
-                print("n_threads = {}, time = {:.2f}s".format(n_th, times[n_th]))
+                print(f"{distance}: n_threads = {n_th}, time = {times[n_th]:.2f}s")
             if n_th > 1:
                 eff = times[1] / (times[n_th] * n_th)
                 assert eff > 0.3, "Parallelization efficiency is too low"
