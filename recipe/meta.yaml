@@ -19,7 +19,7 @@ requirements:
     - setuptools
     - numpy
     - cython >=3,<4
-
+    - pybind11 >=2,<3
   run:
     - llvm-openmp     # [osx]
     - python

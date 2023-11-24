@@ -78,11 +78,12 @@ class InstallCommand(install):
 
 
 try:
-    import numpy
     from Cython.Build import cythonize
+    import numpy
+    import pybind11  # noqa: F401
 except ImportError:
-    print("numpy and/or cython are not installed:")
-    print(">> pip install numpy cython")
+    print("numpy/cython/pybind11 are not installed:")
+    print(">> pip install numpy cython pybind11")
     exit(1)
 
 with open("recipe/meta.yaml", "r") as f:
