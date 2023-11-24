@@ -1,5 +1,5 @@
 {% set name = "ncvis" %}
-{% set version = "1.5.12" %}
+{% set version = "1.5.13" %}
 
 package:
   name: {{ name|lower }}
@@ -35,7 +35,7 @@ test:
     - ncvis
   commands:
     - python test_init.py
-    - pytest test.py
+    - pytest -v test.py
 
 
 about:
