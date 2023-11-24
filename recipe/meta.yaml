@@ -1,5 +1,5 @@
 {% set name = "ncvis" %}
-{% set version = "1.5.12" %}
+{% set version = "1.5.13" %}
 
 package:
   name: {{ name|lower }}

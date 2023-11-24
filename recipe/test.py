@@ -1,6 +1,7 @@
 import numpy as np
 import ncvis
 import time
+from pytest import CaptureFixture
 
 
 def test_distances():
@@ -29,7 +30,7 @@ def test_distances():
         assert all_finite, "All entries must be finite"
 
 
-def test_parallel():
+def test_parallel(capsys: CaptureFixture):
     np.random.seed(42)
     X = np.random.random((5 * 10**3, 10))
     distances = ["euclidean", "cosine", "correlation", "inner_product"]
@@ -50,11 +51,12 @@ def test_parallel():
                 distance=distance,
             )
             start = time.time()
-            Y = vis.fit_transform(X)
+            Y = vis.fit_transform(X)  # noqa: F841
             stop = time.time()
             times[n_th] = stop - start
 
-            print("n_threads = {}, time = {:.2f}s".format(n_th, times[n_th]))
+            with capsys.disabled():
+                print(f"{distance}: n_threads = {n_th}, time = {times[n_th]:.2f}s")
             if n_th > 1:
                 eff = times[1] / (times[n_th] * n_th)
                 assert eff > 0.3, "Parallelization efficiency is too low"
