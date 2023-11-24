@@ -35,7 +35,7 @@ test:
     - ncvis
   commands:
     - python test_init.py
-    - pytest -v test.py
+    - pytest test.py
 
 
 about:
