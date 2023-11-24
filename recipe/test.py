@@ -31,7 +31,7 @@ def test_distances():
 
 def test_parallel():
     np.random.seed(42)
-    X = np.random.random((10**3, 10))
+    X = np.random.random((5 * 10**3, 10))
     distances = ["euclidean", "cosine", "correlation", "inner_product"]
     n_threads = [1, 2]
     for distance in distances:
