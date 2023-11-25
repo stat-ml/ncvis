@@ -2,7 +2,7 @@
 [![PyPI](https://img.shields.io/pypi/v/ncvis.svg)](https://pypi.python.org/pypi/ncvis/)
 [![GitHub](https://img.shields.io/github/license/alartum/ncvis.svg)](https://github.com/alartum/ncvis/blob/master/LICENSE)
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/ncvis.svg)](https://anaconda.org/conda-forge/ncvis)
-[![Build Status](https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/ncvis-feedstock?branchName=master)](https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=8934&branchName=master)
+[![Build Status](https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/ncvis-feedstock?branchName=main)](https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=8934&branchName=main)
 [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/ncvis.svg)](https://anaconda.org/conda-forge/ncvis)
 
 # ncvis
